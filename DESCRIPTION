@@ -1,7 +1,7 @@
 Package: deco
 Type: Package
 Title: Decomposing Heterogeneous Cohorts using Omic Data Profiling
-Version: 0.98.0
+Version: 0.98.1
 Date: 2018-09-26
 Author: Francisco Jose Campos-Laborie, Jose Manuel Sanchez-Santos and Javier De
     Las Rivas. Bioinformatics and Functional Genomics Group. Cancer Research Center
@@ -17,15 +17,15 @@ Description: This package discovers differential features in hetero- and homogen
     higher deregulation levels.
 Depends: R (>= 3.4.0), stats, methods, limma, snowfall, 
         AnnotationDbi, foreign, Biobase, cluster, gplots,
-        RColorBrewer, locfit, made4, lisp, ade4,
+        RColorBrewer, locfit, made4, ade4,
         sfsmisc, scatterplot3d, gdata, grDevices, 
         graphics, utils
 Suggests: knitr
 License: LGPL
-URL: http://www.cicancer.org
+URL: http://bioinfow.dep.usal.es/deco/
 ZipData: true
 LazyLoad: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2018-11-06 10:15:15 UTC;
+Packaged: 2018-11-06 14:45:25 UTC;

@@ -26,7 +26,6 @@ importFrom(gplots, textplot)
 import(cluster)
 import(made4)
 import(ade4)
-importFrom(lisp, is.even, is.odd)
 
 importFrom("scatterplot3d","scatterplot3d")
 importFrom("sfsmisc", "integrate.xy")

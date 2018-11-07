@@ -905,5 +905,10 @@ NSCA <- function(N, v = 80){
 }
 
 ######################################################
+## Short functions
 
 range01 <- function(x) {(x-min(x))/(max(x)-min(x))}
+
+is.even <- function(x) {x%%2 == 0}
+
+

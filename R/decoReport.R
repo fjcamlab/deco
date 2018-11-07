@@ -2127,7 +2127,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   deco@featureTable <- deco@featureTable[with(deco@featureTable, order(CHR, CHRLOC)),]
 
   freq <- table(deco@featureTable[,c("CHR")])
-  col <- c("black","grey")[as.numeric(is.odd(deco@featureTable[,c("CHR")]))+1]
+  col <- c("black","grey")[as.numeric(!is.even(deco@featureTable[,c("CHR")]))+1]
 
   layout(mat = matrix(c(1)))
   par(mar = c(8,8,8,8))
