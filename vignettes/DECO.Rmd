@@ -120,38 +120,11 @@ The **deco** R source package can be downloaded from our lab website (http://bio
 R CMD INSTALL /path/to/deco_1.0.tar.gz
 ```
 
-Or user can download/install the R package directly from Bioconductor repository:
-
-```{r, message = FALSE}
-### Bioconductor dependencies
-# source("https://bioconductor.org/biocLite.R")
-# biocLite(c("AnnotationDbi", "foreign", "limma", "Biobase", 
-#          "gdata", "cluster", "gplots", "RColorBrewer", 
-#          "snowfall", "scatterplot3d", "made4", "locfit", 
-#          "ade4", "sfsmisc"))
-
-### Installing package in R
-# biocLite("deco")
-```
-
-It can be also done using `devtools` R package to install dependencies from local directory (in this case the user has to decompress .tar.gz previously):
-```{r, message = FALSE, eval = FALSE}
-# Loading devtools R package...
-library(devtools)
-
-# Installing dependencies. Path to directory containing decompressed R package
-install_deps("/path/to/deco/",dependencies="logical")
-```
-```{r, message = FALSE}
-# Loading package in R
-library(deco)
-```
-
-This R package contains a experimental dataset as example and all functions needed to run an analysis.
+Or user can download/install the R package directly from [Bioconductor repository](https://bioconductor.org/). This R package contains a experimental dataset as example, two pre-run R objects and all functions needed to run a DECO analysis.
 
 # 3. Experimental data
 
-At presernt, the method directly supports two types of data from transcriptomic technologies: microarrays and RNA-seq platforms. In case of microarrays, robust normalization of raw signal is needed for correct application of *eBayes* method (done for example with the **RMA** method or with  **normalizeBetweenArrays** method from [LIMMA package](#references) [2]). Notwithstanding, RNA-seq read counts matrix (genes or transcripts as rows and samples as columns) can be the input; and in this case then user should apply [voom normalization method](#references) [2]. Below, we show two different examples of both types of datasets obtained with such platforms.
+At present, the method directly supports two types of data from transcriptomic technologies: microarrays and RNA-seq platforms. In case of microarrays, robust normalization of raw signal is needed for correct application of *eBayes* method (done for example with the **RMA** method or with  **normalizeBetweenArrays** method from [LIMMA package](#references) [2]). Notwithstanding, RNA-seq read counts matrix (genes or transcripts as rows and samples as columns) can be the input; and in this case then user should apply [voom normalization method](#references) [2]. Below, we show two different examples of both types of datasets obtained with such platforms.
 
 ## 3.1 Microarrays dataset: study on lymphoma subtypes
 
@@ -262,8 +235,9 @@ Depending on *classes* input vector, a *supervised* or *binary* analysis compare
 # library(org.Hs.eg.db)
 
 # example of SUPERVISED or BINARY design with Affymetrix microarrays data 
-sub_binary <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.05, iterations = 1000,
-                      rm.xy = FALSE, r = NULL, cpus = 6, parallel = TRUE, temp.path = getwd(), 
+sub_binary <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.05, 
+                      iterations = 1000, rm.xy = FALSE, r = NULL, cpus = 6, 
+                      parallel = TRUE, temp.path = getwd(), 
                       control = "pos", annot = FALSE, id.type = "ENSEMBL", 
                       pack.db = "org.Hs.eg.db")
 ```
