@@ -148,12 +148,12 @@ AnnotateDECO <- function(ids, id.type, attributes = NA, pack.db = "org.Hs.eg.db"
 
 sampleDependence <- function(results, r, s)
 {
-  mm <- matrix(data = 0, ncol = s, nrow = s, dimnames = list(1:s,1:s))
+  mm <- matrix(data = 0, ncol = s, nrow = s, dimnames = list(seq_len(s), seq_len(s)))
   if(table(results[,"nFeatures"] > 0) > 0){
-    for(i in 1:length(which(results[,"nFeatures"] > 0)))
+    for(i in seq_len(length(which(results[,"nFeatures"] > 0))))
     {
-      mm[results[i,1:r],results[i,(r+1):(2*r)]] <- mm[results[i,1:r],results[i,(r+1):(2*r)]]+results[i,"nFeatures"]
-      mm[results[i,1:r],results[i,1:r]] <- mm[results[i,1:r],results[i,1:r]]-results[i,"nFeatures"]
+      mm[results[i,seq_len(r)],results[i,(r+1):(2*r)]] <- mm[results[i,seq_len(r)],results[i,(r+1):(2*r)]]+results[i,"nFeatures"]
+      mm[results[i,seq_len(r)],results[i,seq_len(r)]] <- mm[results[i,seq_len(r)],results[i,seq_len(r)]]-results[i,"nFeatures"]
       mm[results[i,(r+1):(2*r)],results[i,(r+1):(2*r)]] <- mm[results[i,(r+1):(2*r)],results[i,(r+1):(2*r)]]-results[i,"nFeatures"]
     }
   }
@@ -173,7 +173,7 @@ innerProductAssign <- function(inner, samples = NA, control = NA, analysis)
   {
     res <- 0
     inner0 <- inner
-    for(j in 1:length(table(samples)))
+    for(j in seq_len(length(table(samples))))
     {
       if(j == 1)
         inner <- inner0[names(samples[samples==control])]
@@ -232,7 +232,7 @@ cophDECO <- function(data, method.heatmap = "ward.D", k = NULL, scale = FALSE,
   d[is.na(d)] <- 0
 
   if(coph)
-    hmet <- sapply(method.heatmap, function(x){
+    hmet <- sapply(as.list(method.heatmap), function(x){
       sampleTree <- as.dendrogram(hclust(d, method = x))
       coph <- cor(c(d), c(cophenetic(sampleTree)),
                   method = "pearson")
@@ -332,10 +332,10 @@ overlapFeature <- function(id, data, classes, control, analysis, infoS = NA, plo
       x <- density(as.numeric(data[id,names(classes[classes == levels(classes)[1]])]))$x
     w <- apply(apply(expand.grid(levels(classes), levels(classes)), 1, function(y) pmin(d[,y[1]], d[,y[2]])), 1, max)
     d <- data.frame(d, x = x, w = w)
-    total <- sum(sapply(1:length(levels(classes)), function(y) integrate.xy(d$x, d[,y])))^2
+    total <- sum(sapply(seq_len(length(levels(classes))), function(y) integrate.xy(d$x, d[,y])))^2
     intersection <- integrate.xy(d$x, d$w)
 
-    pos <- 1:length(levels(classes))
+    pos <- seq_len(length(levels(classes)))
     col <- adjustcolor(colorRampPalette(c("navyblue","darkorange","darkred","darkgreen"))(length(levels(classes))),alpha.f = 0.3)
     txt <- levels(classes)
   }
@@ -365,9 +365,9 @@ jColor <- function(info)
   nam <- rownames(info)
   double <- c("ivory2","gold","gray30","cornflowerblue","chocolate","honeydew1")
 
-  colnames(info) <- paste(rev(LETTERS[1:dim(info)[2]]),": ",colnames(info), sep="")
-  for(j in 1:dim(info)[2])
-    info[,j] <- paste(rev(LETTERS[1:dim(info)[2]])[j],": ",as.character(info[,j]), sep = "")
+  colnames(info) <- paste(rev(LETTERS[seq_len(dim(info)[2])]),": ",colnames(info), sep="")
+  for(j in seq_len(dim(info)[2]))
+    info[,j] <- paste(rev(LETTERS[seq_len(dim(info)[2])])[j],": ",as.character(info[,j]), sep = "")
   rownames(info) <- nam
   info.sample.color <- info
   info.sample.color <- apply(info.sample.color,2,as.character)
@@ -382,11 +382,11 @@ jColor <- function(info)
     pos <- dim(apply(info,2,unique))[1] <= 2
   ty <- sort(unlist(apply(info[,!pos, drop = FALSE],2,unique)))
   tyy <- sort(unlist(apply(info[,pos, drop = FALSE],2,unique)))
-  myPalette <- c(brewer.pal(name = "Set1",n = 9)[1:6],"white",brewer.pal(name = "Set1",n = 9)[8:9],"black")
+  myPalette <- c(brewer.pal(name = "Set1",n = 9)[seq_len(6)],"white",brewer.pal(name = "Set1",n = 9)[8:9],"black")
   if(length(ty) > 10)
     myPalette <- colorRampPalette(myPalette)(length(unlist(apply(info,2,unique))))
   if(length(which(pos)) < dim(info)[2])
-    for(z in 1:length(ty))
+    for(z in seq_len(length(ty)))
     {
       info.sample.color[info %in% ty[z]] <-
         as.character(rep(myPalette[z],length(info.sample.color[info == unlist(apply(info,2,unique))[z]])))
@@ -395,9 +395,9 @@ jColor <- function(info)
   rownames(info.sample.color) <- nam
   ty <- c(tyy, ty)
   if(any(pos)){
-    for(j in 1:(length(which(pos))*2))
+    for(j in seq_len((length(which(pos))*2)))
       info.sample.color[info == ty[j]] <- rep(double,10)[j]
-    names(ty)[1:j] <- rep(double,10)[1:j]
+    names(ty)[seq_len(j)] <- rep(double,10)[seq_len(j)]
   }
 
   return(list(orig = info, col = info.sample.color, ty = ty))
@@ -427,7 +427,7 @@ RNAseqFilter <- function(data, q = 0.95, thr = 1)
 calchDi <- function(deco, samplesSubclass)
 {
   n <- table(samplesSubclass[,c("Subclass")])
-  sapply(1:n, function(x) deco@featureTable$Dendrogram.group)
+  sapply(seq_len(n), function(x) deco@featureTable$Dendrogram.group)
 }
 
 ###########################
@@ -456,15 +456,13 @@ bestFeatures <- function(nsca, data, f = 5){
     apply(nsca$NSCA$h[,rownames(samplesSubclass)[samplesSubclass[,c("Subclass")]%in%y]],1,function(x)
       mean(x)))
 
-  for(i in 1:dim(infoSubclass)[1])
+  for(i in seq_len(dim(infoSubclass)[1]))
     r[,i] <- r[,i]/((infoSubclass[i,"Samples"]+1)/3)
 
   res <- h * r
 
-  # l <- perc/100 * dim(res)[1]
-
-  top1 <- apply(res, 2, function(x) names(sort(x, decreasing = TRUE)[c(1:f,(length(x)-f+1):length(x))]))
-  top2 <- apply(res, 2, function(x) sort(x, decreasing = TRUE)[c(1:f,(length(x)-f+1):length(x))])
+  top1 <- apply(res, 2, function(x) names(sort(x, decreasing = TRUE)[c(seq_len(f),(length(x)-f+1):length(x))]))
+  top2 <- apply(res, 2, function(x) sort(x, decreasing = TRUE)[c(seq_len(f),(length(x)-f+1):length(x))])
 
   return(list(topN = top1, topV = top2, h = h, r = r))
 }
@@ -485,7 +483,8 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
   ca_res <- NSCA(as.matrix(mx[apply(mx,1,sum) > 0, apply(mx,2,sum) > 0]), v = v)
   nd <- min(which(ca_res$Inertia[,3] >= v))
   if(nd == 1){nd <- 2; message(paste(format(Sys.time(), "\r %H:%M:%S"),"-- 1D is enough to reach explained variability from input. 2D will be considered"))}
-  ca_ev <- rbind(ca_res$fbip[,1:nd],ca_res$g[,1:nd])
+  ca_ev <- rbind(ca_res$fbip[,seq_len(nd)],ca_res$g[,seq_len(nd)])
+
   # Renaming feature IDs
   if(all(!is.null(id.names)))
     rownames(ca_ev)[rownames(ca_ev) %in% names(id.names)] <- as.character(id.names[
@@ -544,20 +543,21 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
   gg2 <- vector(length=k)
   ss <- vector(length=k)
   message(paste(format(Sys.time(), "\r %H:%M:%S"),"-- Optimized for",k,"subclasses."))
-  info <- sapply(1:k, function(y) apply(cbind(as.matrix(ca_res$inner.prod)[, info.dend.samp$cluster==y]), 1, distf))
+  info <- sapply(seq_len(k), function(y) apply(cbind(as.matrix(ca_res$inner.prod)[, info.dend.samp$cluster==y]), 1, distf))
   info <- cbind(info, ca_res$di[rownames(info)])
+
   if(k > 1)
     info <- as.data.frame(cbind(info,matrix(nrow = dim(info)[1], ncol = 3)))
   else
     info <- as.data.frame(t(rbind(info,matrix(nrow = dim(info)[1], ncol = 3))))
-  colnames(info) <- c(paste("Scl",1:k,sep=""),"Tau.feature","Closer.subclass","h.Best","ID")
+  colnames(info) <- c(paste("Scl", seq_len(k), sep=""),"Tau.feature","Closer.subclass","h.Best","ID")
   info <- info[order(rownames(info),decreasing = TRUE),]
   if(k>1)
-    info[,c("Closer.subclass")] <- apply(info[,1:k],1,function(x) which(abs(x) == max(abs(x))))
+    info[,c("Closer.subclass")] <- apply(info[,seq_len(k)],1,function(x) which(abs(x) == max(abs(x))))
   else
     info[,c("Closer.subclass")] <- rep(1, dim(info)[1])
 
-  for(i in 1:k)
+  for(i in seq_len(k))
   {
     kk[i] <- length(which(colnames(mx) %in% names(info.dend.samp$cluster[which(info.dend.samp$cluster==i)])))
     gg1[i] <- length(which(info[which(sapply(rownames(info), function(x) unlist(
@@ -565,7 +565,7 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
     gg2[i] <- length(which(info[which(sapply(rownames(info), function(x) unlist(
       strsplit(x,split = "deco",fixed = TRUE))[2])=="DOWN"),"Closer.subclass"] == i))
     p <- abs(info[info[,"Closer.subclass"] == i, i])
-    ss[i] <- mean(p[order(p, decreasing = TRUE)][1:(length(p)*0.05)])
+    ss[i] <- mean(p[order(p, decreasing = TRUE)][seq_len((length(p)*0.05))])
   }
   if(all(!is.na(label)))
     infoSubclass <- data.frame(Samples=kk, FeaturesUP=gg1, FeaturesDOWN=gg2, SpeValue = ss,
@@ -574,7 +574,8 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
     infoSubclass <- data.frame(Samples=kk, FeaturesUP=gg1, FeaturesDOWN=gg2, SpeValue = ss,
                                row.names = paste("Subclass",seq(from=1,to=k),sep=" "))
   if(k>1)
-    info[,"h.Best"] <- apply(info[,c(paste("Scl",1:k,sep=""),"Closer.subclass")],1,function(x) x[x[k+1]])
+    info[,"h.Best"] <- apply(info[,c(paste("Scl", seq_len(k), sep=""),"Closer.subclass")],
+                             1,function(x) x[x[k+1]])
   else
     info[,"h.Best"] <- info[,1]
 
@@ -592,26 +593,26 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
         rownames(ca_res$inner.prod)], fromLast = TRUE))]
 
   # Calculating h statistic per feature per subclass of samples.
-  ord <- 1:length(info.dend.feat$cluster)
+  ord <- seq_len(length(info.dend.feat$cluster))
   names(ord) <- rownames(ca_res$inner.prod)[rev(info.dend.feat$dend$order)]
   patt <- info.dend.feat$cluster
-  for(i in 1:max(info.dend.feat$cluster))
-    patt[info.dend.feat$cluster == i] <- which(order(sapply(1:max(info.dend.feat$cluster), function(x)
+  for(i in seq_len(max(info.dend.feat$cluster)))
+    patt[info.dend.feat$cluster == i] <- which(order(sapply(seq_len(max(info.dend.feat$cluster)), function(x)
       mean(which(info.dend.feat$cluster[rev(info.dend.feat$dend$order)] == x)))) == i)
   info.dend.feat$cluster <- patt
-  info <- data.frame(info, h.Range = apply(info[,1:k],1,function(x) diff(range(x))),
+  info <- data.frame(info, h.Range = apply(info[,seq_len(k)],1,function(x) diff(range(x))),
                      Dendrogram.group = info.dend.feat$cluster[rownames(info)], Dendrogram.order = ord[rownames(info)])
   rownames(info) <- as.character(info[,c("ID")])
-  rankingH <- cbind(t(interleave(t(apply(info[,1:k],2,function(x) rank(-abs(x), ties.method = "max"))),
-                                 t(info[,1:k]))),info[,"h.Range"],
+  rankingH <- cbind(t(interleave(t(apply(info[,seq_len(k)],2,function(x) rank(-abs(x), ties.method = "max"))),
+                                 t(info[,seq_len(k)]))),info[,"h.Range"],
                     info[,"Dendrogram.group"], ord[rownames(info)])
-  colnames(rankingH) <- c(paste(rep(c("Ranking","h"),k),rep(paste("Scl",1:k,sep = ""), each = 2),sep = "."),
+  colnames(rankingH) <- c(paste(rep(c("Ranking","h"),k),rep(paste("Scl", seq_len(k), sep = ""), each = 2),sep = "."),
                           "h.Range","Dendrogram.group","Dendrogram.order")
 
   # Find out sample membership to any subclass.
   samplesSubclass <- cbind(info.dend.samp$cluster)
   colnames(samplesSubclass) <- "Subclass"
-  for(i in 1:dim(samplesSubclass)[1])
+  for(i in seq_len(dim(samplesSubclass)[1]))
     samplesSubclass[i,1] <- rownames(infoSubclass)[as.numeric(samplesSubclass[i,1])]
 
   # Returning results.
@@ -657,7 +658,7 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
   cnn <- length(clusteringl)
   if (cn != cnn) {
     warning("clustering renumbered because maximum != number of clusters")
-    for (i in 1:cnn) clustering[clusteringf == clusteringl[i]] <- i
+    for (i in seq_len(cnn)) clustering[clusteringf == clusteringl[i]] <- i
     cn <- cnn
   }
   n <- length(clustering)
@@ -667,8 +668,9 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
     noisen <- sum(clustering == cn)
     cwn <- cn - 1
   }
-  diameter <- average.distance <- median.distance <- separation <- average.toother <- cluster.size <- within.dist <- between.dist <- numeric(0)
-  for (i in 1:cn) cluster.size[i] <- sum(clustering == i)
+  diameter <- average.distance <- median.distance <- separation <- average.toother <- cluster.size <-
+    within.dist <- between.dist <- numeric(0)
+  for (i in seq_len(cn)) cluster.size[i] <- sum(clustering == i)
   pk1 <- cluster.size/n
   pk10 <- pk1[pk1 > 0]
   h1 <- -sum(pk10 * log(pk10))
@@ -676,7 +678,7 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
   if (!is.null(alt.clustering)) {
     choose2 <- function(v) {
       out <- numeric(0)
-      for (i in 1:length(v)) out[i] <- ifelse(v[i] >= 2,
+      for (i in seq_len(length(v))) out[i] <- ifelse(v[i] >= 2,
                                               choose(v[i], 2), 0)
       out
     }
@@ -686,13 +688,13 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
     cnn2 <- length(clusteringl)
     if (cn2 != cnn2) {
       warning("alt.clustering renumbered because maximum != number of clusters")
-      for (i in 1:cnn2) alt.clustering[clusteringf == clusteringl[i]] <- i
+      for (i in seq_len(cnn2)) alt.clustering[clusteringf == clusteringl[i]] <- i
       cn2 <- cnn2
     }
     nij <- table(clustering, alt.clustering)
     dsum <- sum(choose2(nij))
     cs2 <- numeric(0)
-    for (i in 1:cn2) cs2[i] <- sum(alt.clustering == i)
+    for (i in seq_len(cn2)) cs2[i] <- sum(alt.clustering == i)
     sum1 <- sum(choose2(cluster.size))
     sum2 <- sum(choose2(cs2))
     pk2 <- cs2/n
@@ -702,7 +704,7 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
     pk20 <- pk2[pk2 > 0]
     h2 <- -sum(pk20 * log(pk20))
     icc <- 0
-    for (i in 1:cn) for (j in 1:cn2) if (pk12[i, j] > 0)
+    for (i in seq_len(cn)) for (j in seq_len(cn2)) if (pk12[i, j] > 0)
       icc <- icc + pk12[i, j] * log(pk12[i, j]/(pk1[i] *
                                                   pk2[j]))
     vi <- h1 + h2 - 2 * icc
@@ -720,7 +722,7 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
     ave.between.matrix <- separation.matrix <- matrix(0,
                                                       ncol = cn, nrow = cn)
     di <- list()
-    for (i in 1:cn) {
+    for (i in seq_len(cn)) {
       cluster.size[i] <- sum(clustering == i)
       di <- as.dist(dmat[clustering == i, clustering ==
                            i])
@@ -734,7 +736,7 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
       average.distance[i] <- mean(di)
       median.distance[i] <- median(di)
       bv <- numeric(0)
-      for (j in 1:cn) {
+      for (j in seq_len(cn)) {
         if (j != i) {
           sij <- dmat[clustering == i, clustering ==
                         j]
@@ -771,7 +773,7 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
     g2 <- g3 <- cn2 <- cwidegap <- widestgap <- sindex <- NULL
     if (G2) {
       splus <- sminus <- 0
-      for (i in 1:nwithin) {
+      for (i in seq_len(nwithin)) {
         splus <- splus + sum(within.dist[i] < between.dist)
         sminus <- sminus + sum(within.dist[i] > between.dist)
       }
@@ -780,19 +782,19 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
     if (G3) {
       sdist <- sort(c(within.dist, between.dist))
       sr <- nwithin + nbetween
-      dmin <- sum(sdist[1:nwithin])
+      dmin <- sum(sdist[seq_len(nwithin)])
       dmax <- sum(sdist[(sr - nwithin + 1):sr])
       g3 <- (sum(within.dist) - dmin)/(dmax - dmin)
     }
     pearsongamma <- cor(c(within.dist, between.dist), c(rep(0,
                                                             nwithin), rep(1, nbetween)))
-    dunn <- min(separation[1:cwn])/max(diameter[1:cwn], na.rm = TRUE)
-    acwn <- ave.between.matrix[1:cwn, 1:cwn]
-    dunn2 <- min(acwn[upper.tri(acwn)])/max(average.distance[1:cwn],
+    dunn <- min(separation[seq_len(cwn)])/max(diameter[seq_len(cwn)], na.rm = TRUE)
+    acwn <- ave.between.matrix[seq_len(cwn), seq_len(cwn)]
+    dunn2 <- min(acwn[upper.tri(acwn)])/max(average.distance[seq_len(cwn)],
                                             na.rm = TRUE)
     if (wgap) {
       cwidegap <- rep(0, cwn)
-      for (i in 1:cwn) if (sum(clustering == i) > 1)
+      for (i in seq_len(cwn)) if (sum(clustering == i) > 1)
         cwidegap[i] <- max(hclust(as.dist(dmat[clustering ==
                                                  i, clustering == i]), method = "single")$height)
       widestgap <- max(cwidegap)
@@ -800,7 +802,7 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
     if (sepindex) {
       psep <- rep(NA, n)
       if (sepwithnoise | !noisecluster) {
-        for (i in 1:n) psep[i] <- min(dmat[i, clustering !=
+        for (i in seq_len(n)) psep[i] <- min(dmat[i, clustering !=
                                              clustering[i]])
         minsep <- floor(n * sepprob)
       }
@@ -808,34 +810,34 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
         dmatnn <- dmat[clustering <= cwn, clustering <=
                          cwn]
         clusteringnn <- clustering[clustering <= cwn]
-        for (i in 1:(n - noisen)) psep[i] <- min(dmatnn[i,
+        for (i in seq_len((n - noisen))) psep[i] <- min(dmatnn[i,
                                                         clusteringnn != clusteringnn[i]])
         minsep <- floor((n - noisen) * sepprob)
       }
-      sindex <- mean(sort(psep)[1:minsep])
+      sindex <- mean(sort(psep)[seq_len(minsep)])
     }
     if (!aggregateonly)
       out <- list(n = n, cluster.number = cn, cluster.size = cluster.size,
-                  min.cluster.size = min(cluster.size[1:cwn]),
+                  min.cluster.size = min(cluster.size[seq_len(cwn)]),
                   noisen = noisen, diameter = diameter, average.distance = average.distance,
                   median.distance = median.distance, separation = separation,
                   average.toother = average.toother, separation.matrix = separation.matrix,
                   ave.between.matrix = ave.between.matrix, average.between = average.between,
                   average.within = average.within, n.between = nbetween,
-                  n.within = nwithin, max.diameter = max(diameter[1:cwn],
+                  n.within = nwithin, max.diameter = max(diameter[seq_len(cwn)],
                                                          na.rm = TRUE), min.separation = sepwithnoise *
-                    min(separation) + (!sepwithnoise) * min(separation[1:cwn]),
+                    min(separation) + (!sepwithnoise) * min(separation[seq_len(cwn)]),
                   within.cluster.ss = within.cluster.ss, clus.avg.silwidths = clus.avg.widths,
                   avg.silwidth = avg.width, g2 = g2, g3 = g3, pearsongamma = pearsongamma,
                   dunn = dunn, dunn2 = dunn2, entropy = h1, wb.ratio = average.within/average.between,
                   ch = ch, cwidegap = cwidegap, widestgap = widestgap,
                   sindex = sindex, corrected.rand = corrected.rand,
                   vi = vi)
-    else out <- list(n = n, cluster.number = cn, min.cluster.size = min(cluster.size[1:cwn]),
+    else out <- list(n = n, cluster.number = cn, min.cluster.size = min(cluster.size[seq_len(cwn)]),
                      noisen = noisen, average.between = average.between,
-                     average.within = average.within, max.diameter = max(diameter[1:cwn],
+                     average.within = average.within, max.diameter = max(diameter[seq_len(cwn)],
                                                                          na.rm = TRUE), min.separation = sepwithnoise *
-                       min(separation) + (!sepwithnoise) * min(separation[1:cwn]),
+                       min(separation) + (!sepwithnoise) * min(separation[seq_len(cwn)]),
                      ave.within.cluster.ss = within.cluster.ss/(n - noisen),
                      avg.silwidth = avg.width, g2 = g2, g3 = g3, pearsongamma = pearsongamma,
                      dunn = dunn, dunn2 = dunn2, entropy = h1, wb.ratio = average.within/average.between,
@@ -873,16 +875,16 @@ NSCA <- function(N, v = 80){
   dmu <- diag(sva$d)
 
   fbip <- sva$u
-  dimnames(fbip) <- list(paste(Inames[[1]]), paste(1:min(I,J)))
+  dimnames(fbip) <- list(paste(Inames[[1]]), paste(seq_len(min(I,J))))
 
 
   f <- sva$u %*% dmu # Row Principal Coordinates
   g <- dJh %*% sva$v %*% dmu # Column Principal Coordinates
-  dimnames(f) <- list(paste(Inames[[1]]), paste(1:min(I,J)))
-  dimnames(g) <- list(paste(Jnames[[1]]), paste(1:min(I,J)))
+  dimnames(f) <- list(paste(Inames[[1]]), paste(seq_len(min(I,J))))
+  dimnames(g) <- list(paste(Jnames[[1]]), paste(seq_len(min(I,J))))
 
 
-  Principal.Inertia <- diag(t(f[,1:min(I-1,J-1)]) %*% f[,1:min(I-1,J-1)])
+  Principal.Inertia <- diag(t(f[,seq_len(min(I-1,J-1))]) %*% f[,seq_len(min(I-1,J-1))])
   Total.Inertia <- sum(Principal.Inertia)
   tau.num <- Total.Inertia # Numerator of Goodman-Kruskal tau
   tau.denom <- 1 - sum(Imass^2) # Denominator of Goodman-Kruskal tau
@@ -891,9 +893,9 @@ NSCA <- function(N, v = 80){
   Percentage.Inertia <- 100 * (Principal.Inertia/tau.num)
   Cumm.Inertia <- cumsum(Percentage.Inertia)
   Inertia <- cbind(Principal.Inertia, Percentage.Inertia, Cumm.Inertia)
-  dimnames(Inertia)[1] <- list(paste("Axis", 1:min(I - 1, J - 1), sep = " "))
+  dimnames(Inertia)[1] <- list(paste("Axis", seq_len(min(I - 1, J - 1)), sep = " "))
   q.value <- 1 - pchisq(Ctau, df = (I - 1) * (J - 1))
-  inner.prod <- fbip[,1:which(Cumm.Inertia >= v)[1]] %*% t(g[,1:which(Cumm.Inertia >= v)[1]])
+  inner.prod <- fbip[,seq_len(which(Cumm.Inertia >= v)[1])] %*% t(g[,seq_len(which(Cumm.Inertia >= v)[1])])
   rownames(inner.prod) <- rownames(fbip)
   tau.num.j <- apply(apply(g^2,2,function(x) Jmass*(x)/tau.num),1,sum)
   names(tau.num.j) <- rownames(Jmass)

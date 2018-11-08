@@ -121,7 +121,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
       c2 <- apply(combMulti, 1, function(y) names(classes[classes == y[2]]))
       combi <- matrix(data = 0, ncol = 2*r, nrow = 1)
       # Calculating combinations of samples without mixing classes.
-      for(i in 1:multIter){
+      for(i in seq_len(multIter)){
         if(is.list(c1)){
           combi1 <- matrix(unlist(lapply(c1, function(x) which(colnames(data) %in% sample(x, size = r, replace = FALSE)))), ncol = r, byrow = TRUE)
           combi2 <- matrix(unlist(lapply(c2, function(x) which(colnames(data) %in% sample(x, size = r, replace = FALSE)))), ncol = r, byrow = TRUE)
@@ -132,11 +132,11 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
         combi <- rbind(combi, cbind(combi1, combi2))
       }
       results <- cbind(combi[2:dim(combi)[1],], nFeatures=c(rep(0,multIter*dim(combMulti)[1])))
-      colnames(results) <- c(1:(2*r), "nFeatures")
+      colnames(results) <- c(seq_len(2*r), "nFeatures")
       n1 <- dim(data)[2]
       n2 <- dim(data)[2]
-      categories.control <- 1:dim(data)[2]
-      categories.case <- 1:dim(data)[2]
+      categories.control <- seq_len(dim(data)[2])
+      categories.case <- seq_len(dim(data)[2])
       multi <- TRUE
     }
     # Binary contrast. 'Control' label defines '0' class for eBayes algorithm.
@@ -156,15 +156,15 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
       n2 <- length(which(classes == cl2))
       classes <- classes[c(which(classes == cl1),which(classes == cl2))]
       data <- data[,names(classes)]
-      categories.control <- 1:n1
+      categories.control <- seq_len(n1)
       categories.case <- (n1+1):(n1+n2)
       message("\n Classes vector defined as input. SUPERVISED analysis will be carry out.\n")}
   }else
   {
     n1 <- dim(data)[2]
     n2 <- dim(data)[2]
-    categories.control <- 1:dim(data)[2]
-    categories.case <- 1:dim(data)[2]
+    categories.control <- seq_len(dim(data)[2])
+    categories.case <- seq_len(dim(data)[2])
     message("\n Classes vector not defined as input. UNSUPERVISED analysis will be carry out.\n")
   }
   # Setting up subsampling size 'r'.
@@ -206,17 +206,18 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     nSamples <- nrow(allCombControl)+nrow(allCombCase)
     ncomb <- ncol(allCombControl)*ncol(allCombCase)
     results <- matrix(nrow=ncomb,ncol=nSamples)
-    colnames(results) <- c(1:nSamples)
+    colnames(results) <- seq_len(nSamples)
     cont <- 1
     # Building combination matrix.
-    for(iCombCONTROL in 1:ncol(allCombControl))
+    for(iCombCONTROL in seq_len(ncol(allCombControl)))
     {
-      for(iCombCASE in 1:ncol(allCombCase))
+      for(iCombCASE in seq_len(ncol(allCombCase)))
       {
         samples <- c(categories.control[allCombControl[,iCombCONTROL]],categories.case[allCombCase[,iCombCASE]])
-        if(length(which(duplicated(samples))) > 0){samples[duplicated(samples)] <- sample(which(!(1:(n1+n2) %in% samples)),1)}
-        results[cont,1:nSamples] <- samples
-        cont <- cont+1
+        if(length(which(duplicated(samples))) > 0){samples[duplicated(samples)] <-
+          sample(which(!(seq_len(n1+n2) %in% samples)),1)}
+        results[cont,seq_len(nSamples)] <- samples
+        cont <- cont + 1
       }
     }
     results <- cbind(results,nFeatures=c(rep(0,ncomb)))
@@ -226,15 +227,15 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     results <- matrix(nrow = iterations,ncol = 2*r+1)
     colnames(results) <- c(seq(from=1,to=2*r),"nFeatures")
     # Building combination matrix.
-    for(i in 1:iterations)
+    for(i in seq_len(iterations))
     {
       if(all(!(is.na(classes))))
       {
-        results[i,1:r] <- sample(categories.control,r,replace = FALSE)
+        results[i, seq_len(r)] <- sample(categories.control,r,replace = FALSE)
         results[i,(r+1):(2*r)] <- sample(categories.case,r,replace = FALSE)
       }
       else
-        results[i,1:(r*2)] <- sample(categories.control,2*r,replace = FALSE)
+        results[i, seq_len(r*2)] <- sample(categories.control,2*r,replace = FALSE)
     }
     results[,c("nFeatures")] <- 0
     message(paste(format(Sys.time(), "\n %H:%M:%S"),"-- Randomly selected",iterations,"iterations."))
@@ -254,10 +255,10 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
   colnames(top_eje) <- c("logFC","AveExpr","t","P.Value","adj.P.Val","B","ID")
   top_eje[,2:7] <- 0
   UP <- as.data.frame(data)
-  if(all(is.na(classes)) | multi){UP[,1:n1] <- 0}else{UP[,1:(n1+n2)] <- 0}
+  if(all(is.na(classes)) | multi){UP[,seq_len(n1)] <- 0}else{UP[,seq_len(n1+n2)] <- 0}
   DOWN <- UP
   mx <- UP
-  results <- cbind(results,counter=c(seq(1:dim(results)[1])))
+  results <- cbind(results,counter = seq(seq_lendim(results)[1]))
 
   # Subsampling loop with 'sfApply' or 'apply'.
   if(parallel==TRUE & dim(results)[1] > 1)
@@ -271,7 +272,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     {
       CASE = CONTROL = NULL
       # Taking different combinations from previous matrix and running LIMMA.
-      samples <- results[1:(r*2)]
+      samples <- results[seq_len(r*2)]
       counter <- results[(r*2)+2]
       design <- cbind(CONTROL=rep(c(1,0),each=r),CASE=rep(c(0,1),each=r))
       fit <- lmFit(data[,samples], design)
@@ -286,7 +287,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
       {
         top <- data.frame(top, ID = rownames(top))
         # colnames(top) <- c("logFC","AveExpr","t","P.Value","adj.P.Val","B","ID")
-        top <- top[1:pos,]
+        top <- top[seq_len(pos),]
         top_eje <- rbind(top_eje,top[,colnames(top_eje)])
         # Differential features and incidence matrix files are separated.
         resultfile1 <- paste(temp.path,"/temp/diff",counter,".dta",sep="")
@@ -305,7 +306,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     {
       CASE = CONTROL = NULL
       # Taking different combinations from previous matrix and running LIMMA.
-      samples <- results[1:(r*2)]
+      samples <- results[seq_len(r*2)]
       counter <- results[(r*2)+2]
       design <- cbind(CONTROL=rep(c(1,0),each=r),CASE=rep(c(0,1),each=r))
       fit <- lmFit(data[,samples], design)
@@ -320,7 +321,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
         top <- data.frame(top, ID = rownames(top))
         # colnames(top) <- c("logFC","AveExpr","t","P.Value","adj.P.Val","B","ID")
         rownames(top) <- as.character(top[,"ID"])
-        top <- top[1:pos,]
+        top <- top[seq_len(pos),]
         top_eje <- rbind(top_eje,top[,colnames(top_eje)])
         # Differential features and incidence matrix files are separated.
         resultfile1 <- paste(temp.path,"/temp/diff",counter,".dta",sep="")
@@ -353,20 +354,20 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     # Joining all differential event statistics.
     top_eje1 <- read.dta(file = resultfile1)
     colnames(top_eje1) <- colnames(top_eje)
-    rownames(top_eje1) <- make.names(rep(LETTERS,dim(data)[1])[1:dim(top_eje1)[1]],unique=TRUE)
+    rownames(top_eje1) <- make.names(rep(LETTERS,dim(data)[1])[seq_len(dim(top_eje1)[1])],unique=TRUE)
     samples <- as.vector(t(read.dta(file = resultfile2)))
     counter <- as.numeric(unlist(strsplit(unlist(
       strsplit(resultfile1, split = "diff"))[2], split = ".", fixed = TRUE))[1])
     # results[counter,"nFeatures"] <- dim(top_eje1)[1]
     # Generating global incidence matrix with UP and DOWN events.
-    mx[rownames(mx) %in% top_eje1[top_eje1[,c("logFC")]<0,c("ID")],samples[1:r]] <- mx[
-      rownames(mx) %in% top_eje1[top_eje1[,c("logFC")]<0,c("ID")],samples[1:r]]+1
+    mx[rownames(mx) %in% top_eje1[top_eje1[,c("logFC")]<0,c("ID")],samples[seq_len(r)]] <- mx[
+      rownames(mx) %in% top_eje1[top_eje1[,c("logFC")]<0,c("ID")],samples[seq_len(r)]]+1
     mx[rownames(mx) %in% top_eje1[top_eje1[,c("logFC")]>0,c("ID")],samples[(r+1):(r*2)]] <- mx[
       rownames(mx) %in% top_eje1[top_eje1[,c("logFC")]>0,c("ID")],samples[(r+1):(r*2)]]+1
     mx2[rownames(mx2) %in% top_eje1[top_eje1[,c("logFC")]<0,c("ID")],samples[(r+1):(r*2)]] <- mx2[
       rownames(mx2) %in% top_eje1[top_eje1[,c("logFC")]<0,c("ID")],samples[(r+1):(r*2)]]+1
-    mx2[rownames(mx2) %in% top_eje1[top_eje1[,c("logFC")]>0,c("ID")],samples[1:r]] <- mx2[
-      rownames(mx2) %in% top_eje1[top_eje1[,c("logFC")]>0,c("ID")],samples[1:r]]+1
+    mx2[rownames(mx2) %in% top_eje1[top_eje1[,c("logFC")]>0,c("ID")],samples[seq_len(r)]] <- mx2[
+      rownames(mx2) %in% top_eje1[top_eje1[,c("logFC")]>0,c("ID")],samples[seq_len(r)]]+1
 
     UP <- UP + mx
     DOWN <- DOWN + mx2
@@ -382,7 +383,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
   res$results <- results[ord,-(r*2+2)]
   res$pos.iter <- length(limma1)/2
   # Making up incidence matrix with separated UP, DOWN and MIXED events.
-  both.gene <- names(which(apply(UP,1,function(x) sum(x[1:n1]) > 0 &&
+  both.gene <- names(which(apply(UP,1,function(x) sum(x[seq_len(n1)]) > 0 &&
                                    sum(x[(n1+1):(n1+n2)]) > 0) == TRUE))
   UP <- UP[apply(UP,1,sum) > 0,]
   DOWN <- DOWN[apply(DOWN,1,sum) > 0,]
@@ -395,11 +396,11 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     DOWN <- DOWN[!(rownames(DOWN)%in%both.gene),]
   }
   # Vector containing direction of differential event if 'binary'
-  UpDw <- c(rep("UP",length(rownames(UP)[apply(UP[,1:n1],1,sum) == 0])),
-            rep("DOWN",length(rownames(UP)[apply(UP[,1:n1],1,sum) > 0])),
+  UpDw <- c(rep("UP",length(rownames(UP)[apply(UP[,seq_len(n1)],1,sum) == 0])),
+            rep("DOWN",length(rownames(UP)[apply(UP[,seq_lenn1)],1,sum) > 0])),
             rep("MIXED",length(both.gene)))
-  names(UpDw) <- c(rownames(UP)[apply(UP[,1:n1],1,sum) == 0],
-                   rownames(UP)[apply(UP[,1:n1],1,sum) > 0],both.gene)
+  names(UpDw) <- c(rownames(UP)[apply(UP[,seq_len(n1)],1,sum) == 0],
+                   rownames(UP)[apply(UP[,seq_len(n1)],1,sum) > 0],both.gene)
   rownames(UP) <- paste(rownames(UP),sep = "deco","UP")
   rownames(MULTI) <- paste(rownames(MULTI),sep = "deco","UP")
   rownames(DOWN) <- paste(rownames(DOWN),sep = "deco","DOWN")
@@ -456,7 +457,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     res$subStatFeature[,3:11] <- apply(res$subStatFeature[,3:11],2,as.numeric)
   }else
   {
-    for(i in 1:length(unique(top_eje[,c("ID")])))
+    for(i in seq_len(length(unique(top_eje[,c("ID")]))))
     {
       lines <- top_eje[top_eje[,c("ID")] %in% as.character(res$subStatFeature[i,c("ID")]),]
       # Statistics from this RDA step.
@@ -587,11 +588,11 @@ decoNSCA <- function(sub, rm.complete = FALSE, v = 80, k.control = NULL,
     # Calculating raw 'delta.signal' differences between classes for all differential features.
     delta.signal <- round(apply(
       sub$data[rownames(sub$data)%in%as.character(sub$subStatFeature[,c("ID")]),],1, function(x)
-        mean(x[(n1+1):(n1+n2)])-mean(x[1:n1])),3)
+        mean(x[(n1+1):(n1+n2)])-mean(x[seq_len(n1)])),3)
     sub$subStatFeature <- data.frame(sub$subStatFeature[order(sub$subStatFeature[,c("ID")]),],
                                      delta.signal = delta.signal[order(names(delta.signal))])
     # Standard deviation per class
-    sd.Ctrl <- apply(sub$data[rownames(sub$subStatFeature),1:n1],1,sd)
+    sd.Ctrl <- apply(sub$data[rownames(sub$subStatFeature),seq_len(n1)],1,sd)
     sd.Case <- apply(sub$data[rownames(sub$subStatFeature),(n1+1):(n1+n2)],1,sd)
     # Classification of feature profiles: 'ideal', 'generic', 'specific, and 'both'.
     if(overlap){
@@ -643,7 +644,7 @@ decoNSCA <- function(sub, rm.complete = FALSE, v = 80, k.control = NULL,
   }
   # Applying NSCA to all samples or both classes.
   z <- 1
-  while(z %in% 1:2)
+  while(z %in% seq_len(2))
   {
     # NSCA for 'unsupervised' and 'multiclass' design.
     if(all(is.na(sub$classes)) || length(levels(sub$classes)) > 2)
@@ -669,8 +670,8 @@ decoNSCA <- function(sub, rm.complete = FALSE, v = 80, k.control = NULL,
     if(z==1)
     {
       # Removing features or samples with any differential event.
-      mx <- sub$incidenceMatrix[which(apply(sub$incidenceMatrix[,1:n1],1,sum)>0),1:n1]
-      mx <- mx[,which(apply(sub$incidenceMatrix[,1:n1],2,sum)>0)]
+      mx <- sub$incidenceMatrix[which(apply(sub$incidenceMatrix[,seq_len(n1)],1,sum)>0), seq_len(n1)]
+      mx <- mx[,which(apply(sub$incidenceMatrix[, seq_len(n1)],2,sum)>0)]
       message(paste(format(Sys.time(), "\r %H:%M:%S"),"-- Calculating control group..."))
       # NSCA
       nsc.res1 <- NSCAcluster(mx = mx, data = sub$data, k = k.control, method.dend = method, UpDw = UpDw, dir = "UP",
@@ -690,8 +691,8 @@ decoNSCA <- function(sub, rm.complete = FALSE, v = 80, k.control = NULL,
       # NSCA
       nsc.res2 <- NSCAcluster(mx = mx, data = sub$data, k = k.case, method.dend = method, UpDw = UpDw, dir = "DOWN",
                               id.names = g.names, v = v, label = cl2, raw = apply(sub$data[,colnames(mx)], 1, mean))
-      colnames(nsc.res2$infoFeature)[1:(length(colnames(nsc.res2$infoFeature))-1)] <-
-        paste(colnames(nsc.res2$infoFeature)[1:(length(colnames(nsc.res2$infoFeature))-1)],"Case",sep=".")
+      colnames(nsc.res2$infoFeature)[seq_len(length(colnames(nsc.res2$infoFeature))-1)] <-
+        paste(colnames(nsc.res2$infoFeature)[seq_len(length(colnames(nsc.res2$infoFeature))-1)],"Case",sep=".")
       diffMX <- cbind(diffMX, sd.Case = sd.Case[rownames(sub$subStatFeature)], overlap.Ctrl.Case = overlap[rownames(sub$subStatFeature)],
                       nsc.res2$infoFeature[rownames(sub$subStatFeature),c("Tau.feature.Case","Dendrogram.group.Case",
                                                                           "h.Best.Case","h.Range.Case")])

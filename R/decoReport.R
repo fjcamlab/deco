@@ -36,7 +36,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   if(length(id) >= 50)
   {
     message(paste("NOTE: ID's input restringed to 50 first IDs."))
-    id <- id[1:50]
+    id <- id[seq_len(50)]
   }
   if(dim(deco@featureTable)[1] >= 50)
     info.size <- 50
@@ -72,7 +72,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     samplesSubclass <- rbind(cbind(deco@NSCAcluster$Control$samplesSubclass[order(deco@NSCAcluster$Control$samplesSubclass[,1]),]),
                              cbind(deco@NSCAcluster$Case$samplesSubclass[order(deco@NSCAcluster$Case$samplesSubclass[,1]),]))
     samplesSubclass <- cbind(Samples = rownames(samplesSubclass), Subclass = samplesSubclass[,1])
-    rownames(samplesSubclass) <- 1:length(rownames(samplesSubclass))
+    rownames(samplesSubclass) <- seq_len(length(rownames(samplesSubclass)))
     # NSCA and hierarchical clustering information.
     nsc <- matrix(round(c(deco@NSCAcluster$Control$var,deco@NSCAcluster$Case$var,p.val,deco@NSCAcluster$Control$hclustSamp$huber,
                         deco@NSCAcluster$Case$hclustSamp$huber),digits = 3),
@@ -120,7 +120,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     samplesSubclass <- cbind(deco@NSCAcluster$All$samplesSubclass[order(
       deco@NSCAcluster$All$samplesSubclass[,1]),])
     samplesSubclass <- cbind(Samples = rownames(samplesSubclass), Subclass = samplesSubclass[,1])
-    rownames(samplesSubclass) <- 1:length(rownames(samplesSubclass))
+    rownames(samplesSubclass) <- seq_len(length(rownames(samplesSubclass)))
     # NSCA and hierarchical clustering information.
     nsc <- rbind(round(deco@NSCAcluster$All$var, 3), round(p.val, 3), round(deco@NSCAcluster$All$hclustSamp$huber, 3))
     colnames(nsc) <- c("All samples")
@@ -140,7 +140,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     # No sense to make two different ranking for "Unsupervised" analysis.
     deco@featureTable <- deco@featureTable[ord,]
     textF0 <- textF
-    textF <- textF[ord,][1:info.size,]
+    textF <- textF[ord,][seq_len(info.size),]
     classes <- sub$classes
 
   }
@@ -175,7 +175,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   textplot(nsc, col.rownames = "darkblue", cex = 1.7, valign = "top", col.data = color.table)
   mtext(text = "NSCA information", cex = 1.4, font = 2, line = 2)
   # Top 10 feature ranking.
-  y <- na.omit(cbind(Ranking = 1:10, textF[1:10,colnames(textF)%in%c("ID","UpDw","Profile","SYMBOL"),drop=FALSE]))
+  y <- na.omit(cbind(Ranking = seq_len(10), textF[seq_len(10),colnames(textF)%in%c("ID","UpDw","Profile","SYMBOL"),drop=FALSE]))
   textplot(object = y, show.rownames = FALSE, col.colnames = "darkblue", valign = "top", cex = 1.5)
   mtext(text = "Feature ranking information", cex = 1.4, line = 1, font = 2)
   # Subclasses found information.
@@ -240,7 +240,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   i <- 1
   par(mfrow = c(1,2), mar = c(10,6,10,6))
 
-  while(i %in% 1:2)
+  while(i %in% seq_len(2))
   {
     if(analysis != "Binary"){par(mfrow = c(1,1),mar = c(12,8,12,8));v <- deco@NSCAcluster$All$NSCA$Inertia[,3];
     i <- 3; main = "All dataset"
@@ -271,15 +271,16 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
                           ncol = dim(textF)[2]+1, byrow = FALSE)
     colnames(color.table) <- c("Ranking",colnames(textF))
     if(all(is.na(id)))
-      id <- as.character(textF$ID[1:15])
-    color.table[as.character(textF[1:info.size,"ID"]) == id,"ID"] <- "darkred"
+      id <- as.character(textF$ID[seq_len(15)])
+    color.table[as.character(textF[seq_len(info.size),"ID"]) == id,"ID"] <- "darkred"
     textF <- textF[textF$ID != "",]
-    textF[1:info.size,!colnames(textF)%in%c("SYMBOL","ID","Tau.feature")] <-
-      round(textF[1:info.size, !colnames(textF)%in%c("SYMBOL","ID","Tau.feature")],4)
-    textplot(cbind(Ranking = 1:info.size, textF[1:info.size,na.omit(match(names.col,colnames(textF)))]),
+    textF[seq_len(info.size),!colnames(textF)%in%c("SYMBOL","ID","Tau.feature")] <-
+      round(textF[seq_len(info.size), !colnames(textF)%in%c("SYMBOL","ID","Tau.feature")],4)
+    textplot(cbind(Ranking = seq_len(info.size), textF[seq_len(info.size), na.omit(match(names.col,colnames(textF)))]),
              valign = "top", cmar = 2, cex = 0.95,
-             mar = c(1,1,2,1), show.rownames = FALSE, col.colnames = c(rep("deepskyblue4",dim(textF)[2]-2),rep("darkred",3)),
-             col.data = color.table[1:info.size,])
+             mar = c(1,1,2,1), show.rownames = FALSE,
+             col.colnames = c(rep("deepskyblue4",dim(textF)[2]-2),rep("darkred",3)),
+             col.data = color.table[seq_len(info.size),])
     title(list(paste("RDA: Top 50 feature signature."),
                cex = 1.5), outer = TRUE, line = -2.5)
     legend("bottomright",legend = c("RDA info","NSCA info"), title = "Colnames color",
@@ -289,7 +290,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   }else
   {
     IDS <- list()
-    for(i in 1:2)
+    for(i in seq_len(2))
     {
       if(i == 1){
         rank <- c("Majority","Complete")
@@ -298,33 +299,34 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
         rank <- "Minority"
         ord <- ordS}
       textF <- textF0[ord,]
-      textF <- textF[which(textF$Profile %in% rank)[1:info.size],]
+      textF <- textF[which(textF$Profile %in% rank)[seq_len(info.size)],]
       n <- c("sd.Ctrl","Dendrogram.group.Ctrl","h.Range.Ctrl",
              "sd.Case","Dendrogram.group.Case","h.Range.Case")
       textF[,c("overlap.Ctrl.Case","Standard.Chi.Square","Repeats.index",n)] <- round(
         textF[,c("overlap.Ctrl.Case","Standard.Chi.Square","Repeats.index",n)],3)
-      textF[1:info.size,colnames(textF)%in%names.col][is.na(textF[1:info.size,colnames(textF)%in%names.col])] <- "NotAssigned"
+      textF[seq_len(info.size), colnames(textF)%in%names.col][
+        is.na(textF[seq_len(info.size), colnames(textF)%in%names.col])] <- "NotAssigned"
       textF <- na.omit(textF[as.character(textF$ID) != "",])
       if(dim(textF)[1] == 0){
         message("NOTE: Top50 of ",c("Complete-Majority","Minority-Mixed")[i]," was no printed, there are no feature showing this profile.")
         next
       }
-      tex <- cbind(Ranking = 1:dim(textF)[1],textF[,na.omit(match(names.col,colnames(textF)))])
+      tex <- cbind(Ranking = seq_len(dim(textF)[1]), textF[,na.omit(match(names.col,colnames(textF)))])
       # Saving both top-50 features.
-      IDS[[i]] <- na.omit(as.character(textF[which(textF$Profile %in% rank)[1:dim(tex)[1]],c("ID")]))
+      IDS[[i]] <- na.omit(as.character(textF[which(textF$Profile %in% rank)[seq_len(dim(tex)[1])],c("ID")]))
       color.table <- matrix(data = c(rep("black",length(which(colnames(deco@featureTable)%in%names.col)))),
                             nrow = dim(tex)[1], ncol = length(which(colnames(deco@featureTable)%in%names.col)), byrow = FALSE)
       colnames(color.table) <- colnames(textF)
       if(all(is.na(id)))
-        id <- na.omit(IDS[[i]][1:15])
+        id <- na.omit(IDS[[i]][seq_len(15)])
       # Color of table.
-      color.table[as.character(textF[1:dim(tex)[1],c("ID")]) %in% id,1] <- "red"
-      color.table[textF[1:dim(tex)[1],colnames(textF)%in%names.col] == "MIXED"] <- "gray20"
-      color.table[textF[1:dim(tex)[1],colnames(textF)%in%names.col] == "UP"] <- "darkred"
-      color.table[textF[1:dim(tex)[1],colnames(textF)%in%names.col] == "DOWN"] <- "darkolivegreen"
-      color.table[textF[1:dim(tex)[1],colnames(textF)%in%names.col] == "Minority"] <- "goldenrod1"
-      color.table[textF[1:dim(tex)[1],colnames(textF)%in%names.col] == "Majority"] <- "chocolate2"
-      color.table[textF[1:dim(tex)[1],colnames(textF)%in%names.col] == "Complete"] <- "brown4"
+      color.table[as.character(textF[seq_len(dim(tex)[1]),c("ID")]) %in% id,1] <- "red"
+      color.table[textF[seq_len(dim(tex)[1]), colnames(textF)%in%names.col] == "MIXED"] <- "gray20"
+      color.table[textF[seq_len(dim(tex)[1]), colnames(textF)%in%names.col] == "UP"] <- "darkred"
+      color.table[textF[seq_len(dim(tex)[1]), colnames(textF)%in%names.col] == "DOWN"] <- "darkolivegreen"
+      color.table[textF[seq_len(dim(tex)[1]), colnames(textF)%in%names.col] == "Minority"] <- "goldenrod1"
+      color.table[textF[seq_len(dim(tex)[1]), colnames(textF)%in%names.col] == "Majority"] <- "chocolate2"
+      color.table[textF[seq_len(dim(tex)[1]), colnames(textF)%in%names.col] == "Complete"] <- "brown4"
       color.table[,c("delta.signal")] <- color.table[,c("UpDw")]
       textplot(tex, valign = "top", cex = 0.95,
                cmar = 1.1, mar = c(7,0,4,0), show.rownames = FALSE,
@@ -380,18 +382,6 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
 
   ### FOURTENTH SECTION: Feature gaining
 
-  # if(analysis == "Binary"){
-  #   par(mfrow = c(1,2), mar = c(11,6,9,6))
-  #   for(i in 1:2)
-  #     .plotFeatureGaining(deco@featureTable[,paste("h.Range",c("Ctrl","Case")[i],sep=".")],
-  #                         deco@featureTable[,paste("sd",c("Ctrl","Case")[i],sep=".")],
-  #                         deco, print.annot, main = c("CONTROL SAMPLES","CASE SAMPLES")[i], id)
-  # }else{
-  #   par(mfrow = c(1,1), mar = c(11,10,9,10))
-  #   .plotFeatureGaining(deco@featureTable[,"h.Range"], deco@featureTable[,"sd"],
-  #                       deco, print.annot, main = "ALL SAMPLES", id)
-  # }
-
   ### Generating .txt tables
   if(analysis == "Binary")
     rankingH <- cbind(deco@NSCAcluster[[1]]$rankingFeature.h,
@@ -434,7 +424,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   else if(length(p.val) == 2 & any(p.val > 0.05))
     message(paste("\nWARNING: Heatmap from 'h' statistic corresponding to",c("CASES","CONTROL")[p.val > 0.05],"samples
                   shows NSCA p-value > 0.05."))
-  while(i %in% 1:2)
+  while(i %in% seq_len(2))
   {
     # Taking main data depending on RDA design.
     if(analysis != "Binary"){
@@ -498,18 +488,18 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     {
       info.sample.color <- infoS$col[colnames(MX),]
       cc <- c(rep("white",dim(MX)[2]))
-      for(j in 1:max(info.dend$cluster))
+      for(j in seq_len(max(info.dend$cluster)))
         cc[info.dend$cluster == j] <- color.cluster[j+y]
       # Final label matrix to place under samples dendrogram.
       info.sample.color <- cbind(info.sample.color, c(rep(NA,dim(MX)[2])), DECO.Subclass = cc)
-      colnames(info.sample.color)[1:dim(info.sample)[2]] <- colnames(infoS$col)
+      colnames(info.sample.color)[seq_len(dim(info.sample)[2])] <- colnames(infoS$col)
       m <- 0.15
       n <- -0.05
     }
     else
     {
       info.sample.color <- c(rep(NA,dim(MX)[2]))
-      for(j in 1:max(info.dend$cluster))
+      for(j in seq_len(max(info.dend$cluster)))
         info.sample.color[info.dend$cluster == j] <- color.cluster[j+y]
       info.sample.color <- cbind(DECO.Subclass = info.sample.color, rep(NA, dim(MX)[2]))
     }
@@ -528,7 +518,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
       info.feature.color <- info.feature
       infoFpat <- colorRampPalette(c("grey","black"))(max(info.dendF$cluster))[info.dendF$cluster]
       names(infoFpat) <- rownames(MX)
-      for(z in 1:length(unlist(apply(info.feature,2,unique)))){info.feature.color[
+      for(z in seq_len(length(unlist(apply(info.feature,2,unique))))){info.feature.color[
         info.feature == unlist(apply(info.feature,2,unique))[z]] <- as.character(
           rep(colorRampPalette(RColorBrewer::brewer.pal(name = "Paired",n = 10))(length(unlist(apply(info.feature,2,unique))))[z],
               length(info.feature.color[info.feature == unlist(apply(info.feature,2,unique))[z]])))}
@@ -561,7 +551,8 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
              title = "Sample info provided by user", bty = 'n', xpd = TRUE, inset = c(0,0.1))
     }
     legend(title = "DECO feature-sample subclasses", "topright",
-           legend = paste("Subclass",1:max(info.dend$cluster)),col = color.cluster[(y+1):(j+y)], pch = 15,
+           legend = paste("Subclass",seq_len(max(info.dend$cluster))),
+           col = color.cluster[(y+1):(j+y)], pch = 15,
            cex = cex.legend-0.1, bty = 'n', xpd = TRUE, inset = c(0,0))
     if(i == 3)
       legend("bottomleft",legend = c("DE features","ID provided features"), title = "Features",
@@ -611,10 +602,10 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     if(analysis == "Multiclass"){
       cols <- col
       col <- c(paste("Contrast design:",names(cols)),infoS$ty)
-      names(col)[1:length(levels(deco@classes))] <- cols
+      names(col)[seq_len(length(levels(deco@classes)))] <- cols
     }else
       col <- infoS$ty
-    colnames(info.sample.color)[1:dim(info.sample)[2]] <- colnames(infoS$col)
+    colnames(info.sample.color)[seq_len(dim(info.sample)[2])] <- colnames(infoS$col)
     n <- 0.1
   }
   else{
@@ -681,9 +672,9 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
                           ncol = 5, byrow = TRUE), heights = c(1.5,1))
     }else{
       if(all(!is.na(info.sample)))
-        layout(mat = matrix(c(1:8), ncol = 4, byrow = TRUE), widths = c(5,3,1.5,1.5))
+        layout(mat = matrix(seq_len(8), ncol = 4, byrow = TRUE), widths = c(5,3,1.5,1.5))
       else{
-        layout(mat = matrix(c(1:6), ncol = 3, byrow = TRUE), widths = c(3,2,1))
+        layout(mat = matrix(seq_len(6), ncol = 3, byrow = TRUE), widths = c(3,2,1))
         flag = FALSE
       }
     }
@@ -698,7 +689,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     data0 <- data
 
     # This plot will be repeated along all IDs input.
-    for(a in 1:length(id0))
+    for(a in seq_len(length(id0)))
     {
       par(mar=c(10, 6, 10, 6))
       data <- data0
@@ -713,8 +704,8 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
         count <- table(patt)
         thr <- which(cumsum(count) >= table(deco@classes)[names(table(deco@classes))==deco@control])[1]
         colors <- c(colorRampPalette(c("blue","lightblue"))(thr),colorRampPalette(c("red","darkorange"))(length(count)-thr))
-        names(count) <- c(paste("Pattern",1:thr,names(table(deco@classes))[1]),
-                          paste("Pattern",1:(length(count)-thr),names(table(deco@classes))[2]))
+        names(count) <- c(paste("Pattern",seq_len(thr), names(table(deco@classes))[1]),
+                          paste("Pattern",seq_len(length(count)-thr), names(table(deco@classes))[2]))
         ord <- names(patt)
         bg.col <- adjustcolor(c(rep("navyblue",table(deco@classes)[names(table(deco@classes)) == deco@control]),
                                 rep("darkred",table(deco@classes)[names(table(deco@classes)) != deco@control])), 0.6)
@@ -728,7 +719,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
         # Clustering NSCA inner product for one feature.
         patt <- innerProductAssign(inner = tab.info, samples = deco@classes, analysis = analysis)$cl
         count <- table(patt)
-        names(count) <- paste("Pattern",1:length(count))
+        names(count) <- paste("Pattern", seq_len(length(count)))
         colors <- colorRampPalette(c("black","grey"))(length(count))
         ord <- names(patt)
         bg.col <- adjustcolor(rep("darkred",length(names(patt))),0.6)
@@ -740,11 +731,11 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
       count.col <- unlist(sapply(colors,function(x) rep(x,count[which(colors == x)])))
 
       # Plot feature profile.
-      plot(x = 1:dim(data)[2], y = data[as.character(id0[a]),], ylim = limy, pch=21, xaxt="n",
+      plot(x = seq_len(dim(data)[2]), y = data[as.character(id0[a]),], ylim = limy, pch=21, xaxt="n",
            xlim=c(1,ncol(data)), main= paste(main[a],"\nsorted by h-statistic ranking"),
            type = "p", ylab = "Raw Data Signal", col="white",
            bg = bg.col, xlab="", cex = cex.samples+0.5)
-      axis(side = 1,at = 1:dim(data)[2], labels = rownames(samplesSubclass[match(ord,samplesSubclass[,c("Samples")]),]),
+      axis(side = 1,at = seq_len(dim(data)[2]), labels = rownames(samplesSubclass[match(ord,samplesSubclass[,c("Samples")]),]),
            las=2, cex.axis = cex.names)
       m <- sum(abs(limy))
       if(print.annot){
@@ -755,11 +746,11 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
       # Including sample information under the expression plot.
       if(all(!is.na(info.sample))){
         cc <- rep("white",dim(samplesSubclass)[1])
-        for(j in 1:length(color.cluster))
+        for(j in seq_len(length(color.cluster)))
           cc[samplesSubclass[,"Subclass"] == names(color.cluster)[j]] <- color.cluster[j]
         names(cc) <- as.character(samplesSubclass[,"Samples"])
         cc <- cbind(infoS$col, DECO.Subclasses = cc[rownames(infoS$col)])
-        for(i in 1:dim(cc)[2]){
+        for(i in seq_len(dim(cc)[2])){
           rect(0.5:(length(data[as.character(id0[a]),])-0.5),xright = 1.5:(length(data[as.character(id0[a]),])+0.5), border = NA,
                limy[1]-(m*0.05*i+0.1*m), ytop = limy[1]-(m*0.05*(i+1)+0.1*m), col = cc[colnames(data), i])
           text(x = length(data[as.character(id0[a]),])+1, labels = colnames(cc)[i],
@@ -768,14 +759,14 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
       }
       par(xpd=FALSE)
       # Adding dashed lines of mean values for each feature pattern found.
-      for(i in 1:(length(count)))
+      for(i in seq_len(length(count)))
       {
         if((max(which(patt == names(count)[i]))+0.5) < length(count.col) & analysis == "Binary"){
           thr <- dim(deco@NSCAcluster$Control$samplesSubclass)[1]+0.5
           abline(v = thr, col = "grey", lwd = 2, lty = 2)
           }
-        if(i == 1){x0=0.75;x1=count[i]+0.25;y0 <- mean(data[id0[a],1:cumsum(count)[i]])}
-        else{x0 = sum(count[1:(i-1)])+0.75; x1 = cumsum(count)[i]+0.25;y0 <- mean(data[id0[a],(cumsum(count)[(i-1)]+1):cumsum(count)[i]])}
+        if(i == 1){x0=0.75;x1=count[i]+0.25;y0 <- mean(data[id0[a], seq_len(cumsum(count)[i])])}
+        else{x0 = sum(count[seq_len(i-1)])+0.75; x1 = cumsum(count)[i]+0.25;y0 <- mean(data[id0[a],(cumsum(count)[(i-1)]+1):cumsum(count)[i]])}
         if((x1 - x0) > 1) segments(x0 = x0,x1 = x1,y0 = y0,y1 = y0,col = "black",lty = 1, lwd = 3)
       }
       # Sample information and feature statistics will be plotted on the right side.
@@ -791,7 +782,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
       plot(0,xlim = c(0,length(m)), ylim = limb, type = "n", axes = FALSE,
            xlab = "", ylab = "h mean per DECO subclass")
       h <- sapply(rownames(infoSubclass), function(x) d[d[,"Subclass"] == x,"h"])
-      rect(xleft = 0:(length(m)-1), xright = 1:length(m)-0.1, ybottom = 0, ytop = m,
+      rect(xleft = 0:(length(m)-1), xright = seq_len(length(m))-0.1, ybottom = 0, ytop = m,
            col = adjustcolor(color.cluster, 0.6), border = NA)
       segments(x0 = seq(0.45,length(m),1), x1 = seq(0.45,length(m),1), y0 = m-s, y1 = m+s)
       segments(x0 = seq(0.45,length(m),1)-0.1, x1 = seq(0.45,length(m),1)+0.1, y0 = m-s, y1 = m-s)
@@ -855,18 +846,18 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   color.cluster0 <- color.cluster
   par(mar = c(9,10,9,9))
   layout(matrix(c(1,3,2,2),nrow = 2, byrow = TRUE), heights = c(2,0.8))
-  for(i in 1:length(deco@NSCAcluster)){
+  for(i in seq_len(length(deco@NSCAcluster))){
     color.cluster <- color.cluster0
     color.cluster <- color.cluster[names(color.cluster)%in%rownames(deco@NSCAcluster[[i]]$infoSubclass)]
     mx <- deco@NSCAcluster[[i]]$Biplot.coordinates[rownames(deco@NSCAcluster[[i]]$Biplot.coordinates)%in%colnames(deco@incidenceMatrix),]
     mxg <- deco@NSCAcluster[[i]]$Biplot.coordinates[!rownames(deco@NSCAcluster[[i]]$Biplot.coordinates)%in%colnames(deco@incidenceMatrix),]
 
     samp <- cbind(deco@NSCAcluster[[i]]$samplesSubclass, col = color.cluster[deco@NSCAcluster[[i]]$samplesSubclass])
-    centroid <- matrix(0, nrow = length(color.cluster), ncol = 2, dimnames = list(names(color.cluster), 1:2))
+    centroid <- matrix(0, nrow = length(color.cluster), ncol = 2, dimnames = list(names(color.cluster), seq_len(2)))
     s <- c()
-    for(j in 1:length(color.cluster)){
-      centroid[j,] <- apply(mx[rownames(samp[samp[,1] %in% names(color.cluster)[j],]),1:2],2,mean)
-      s[j] <- mean(apply(mx[rownames(samp[samp[,1] %in% names(color.cluster)[j],]),1:2],2,sd))
+    for(j in seq_len(length(color.cluster))){
+      centroid[j,] <- apply(mx[rownames(samp[samp[,1] %in% names(color.cluster)[j],]), seq_len(2)],2,mean)
+      s[j] <- mean(apply(mx[rownames(samp[samp[,1] %in% names(color.cluster)[j],]), seq_len(2)],2,sd))
     }
     ###
     plot(mx, xlab = paste("Dim 1 NSCA, ",round(deco@NSCAcluster[[i]]$NSCA$Inertia[1,2],2),"% of total variability"),
@@ -876,7 +867,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     abline(h = 0, v = 0, col = adjustcolor("black",0.3))
     points(centroid, cex = 0.7, pch = 21, lwd = 3)
     points(centroid, cex = s/max(s) * 16, pch = 21, col = adjustcolor(color.cluster,0.6), lwd = 4)
-    text(centroid-sum(abs(range(mx[,1:2])))*0.01, labels = rownames(centroid), cex = 1.2, xpd = NA, font = 2)
+    text(centroid-sum(abs(range(mx[, seq_len(2)])))*0.01, labels = rownames(centroid), cex = 1.2, xpd = NA, font = 2)
     ###
     plot(0, type = "n", axes = FALSE, xlab = "", ylab = "")
     legend("center", legend = c(paste(rownames(centroid), ", n =",deco@NSCAcluster[[i]]$infoSubclass[,"Samples"],"samples"),
@@ -884,7 +875,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
            pt.bg = c(color.cluster[rownames(centroid)],"white"), pch = c(rep(22,length(color.cluster)),21),
            xpd = NA, inset = c(-0.25,0), bty = "n", cex = 1.5, col = c(rep("grey",length(color.cluster)),"black"))
     if(dim(mx)[2] >= 3)
-      scatterplot3d(mx[,1:3], bg = adjustcolor(samp[,"col"],0.6), color = adjustcolor("grey",0.3), mar = c(8,8,8,8),
+      scatterplot3d(mx[, seq_len(3)], bg = adjustcolor(samp[,"col"],0.6), color = adjustcolor("grey",0.3), mar = c(8,8,8,8),
                     pch = 22, cex.symbols = 2,
                     xlab = paste("Dim 1 NSCA, ",round(deco@NSCAcluster[[i]]$NSCA$Inertia[1,2],2),"% of total variability"),
                     ylab = paste("Dim 2 NSCA, ",round(deco@NSCAcluster[[i]]$NSCA$Inertia[2,2],2),"% of total variability"),
@@ -904,8 +895,8 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
 .plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
 {
   if(all(is.na(id)))
-    id <- unique(c(as.character(deco@featureTable[1:5, "ID"]),as.character(deco@featureTable[order(
-      deco@featureTable$Repeats.index, decreasing = TRUE), "ID"][1:5])))
+    id <- unique(c(as.character(deco@featureTable[seq_len(5), "ID"]),as.character(deco@featureTable[order(
+      deco@featureTable$Repeats.index, decreasing = TRUE), "ID"][seq_len(5)])))
   if(print.annot & "SYMBOL" %in% colnames(sub$subStatFeature))
     names <- as.character(deco@featureTable[id, "SYMBOL"])
   else
@@ -944,7 +935,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   n <- length(which(col == "red"))
   col <- adjustcolor(col, 0.3)
 
-  z1=matrix(1:16,nrow=1)
+  z1=matrix(seq_len(16),nrow=1)
   x1=1
   y1=seq(1,max(y),length.out = 16)
 
@@ -958,7 +949,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
        ylab = paste("% samples amounting threshold:",deco@rep.thr,"repeats"))
   axis(1, at = seq(0,1,0.1), font = 2)
   axis(2, font = 2, las = 2)
-  for(a in 1:length(id))
+  for(a in seq_len(length(id)))
     text(data[id[a],]-0.01, labels = names[a], font = 2, col = adjustcolor("black",0.8))
   legend("topleft", legend = paste(n,"features within <= ",round(deco@samp.perc,3)*100,"% samples with at least",
                                    deco@rep.thr,"repeats."),
@@ -1002,11 +993,11 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     par(mar = c(7,7,7,7), xpd = NA)
   plot(NA, ylim = limy, xlim = c(1,length(s)), xlab = "Reference number from samples",
        ylab = "Repeats per sample", axes = FALSE, type = "n")
-  axis(1, at = 1:length(s), labels = rownames(samplesSubclass)[match(samplesSubclass[,1],names(s))],
+  axis(1, at = seq_len(length(s)), labels = rownames(samplesSubclass)[match(samplesSubclass[,1],names(s))],
        tick = FALSE, las = 2)
   axis(2, at = seq(0, limy[2], signif(m*0.1,0)), las = 2)
   abline(h = seq(0, limy[2], signif(m*0.1,0)), lty = 2, xpd = FALSE, col = "grey")
-  rect(1:length(s)-0.35,xright = 1:length(s)+0.35, ybottom = 0, ytop = s,
+  rect(seq_len(length(s))-0.35,xright = seq_len(length(s))+0.35, ybottom = 0, ytop = s,
        xlab = "", ylab = "",
        col = adjustcolor(col.design, alpha.f = 0.7), border = "grey")
   par(mar = c(5,5,5,5))
@@ -1019,7 +1010,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     infoS$orig <- as.matrix(infoS$orig[names(s),])
     infoS$col <- as.matrix(infoS$col[names(s),])
     plot(0, ylim = c(0,dim(infoS$orig)[2]), xlim = c(1,dim(infoS$orig)[1]), xlab = "", ylab = "", axes = FALSE, type = "n")
-    for(i in 1:dim(infoS$col)[2]){
+    for(i in seq_len(dim(infoS$col)[2])){
       rect(0.5:(length(s)-0.5),xright = 1.5:(length(s)+0.5), border = NA,
            ybottom = i-1, ytop = i, col = infoS$col[names(s), i])
       text(x = length(s) + 2, labels = colnames(infoS$col)[i],
@@ -1049,14 +1040,14 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   co <- rep("darkgoldenrod",length(v))
   co[thr] <- "red"
 
-  x <- 1:length(v)
+  x <- seq_len(length(v))
   lo1 <- loess(v~x)
   xl <- seq(min(x),max(x), (max(x) - min(x))/1000)
 
   plot(xl, predict(lo1,xl),type = "l", ylim = c(0,100), xlab = "Number of NSCA dimensions",
        ylab = "Variability explained", lwd = 5, col = "darkgoldenrod",
        axes = FALSE)
-  axis(side = 1, at = 1:length(v), labels = 1:length(v))
+  axis(side = 1, at = seq_len(length(v)), labels = seq_len(length(v)))
   axis(side = 2, at = seq(from = 0, to = 100, by = 10))
   points(v, x = x, lwd = 5, col = co)
   abline(h = var, lty = 2, lwd = 2, col = "red")
@@ -1078,7 +1069,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     labels <- sapply(names(sort(x[[1]]$NSCA$di, decreasing = TRUE)),function(y) unlist(strsplit(y,"deco"))[1])
     names(labels) <- labels
   }
-  for(j in 1:2)
+  for(j in seq_len(2))
   {
     if(length(x)==2){
       if(is.na(main.classes))
@@ -1089,9 +1080,9 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
       if(n > dim(gene)[1])
         n <- dim(gene)[1]
       if(j == 1)
-        gene <- gene[names(sort(apply(apply(gene,2,rank),1,mean),decreasing = TRUE)[1:n]),]
+        gene <- gene[names(sort(apply(apply(gene,2,rank),1,mean),decreasing = TRUE)[seq_len(n)]),]
       else
-        gene <- gene[names(sort(apply(apply(gene,2,rank),1,mean),decreasing = FALSE)[1:n]),]
+        gene <- gene[names(sort(apply(apply(gene,2,rank),1,mean),decreasing = FALSE)[seq_len(n)]),]
       rownames(gene) <- sapply(rownames(gene),function(x)unlist(strsplit(x,split="deco"))[1])
       layout(mat = rbind(c(1,2),c(3,4)), widths = c(2,1), heights = c(1,1))
     }
@@ -1101,19 +1092,19 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
       if(n > dim(gene)[1])
         n <- dim(gene)[1]
       if(j == 1)
-        gene <- cbind(gene[names(sort(apply(apply(gene,2,rank),1,mean),decreasing = TRUE)[1:n]),])
+        gene <- cbind(gene[names(sort(apply(apply(gene,2,rank),1,mean),decreasing = TRUE)[seq_len(n)]),])
       else
-        gene <- cbind(gene[names(sort(apply(apply(gene,2,rank),1,mean))[1:n]),])
+        gene <- cbind(gene[names(sort(apply(apply(gene,2,rank),1,mean))[seq_len(n)]),])
       layout(mat = cbind(1,2), widths = c(2,1.2))
     }
   }
   par(mar = c(6,8,10,6))
-  for(i in 1:length(x))
+  for(i in seq_len(length(x)))
   {
     d <- data.frame(x[[i]]$samplesSubclass, tau = sort(x[[i]]$NSCA$tau.num.j))
-    names(x[[i]]$NSCA$tau.num.j) <- as.character(1:length(x[[i]]$NSCA$tau.num.j))
+    names(x[[i]]$NSCA$tau.num.j) <- as.character(seq_len(length(x[[i]]$NSCA$tau.num.j)))
     if(i == 1)
-      names(x[[i]]$NSCA$tau.num.j) <- as.character(1:length(x[[i]]$NSCA$tau.num.j))
+      names(x[[i]]$NSCA$tau.num.j) <- as.character(seq_len(length(x[[i]]$NSCA$tau.num.j)))
     else
       names(x[[i]]$NSCA$tau.num.j) <- as.character((length(x[[i-1]]$NSCA$tau.num.j)+1):
                                                      (length(x[[i]]$NSCA$tau.num.j)+length(x[[i-1]]$NSCA$tau.num.j)))
@@ -1153,17 +1144,17 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     j <- 2
   else
     j <- 0
-  for(i in 1:length(deco@NSCAcluster)){
+  for(i in seq_len(length(deco@NSCAcluster))){
 
     d <- deco@NSCAcluster[[i]]$rankingFeature.h[order(deco@NSCAcluster[[i]]$rankingFeature.h[,"h.Range"],decreasing = TRUE),]
-    d <- d[1:min(c(50,dim(d)[1])),]
+    d <- d[seq_len(min(c(50,dim(d)[1]))),]
     colnames(d) <- paste(colnames(d),c("Ctrl","Case","All")[i+j])
     col <- c(rep("black",dim(deco@featureTable[rownames(d),colnames(deco@featureTable)%in%c("ID","SYMBOL","Standard.Chi.Square")])[2]),
              rep("deepskyblue4",length(which(grepl(colnames(d), pattern = "Scl", fixed = TRUE)))),rep("darkred",3))
     d <- data.frame(deco@featureTable[rownames(d),colnames(deco@featureTable)%in%c("ID","SYMBOL","Standard.Chi.Square")], d)
     color.table <- matrix("black", nrow = min(c(50,dim(d)[1])), ncol = dim(d)[2])
     color.table[,which(grepl(colnames(d), pattern = "Ranking", fixed = TRUE))][
-      apply(d[, which(grepl(colnames(d), pattern = "Ranking", fixed = TRUE))], 2, function(x) x %in% 1:10)] <- "red"
+      apply(d[, which(grepl(colnames(d), pattern = "Ranking", fixed = TRUE))], 2, function(x) x %in% seq_len(10))] <- "red"
     color.table[as.character(d[,1]) %in% id,1] <- "darkred"
     textplot(d, show.rownames = FALSE, col.colnames = col, mar = c(2,2,5,2), col.data = color.table)
     title(list(paste("Mean 'h' statistic per subclass within",c("CONTROL","CASE","ALL")[i+j],"samples"), cex = 1.4, font = 2),
@@ -1188,8 +1179,8 @@ stackpoly.2 <- function (x, y = NULL, main = "", xlab = "", ylab = "", xat = NA,
     y <- x
     ydim <- dim(y)
     if (is.null(ydim))
-      x <- 1:length(y)
-    else x <- matrix(rep(1:ydim[1], ydim[2]), ncol = ydim[2])
+      x <- seq_len(length(y))
+    else x <- matrix(rep(seq_len(ydim[1]), ydim[2]), ncol = ydim[2])
   }
   if (stack)
     y <- t(unlist(apply(as.matrix(y), 1, cumsum)))
@@ -1268,7 +1259,7 @@ stackpoly.2 <- function (x, y = NULL, main = "", xlab = "", ylab = "", xat = NA,
   abline(v = 0, h = c(0.2,0.4,0.75),
          lty = 2, xpd = FALSE, lwd = 1)
   title(main = list("RDA: overlap Signal VS delta Signal plot", cex = 1.5), outer = TRUE, line = -4)
-  high <- as.character(deco@featureTable[order(deco@featureTable$Standard.Chi.Square, decreasing = TRUE),]$ID)[1:10]
+  high <- as.character(deco@featureTable[order(deco@featureTable$Standard.Chi.Square, decreasing = TRUE),]$ID)[seq_len(10)]
   text(s[high, ], labels = symbol[high], cex = 0.9, col = "darkred", font = 2)
   if(any(!id %in% high))
   {if(print.annot)
@@ -1320,8 +1311,8 @@ stackpoly.2 <- function (x, y = NULL, main = "", xlab = "", ylab = "", xat = NA,
 plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
 {
   if(all(is.na(id)))
-    id <- unique(c(as.character(deco@featureTable[1:5, "ID"]),as.character(
-      deco@featureTable[order(deco@featureTable$Repeats.index, decreasing = TRUE), "ID"][1:5])))
+    id <- unique(c(as.character(deco@featureTable[seq_len(5), "ID"]),as.character(
+      deco@featureTable[order(deco@featureTable$Repeats.index, decreasing = TRUE), "ID"][seq_len(5)])))
   if(print.annot & "SYMBOL" %in% colnames(sub$subStatFeature))
     names <- as.character(deco@featureTable[id, "SYMBOL"])
   else
@@ -1355,7 +1346,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   col <- color[col]
   n <- length(which(col == "red"))
 
-  z1=matrix(1:length(seq(0,1,deco@samp.perc)),nrow=1)
+  z1=matrix(seq_len(length(seq(0,1,deco@samp.perc))), nrow=1)
   x1=1
   y1=seq(0,1,deco@samp.perc)
 
@@ -1370,7 +1361,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   axis(1, at = seq(0,1,0.1), font = 2)
   axis(2, font = 2)
   lines(smooth.spline(x,predict(m)), lwd = 3, lty = 5)
-  for(a in 1:length(id))
+  for(a in seq_len(length(id)))
     text(data[grep(x = rownames(data), pattern = id[a], fixed = TRUE),]-0.01, labels = names[a], font = 2)
   legend("topleft", legend = c("Non-linear model describing correlation",
                                paste(n,"features <= ",round(deco@samp.perc,2)*100,"% samples")),
@@ -1404,7 +1395,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
     main <- c("CONTROL samples", "CASE samples")
     col <- color.cluster[samplesSubclass[,2]]
     names(col) <- rownames(samplesSubclass)
-    for(i in 1:2){
+    for(i in seq_len(2)){
       dend[[i]]$labels <- rownames(samplesSubclass)[match(dend[[i]]$labels,samplesSubclass[,1])]
       plot(dend[[i]], axes = FALSE, cex = cex.names, lwd = 2, hang = -1, main = "",
            xlab = "", ylab = "", sub = "")
@@ -1460,14 +1451,14 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   }
   cols <- function() {
     if(lowcol == "green" & highcol == "red")
-      hmcol <- colorRampPalette(c(rev(RColorBrewer::brewer.pal(10, "Reds"))[1:6],"white",
+      hmcol <- colorRampPalette(c(rev(RColorBrewer::brewer.pal(10, "Reds"))[seq_len(6)],"white",
                                   RColorBrewer::brewer.pal(10, "Greens")[4:9]))(col.breaks)
     else
       hmcol <- colorRampPalette(c(highcol,lowcol))(col.breaks)
     return(rev(hmcol))
   }
   cols.gentleman <- function() {
-    hmcol <- colorRampPalette(c(rev(RColorBrewer::brewer.pal(10, "Reds"))[1:6],"white",
+    hmcol <- colorRampPalette(c(rev(RColorBrewer::brewer.pal(10, "Reds"))[seq_len(6)],"white",
                                 RColorBrewer::brewer.pal(10, "Blues")[4:9]))(col.breaks)
     return(rev(hmcol))
   }
@@ -1725,7 +1716,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
       stop("column dendrogram ordering gave index of wrong length")
   }
   else {
-    colInd <- 1:nc
+    colInd <- seq_len(nc)
   }
   retval$rowInd <- rowInd
   retval$colInd <- colInd
@@ -1735,14 +1726,14 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   cellnote <- cellnote[rowInd, colInd]
   if (is.null(labRow))
     labRow <- if (is.null(rownames(x)))
-      (1:nr)[rowInd]
+      (seq_len(nr))[rowInd]
   else rownames(x)
   else
     labRow <- labRow[rowInd]
   labRowCol <- labRowCol[rowInd]
   if (is.null(labCol))
     labCol <- if (is.null(colnames(x)))
-      (1:nc)[colInd]
+      (seq_len(nc))[colInd]
   else colnames(x)
   else labCol <- labCol[colInd]
   if (scale == "row") {
@@ -1814,8 +1805,8 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   if (!missing(RowSideColors)) {
     if (!is.matrix(RowSideColors)){
       par(mar = c(margins[1], 0, 0, 0.5))
-      image(rbind(1:nr), col = RowSideColors[rowInd], axes = FALSE)
-      text(x = 0.5, y = seq(1,nr,nr/6), labels = 1:6)
+      image(rbind(seq_len(nr)), col = RowSideColors[rowInd], axes = FALSE)
+      text(x = 0.5, y = seq(1,nr,nr/6), labels = seq_len(6))
     } else {
       par(mar = c(margins[1], 0, 0, 0.5))
       rsc = t(RowSideColors[,rowInd, drop=FALSE])
@@ -1841,7 +1832,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
 
     if (!is.matrix(ColSideColors)){
       par(mar = c(0.5, 0, 0, margins[2]))
-      image(cbind(1:nc), col = ColSideColors[colInd], axes = FALSE)
+      image(cbind(seq_len(nc)), col = ColSideColors[colInd], axes = FALSE)
     } else {
       par(mar = c(0.5, 0, 0, margins[2]))
       csc = ColSideColors[colInd, , drop=FALSE]
@@ -1871,8 +1862,8 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
     x <- x[, iy]
     cellnote <- cellnote[, iy]
   }
-  else iy <- 1:nr
-  image(1:nc, 1:nr, x, xlim = 0.5 + c(0, nc), ylim = 0.5 + c(0, nr), axes = FALSE, xlab = "", ylab = "", col = col, breaks = breaks, ...)
+  else iy <- seq_len(nr)
+  image(seq_len(nc), seq_len(nr), x, xlim = 0.5 + c(0, nc), ylim = 0.5 + c(0, nr), axes = FALSE, xlab = "", ylab = "", col = col, breaks = breaks, ...)
   retval$carpet <- x
   if (exists("ddr"))
     retval$rowDendrogram <- ddr
@@ -1882,17 +1873,18 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   retval$col <- col
   if (!invalid(na.color) & any(is.na(x))) {
     mmat <- ifelse(is.na(x), 1, NA)
-    image(1:nc, 1:nr, mmat, axes = FALSE, xlab = "", ylab = "",
+    image(seq_len(nc), seq_len(nr), mmat, axes = FALSE, xlab = "", ylab = "",
           col = na.color, add = TRUE)
   }
-  axis(1, 1:nc, labels = labCol, las = 2, line = -0.5, tick = 0,
+  axis(1, seq_len(nc), labels = labCol, las = 2, line = -0.5, tick = 0,
        cex.axis = cexCol)
   if (!is.null(xlab))
     mtext(xlab, side = 1, line = margins[1] - 1.25)
   if(is.null(labRowCol))
     labRowCol <- rep("black",length(labRow))
   Map(function(x,y,z)
-    axis(4, at=x, col.axis=y, labels=z, lwd=0, las=1, cex.axis = cexRow), 1:length(labRow), labRowCol, labRow)
+    axis(4, at=x, col.axis=y, labels=z, lwd=0, las=1, cex.axis = cexRow),
+    seq_len(length(labRow)), labRowCol, labRow)
   if (!is.null(ylab))
     mtext(ylab, side = 4, line = margins[2] - 1.25)
   if (!missing(add.expr))
@@ -1918,7 +1910,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
       }
       xv <- rep(i, nrow(x.scaled)) + x.scaled[, i] - 0.5
       xv <- c(xv[1], xv)
-      yv <- 1:length(xv) - 0.5
+      yv <- seq_len(length(xv)) - 0.5
       lines(x = xv, y = yv, lwd = 1, col = tracecol, type = "s")
     }
   }
@@ -2033,7 +2025,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   plot(0, type = "n", xlab = xlab, ylab = ylab, axes = FALSE,
        xlim = c(0.5,length(data)+0.5), ylim = ylim, ...)
 
-  for(i in 1:length(bdata))
+  for(i in seq_len(length(bdata)))
   {
     rect(ybottom = bdata[[i]]$stats[2,], ytop = bdata[[i]]$stats[4,], xleft = i-0.25, xright = i+0.25,
          col = adjustcolor(col[i],alpha.f = 0.4), border = "black")
@@ -2047,13 +2039,13 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
       text(data[[i]][names(bdata[[i]]$out)], x = i+0.15, col = "red",
            labels = names(bdata[[i]]$out), font = 2)
   }
-  axis(1, at = 1:length(data), labels = names(data), font = 2, lwd = 0, ...)
+  axis(1, at = seq_len(length(data)), labels = names(data), font = 2, lwd = 0, ...)
   axis(2, ...)
 
   if(paired.test){
     resp <- unlist(data)
     cl <- c()
-    for(j in 1:length(data))
+    for(j in seq_len(length(data)))
       cl <- c(cl, rep(names(data)[j],lapply(data, length)[[j]]))
     test <- pairwise.wilcox.test(resp, cl, p.adjust.method = "fdr")
     print(test)
@@ -2062,7 +2054,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
     print(pos)
     interval <- seq(diff(range(data))*0.05,diff(range(data))*0.2,length.out = length(pos))
     par(xpd = TRUE)
-    for(i in 1:length(pos)){
+    for(i in seq_len(length(pos))){
       x1 <- which(names(data) == colnames(test$p.value)[arrayInd(pos[i], dim(test$p.value))[,2]])
       x0 <- which(names(data) == rownames(test$p.value)[arrayInd(pos[i], dim(test$p.value))[,1]])
       x <- sort(c(x1,x0))
@@ -2105,8 +2097,8 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
        pch = 21, xlim = c(0,max(sd)), ylim = c(0,max(h)), cex = 1.2)
   abline(h = 0, col = adjustcolor("grey",0.6))
   lines(smooth.spline(sd, predict(m)), lwd = 3, lty = 5, col = adjustcolor("darkblue",0.7))
-  text(sd[names(sort(abs(m$residuals), decreasing = TRUE))[1:10]], h[names(sort(abs(m$residuals), decreasing = TRUE))[1:10]],
-       labels = names[names(sort(abs(m$residuals), decreasing = TRUE))[1:10]], font = 2, col = "black", cex = 0.9)
+  text(sd[names(sort(abs(m$residuals), decreasing = TRUE))[seq_len(10)]], h[names(sort(abs(m$residuals), decreasing = TRUE))[seq_len(10)]],
+       labels = names[names(sort(abs(m$residuals), decreasing = TRUE))[seq_len(10)]], font = 2, col = "black", cex = 0.9)
   text(sd[id], h[id], labels = names[id], font = 2, col = "red", cex = 0.9)
   mtext(side = 3, text = main, font = 2, col = "deepskyblue4")
   mtext(side = 1, text = paste("Adjusted R-squared =",round(summary(m)$adj.r.squared, 3),"\n h =",
@@ -2186,7 +2178,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     message(paste(id[!(id %in% id_sus)], "\n"))}
   data0 <- data
   # This plot will be repeated along all IDs input.
-  for(a in 1:length(id0))
+  for(a in seq_len(length(id0)))
   {
     par(mar=c(10, 6, 10, 6))
     data <- data0
@@ -2197,7 +2189,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
       samplesSubclass <- rbind(cbind(deco@NSCAcluster$Control$samplesSubclass[order(deco@NSCAcluster$Control$samplesSubclass[,1]),]),
                                cbind(deco@NSCAcluster$Case$samplesSubclass[order(deco@NSCAcluster$Case$samplesSubclass[,1]),]))
       samplesSubclass <- cbind(Samples = rownames(samplesSubclass), Subclass = samplesSubclass[,1])
-      rownames(samplesSubclass) <- 1:length(rownames(samplesSubclass))
+      rownames(samplesSubclass) <- seq_len(length(rownames(samplesSubclass)))
       # Subclasses
       infoSubclass <- rbind(deco@NSCAcluster$Control$infoSubclass,deco@NSCAcluster$Case$infoSubclass)
       # Assignment of colors to all subclasses. It will be conserved along all the report.
@@ -2215,8 +2207,8 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
       count <- table(patt)
       thr <- which(cumsum(count) >= table(deco@classes)[names(table(deco@classes))==deco@control])[1]
       colors <- c(colorRampPalette(c("blue","lightblue"))(thr),colorRampPalette(c("red","darkorange"))(length(count)-thr))
-      names(count) <- c(paste("Pattern",1:thr,names(table(deco@classes))[1]),
-                        paste("Pattern",1:(length(count)-thr),names(table(deco@classes))[2]))
+      names(count) <- c(paste("Pattern",seq_len(thr),names(table(deco@classes))[1]),
+                        paste("Pattern",seq_len(length(count)-thr),names(table(deco@classes))[2]))
       ord <- names(patt)
       bg.col <- adjustcolor(c(rep("navyblue",table(deco@classes)[names(table(deco@classes)) == deco@control]),
                               rep("darkred",table(deco@classes)[names(table(deco@classes)) != deco@control])), 0.6)
@@ -2229,7 +2221,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
       # Sample membership to subclasses.
       samplesSubclass <- as.matrix(deco@NSCAcluster$All$samplesSubclass[order(deco@NSCAcluster$All$samplesSubclass[,1]),])
       samplesSubclass <- cbind(Samples = rownames(samplesSubclass), Subclass = samplesSubclass[,1])
-      rownames(samplesSubclass) <- 1:length(rownames(samplesSubclass))
+      rownames(samplesSubclass) <- seq_len(length(rownames(samplesSubclass)))
       # Subclasses
       infoSubclass <- deco@NSCAcluster$All$infoSubclass
       # Assignment of colors to all subclasses. It will be conserved along all the report.
@@ -2242,7 +2234,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
       # Clustering NSCA inner product for one feature.
       patt <- innerProductAssign(inner = tab.info, samples = deco@classes, analysis = analysis)$cl
       count <- table(patt)
-      names(count) <- paste("Pattern",1:length(count))
+      names(count) <- paste("Pattern", seq_len(length(count)))
       colors <- colorRampPalette(c("black","grey"))(length(count))
       ord <- names(patt)
       bg.col <- adjustcolor(rep("darkred",length(names(patt))),0.6)
@@ -2271,14 +2263,14 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     }
 
     axis(2, las = 2, cex.axis = 1.5)
-    axis(side = 1,at = 1:dim(data)[2], labels = rownames(samplesSubclass[match(ord,samplesSubclass[,c("Samples")]),]),
+    axis(side = 1,at = seq_len(dim(data)[2]), labels = rownames(samplesSubclass[match(ord,samplesSubclass[,c("Samples")]),]),
          las=2, cex.axis = cex.names+0.5)
     m <- sum(abs(limy))
     if(analysis == "Binary"){
       thr <- dim(deco@NSCAcluster$Control$samplesSubclass)[1]+0.5
       abline(v = thr, col = "grey", lwd = 2, lty = 2)
       segments(x0 = c(1,thr+0.5), x1 = c(thr-0.5, dim(data)[2]),
-               y0 = c(mean(data[as.character(id0[a]),1:thr]), mean(data[as.character(id0[a]),(thr+1):dim(data)[2]])),
+               y0 = c(mean(data[as.character(id0[a]), seq_len(thr)]), mean(data[as.character(id0[a]),(thr+1):dim(data)[2]])),
                col = adjustcolor("black", 0.4), lwd = 2)
     }else
       segments(x0 = 1, x1 = dim(data)[2], y0 = mean(data[as.character(id0[a]),]),
@@ -2292,7 +2284,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     if(all(!is.na(info.sample))){
       infoS <- jColor(info.sample)
       cc <- infoS$col[,sort(colnames(infoS$col))]
-      for(i in 1:dim(cc)[2]){
+      for(i in seq_len(dim(cc)[2])){
         rect(0.5:(length(data[as.character(id0[a]),])-0.5),xright = 1.5:(length(data[as.character(id0[a]),])+0.5), border = NA,
              limy[1]-(m*0.05*i+0.1*m), ytop = limy[1]-(m*0.05*(i+1)+0.1*m), col = cc[colnames(data), i])
         text(x = length(data[as.character(id0[a]),])+1, labels = colnames(cc)[i],
@@ -2313,7 +2305,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     plot(0,xlim = c(0,length(m)), ylim = limb, type = "n", axes = FALSE,
          xlab = "", ylab = "h mean per DECO subclass")
     h <- sapply(rownames(infoSubclass), function(x) d[d[,"Subclass"] == x,"h"])
-    rect(xleft = 0:(length(m)-1), xright = 1:length(m)-0.1, ybottom = 0, ytop = m,
+    rect(xleft = 0:(length(m)-1), xright = seq_len(length(m))-0.1, ybottom = 0, ytop = m,
          col = adjustcolor(color.cluster, 0.6), border = NA)
     segments(x0 = seq(0.45,length(m),1), x1 = seq(0.45,length(m),1), y0 = m-s, y1 = m+s)
     segments(x0 = seq(0.45,length(m),1)-0.1, x1 = seq(0.45,length(m),1)+0.1, y0 = m-s, y1 = m-s)
@@ -2328,7 +2320,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     # Color code of 'h' statistic per sample.
     if(plot.h){
       par(mar = c(7,10,6,10))
-      z1=matrix(1:20,nrow=1)
+      z1=matrix(seq_len(20),nrow=1)
       y1=interval
       image(x = 0:1,y1,z1,col=adjustcolor(colorH,0.7), cex = 1.2,
             axes=FALSE,xlab="Feature's density",ylab="",main="'h' statistic\npoint's color code")
