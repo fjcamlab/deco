@@ -1,7 +1,7 @@
 Package: deco
 Type: Package
 Title: Decomposing Heterogeneous Cohorts using Omic Data Profiling
-Version: 0.99.18
+Version: 0.99.19
 Date: 2018-09-26
 Author: Francisco Jose Campos-Laborie, Jose Manuel Sanchez-Santos and Javier De
     Las Rivas. Bioinformatics and Functional Genomics Group. Cancer Research Center
@@ -21,7 +21,7 @@ Depends: R (>= 3.5.0), stats, methods, limma, snowfall,
         sfsmisc, scatterplot3d, gdata, grDevices, 
         graphics, utils
 Suggests: knitr
-License: GPL (>=3)
+License: GPL (>=3) + file LICENSE
 URL: http://bioinfow.dep.usal.es/deco/
 ZipData: true
 LazyLoad: true
