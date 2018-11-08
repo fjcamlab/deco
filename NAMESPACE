@@ -1,7 +1,6 @@
 export(decoRDA)
 export(decoNSCA)
 export(decoReport)
-export(NSCAcluster)
 export(AnnotateDECO)
 export(plotDECOProfile)
 S3method(summary,deco)
