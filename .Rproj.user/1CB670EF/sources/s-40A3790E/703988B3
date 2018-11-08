@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1541600740155.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "703988B3",
+    "lastKnownWriteTime" : 1541601030,
+    "last_content_update" : 1541601030334,
+    "path" : "~/Documentos local/deco_github_2018/deco/R/additionalFunctions.R",
+    "project_path" : "R/additionalFunctions.R",
+    "properties" : {
+        "cursorPosition" : "911,34",
+        "scrollLine" : "895"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

@@ -1,0 +1,37 @@
+export(decoRDA)
+export(decoNSCA)
+export(decoReport)
+export(NSCAcluster)
+export(AnnotateDECO)
+export(plotDECOProfile)
+S3method(summary,deco)
+S3method(print,deco)
+
+exportClasses(deco)
+
+import(grDevices)
+import(graphics)
+import(utils)
+import(stats)
+import(methods)
+import(Biobase)
+import(AnnotationDbi)
+import(limma)
+import(locfit)
+import(snowfall)
+importFrom(foreign, write.dta, read.dta)
+import(RColorBrewer)
+importFrom(gdata, interleave)
+importFrom(gplots, textplot)
+import(cluster)
+import(made4)
+import(ade4)
+
+importFrom("scatterplot3d","scatterplot3d")
+importFrom("sfsmisc", "integrate.xy")
+importFrom("grDevices", "adjustcolor", "colorRampPalette", "dev.off", "pdf", "rainbow")
+importFrom("graphics", "abline", "axis", "boxplot", "hist", "image",
+           "layout", "legend", "lines", "mtext", "par", "pie", "plot",
+           "plot.new", "points", "polygon", "rect", "segments",
+           "stripchart", "text", "title")
+importFrom("utils", "combn", "write.table")

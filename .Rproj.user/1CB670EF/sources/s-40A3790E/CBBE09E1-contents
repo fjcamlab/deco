@@ -1,0 +1,16 @@
+
+
+m1 <- matrix(rnorm(1000, 0, 2), nrow = 100, ncol = 10)
+m2 <- matrix(rnorm(1000, 0, 2), nrow = 100, ncol = 10)
+
+m1 <- m1 + abs(min(m1))
+m2 <- m2 + abs(min(m2))
+
+
+cor.test(x = c(m1), y = c(m2), method = "spearman")
+
+
+plot(rank(c(m1)), rank(c(m2)))
+
+
+cor(t(m1))
