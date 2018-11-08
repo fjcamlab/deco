@@ -47,11 +47,12 @@ Francisco Jose Campos Laborie <fjcamlab@usal.es>
 # columns(x = org.Hs.eg.db)
 
 # Selecting first 10 original IDs from ALCLdata
-ids <- rownames(exprs(ALCLdata))[1:10]
+# data(ALCLdata)
+# ids <- rownames(exprs(ALCLdata))[1:10]
 
-annot <- AnnotateDECO(ids, id.type = "ENSEMBL",
-                           attributes = c("SYMBOL","CHR","GENENAME"),
-                           pack.db = "org.Hs.eg.db", rm.redundant = TRUE)
+# annot <- AnnotateDECO(ids, id.type = "ENSEMBL",
+#                            attributes = c("SYMBOL","CHR","GENENAME"),
+#                            pack.db = "org.Hs.eg.db", rm.redundant = TRUE)
 
 # head(annot)
 
