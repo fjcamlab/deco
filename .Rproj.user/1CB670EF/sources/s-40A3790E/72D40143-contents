@@ -121,7 +121,7 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 
 ## Top-10 features from DECO analysis based on "Standard.Chi.Square"
 # head(deco.results.ma@featureTable[order(deco.results.ma@featureTable$Standard.Chi.Square,
-     decreasing = TRUE),], 10)
+#      decreasing = TRUE),], 10)
 
 
 #### Matrix of 'h statistic' calculated by DECO per category of samples
