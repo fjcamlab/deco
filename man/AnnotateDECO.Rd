@@ -39,17 +39,17 @@ This function returns a \code{data.frame} containing original IDs and correspond
 Francisco Jose Campos Laborie <fjcamlab@usal.es>
 }
 \examples{
-## Annotation example
-
+##### Annotation example
 # Select an appropiate 'id.type' depending on which annotation
 # package will be used.
 
 # columns(x = org.Hs.eg.db)
 
 # Selecting first 10 original IDs from ALCLdata
-# data(ALCLdata)
-# ids <- rownames(exprs(ALCLdata))[1:10]
+data(ALCLdata)
+ids <- rownames(exprs(ALCLdata))[1:10]
 
+## Not run as example
 # annot <- AnnotateDECO(ids, id.type = "ENSEMBL",
 #                            attributes = c("SYMBOL","CHR","GENENAME"),
 #                            pack.db = "org.Hs.eg.db", rm.redundant = TRUE)

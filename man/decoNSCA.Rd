@@ -98,17 +98,14 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 # RUNNING NSCA STEP: Looking for subclasses within a category/class of samples compared #
 #########################################################################################
 
-## Not run as example
-# deco.results.ma <- decoNSCA(sub = sub.ma.3r.10K, v = 80, method = "ward.D",
-#                         k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 10,
-#                         parallel = FALSE, cpus = 2, rm.complete = FALSE, overlap = TRUE)
+deco.results.ma <- decoNSCA(sub = sub.ma.3r.10K, v = 80, method = "ward.D",
+                          k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 10,
+                          parallel = FALSE, cpus = 2, rm.complete = FALSE, overlap = TRUE)
 
 
 ## Class 'deco'
-# class(deco.results.ma)
+class(deco.results.ma)
 # [1] "deco"
-# attr(,"package")
-# [1] ".deco"
 
 
 ## Slots included within 'deco' R object
@@ -131,7 +128,7 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 
 
 ## Top-10 discriminant features for CASE samples (ALK-) based on 'h statistic per subclass found.
-# head(deco.results.ma@NSCAcluster$Case$rankingFeature.h, 10)
+head(deco.results.ma@NSCAcluster$Case$rankingFeature.h, 10)
 
 
 ### Sample and subclass information could be found in two slots within 'NSCAcluster':
@@ -155,7 +152,7 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 
 ###### Get summary info about "DECO" analysis:
 ###
-# summary(deco.results.ma)
+summary(deco.results.ma)
 # Decomposing Heterogeneous Cohorts from Omic profiling: DECO
 # Summary:
 
@@ -176,7 +173,7 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 # Number of total RDA comparisons: 10000
 
 ###### Get info about "DECO" analysis
-# print(deco.results.ma)
+print(deco.results.ma)
 
 #########################################################################
 # RUNNING NSCA STEP: Looking for subclasses within all samples compared #

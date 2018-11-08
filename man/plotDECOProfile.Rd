@@ -53,3 +53,14 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 \seealso{
 \code{\link[deco]{decoNSCA}}, \code{\link[limma]{voom}}
 }
+\examples{
+#### Further information in DECO vignette(s).
+## Run after decoRDA and decoNSCA steps on 'ALCLdata'
+ALCLdata
+
+### ERBB4 gene profile
+# plotDECOProfile(deco = deco.results.ma, id = "ENSG00000178568",
+#                 data = exprs(ALCLdata), pdf.file = "ERBB4_ALCLdata.pdf",
+#                 cex.samples = 2, info.sample = pData(ALCLdata)[,c(9,8,10)])
+
+}

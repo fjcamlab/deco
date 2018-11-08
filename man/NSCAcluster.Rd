@@ -77,7 +77,9 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 \code{\link[stats]{hclust}}, \code{\link[deco]{decoRDA}}, \code{\link[deco]{decoNSCA}}
 }
 \examples{
-## See also the DECO vignette.
+#### Further information in DECO vignette(s).
+## Run after decoRDA and decoNSCA steps on 'ALCLdata'
+ALCLdata
 
 # an example of absolute frequency matrix from ALCLdata analysis
 # incidenceMatrix <- deco@NSCAcluster$Case$incidenceMatrix

@@ -59,7 +59,7 @@ Vignette of R package explains all different plots included within the pdf.
 }
 \examples{
 # Phenotypical data from TCGA RNAseq samples.
-# pData(ALCLdata)
+pData(ALCLdata)
 
 #####################################################
 # PDF report with gene-sample patterns or subgroups #
