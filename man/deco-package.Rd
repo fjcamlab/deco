@@ -37,6 +37,7 @@ Scarfo, Irene et al. \bold{Identification of a new subclass of ALK negative ALCL
 }
 \examples{
 #### ALCL EXAMPLE (Scarfo et al., 2015. Blood) ####
+## Group-VS-group comparison
 
 ########################
 # Loading example data #
@@ -52,10 +53,12 @@ names(classes.ALCL) <- sampleNames(ALCLdata)
 #######################################################################
 # RUNNING SUBSAMPLING OF DATA: BINARY design (two classes of samples) #
 #######################################################################
+# if annotation and rm.xy == TRUE, then
+# library(org.Hs.eg.db)
 
 sub.ma.3r.10K <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.01,
                rm.xy = TRUE, r = NULL, cpus = 8, parallel = FALSE, temp.path = getwd(),
-               control = "pos", annot = TRUE, id.type = "ENSEMBL", iterations = 10000,
+               control = "pos", annot = FALSE, id.type = "ENSEMBL", iterations = 10000,
                pack.db = "org.Hs.eg.db")
 
 
@@ -76,10 +79,10 @@ pData(ALCLdata)
 ########################################################
 ## Generate PDF report with relevant information and several plots.
 
-## Binary example (ALK+ vs ALK-)
-decoReport(deco.results.ma, sub.ma.3r.10K,
-          pdf.file = "report_example_microarray_binary.pdf",
-          info.sample = pData(ALCLdata)[,8:10],
-          cex.names = 0.3, print.annot = TRUE)
+## Binary example (ALK+ vs ALK-) -not run as example-
+# decoReport(deco.results.ma, sub.ma.3r.10K,
+#           pdf.file = "report_example_microarray_binary.pdf",
+#           info.sample = pData(ALCLdata)[,8:10],
+#           cex.names = 0.3, print.annot = TRUE)
 
 }

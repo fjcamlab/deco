@@ -89,7 +89,7 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 ## User has to provide a RDA R object, running decoRDA() previously
 ## Slots included in the returned RDA object are:
 
-names(sub.ma.3r.10K)
+# names(sub.ma.3r.10K)
 # [1] "data"            "results"         "subStatFeature"  "incidenceMatrix" "classes"
 # [6] "resampleSize"    "control"         "pos.iter"        "q.val"           "call"
 
@@ -105,7 +105,7 @@ names(sub.ma.3r.10K)
 
 
 ## Class 'deco'
-class(deco.results.ma)
+# class(deco.results.ma)
 # [1] "deco"
 # attr(,"package")
 # [1] ".deco"
@@ -113,48 +113,49 @@ class(deco.results.ma)
 
 ## Slots included within 'deco' R object
 
-slotNames(deco.results.ma)
+# slotNames(deco.results.ma)
 # [1] "featureTable"     "NSCAcluster"      "incidenceMatrix"  "classes"          "pos.iter"
 # [6] "control"          "q.val"            "rep.thr"          "samp.perc"        "subsampling.call"
 #[11] "deco.call"
 
 
 ## Top-10 features from DECO analysis based on "Standard.Chi.Square"
-head(deco.results.ma@featureTable[order(deco.results.ma@featureTable$Standard.Chi.Square,
+# head(deco.results.ma@featureTable[order(deco.results.ma@featureTable$Standard.Chi.Square,
      decreasing = TRUE),], 10)
 
 
 #### Matrix of 'h statistic' calculated by DECO per category of samples
 # (if binary analysis was carried out).
-dim(deco.results.ma@NSCAcluster$Control$NSCA$h)
-dim(deco.results.ma@NSCAcluster$Case$NSCA$h)
+# dim(deco.results.ma@NSCAcluster$Control$NSCA$h)
+# dim(deco.results.ma@NSCAcluster$Case$NSCA$h)
 
 
 ## Top-10 discriminant features for CASE samples (ALK-) based on 'h statistic per subclass found.
-head(deco.results.ma@NSCAcluster$Case$rankingFeature.h, 10)
+# head(deco.results.ma@NSCAcluster$Case$rankingFeature.h, 10)
 
 
-## Sample and subclass information could be found in two slots within 'NSCAcluster'.
-# General information about subclasses
+### Sample and subclass information could be found in two slots within 'NSCAcluster':
+## General information about subclasses
+# deco.results.ma@NSCAcluster$Case$infoSubclass
 
-deco.results.ma@NSCAcluster$Case$infoSubclass
-
-# Sample membership to a subclass.
-
-deco.results.ma@NSCAcluster$Case$samplesSubclass
+## Sample membership to a subclass.
+# deco.results.ma@NSCAcluster$Case$samplesSubclass
 
 
 ## Both 'hclust' dendrogram information of CASE samples and features.
 ## They include Huber's Gamma coefficient value and Cophenetic
 ## correlation between dendrogram distances
 # and distance matrix.
-names(deco.results.ma@NSCAcluster$Case$hclustSamp)
-#[1] "dend"    "coph"    "cluster" "huber"
-names(deco.results.ma@NSCAcluster$Case$hclustFeat)
+
+#names(deco.results.ma@NSCAcluster$Case$hclustSamp)
 #[1] "dend"    "coph"    "cluster" "huber"
 
-###### Get summary info about "DECO" analysis
-summary(deco.results.ma)
+#names(deco.results.ma@NSCAcluster$Case$hclustFeat)
+#[1] "dend"    "coph"    "cluster" "huber"
+
+###### Get summary info about "DECO" analysis:
+###
+# summary(deco.results.ma)
 # Decomposing Heterogeneous Cohorts from Omic profiling: DECO
 # Summary:
 
@@ -175,7 +176,7 @@ summary(deco.results.ma)
 # Number of total RDA comparisons: 10000
 
 ###### Get info about "DECO" analysis
-print(deco.results.ma)
+# print(deco.results.ma)
 
 #########################################################################
 # RUNNING NSCA STEP: Looking for subclasses within all samples compared #

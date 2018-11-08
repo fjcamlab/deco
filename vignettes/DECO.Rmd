@@ -114,30 +114,24 @@ In this way, **DECO** can reveal exclusive associations between features and sam
 
 # 2. Installation
 
-The **deco** R source package can be downloaded from [R CRAN repository](https://cran.r-project.org/) or from our lab website (http://bioinfow.dep.usal.es/deco/). It can be installed by downloading and executing in UNIX-like terminal:
+The **deco** R source package can be downloaded from our lab website (http://bioinfow.dep.usal.es/deco/). It can be installed by downloading and executing in UNIX-like terminal:
 
 ```{bash, message = FALSE, eval = FALSE}
 R CMD INSTALL /path/to/deco_1.0.tar.gz
 ```
 
-or first choosing your nearest CRAN mirror using `chooseCRANmirror()` and executing in R:
+Or user can download/install the R package directly from Bioconductor repository:
 
-```{r, message = FALSE, eval = FALSE}
-install.packages("deco", type="source", dependencies = TRUE)
-```
+```{r, message = FALSE}
+### Bioconductor dependencies
+# source("https://bioconductor.org/biocLite.R")
+# biocLite(c("AnnotationDbi", "foreign", "limma", "Biobase", 
+#          "gdata", "cluster", "gplots", "RColorBrewer", 
+#          "snowfall", "scatterplot3d", "made4", "locfit", 
+#          "ade4", "sfsmisc"))
 
-If any problem with dependencies are reported, user can download R packages directly from Bioconductor repository and repeat previous instruction to install **deco** R package:
-
-```{r, message = FALSE, eval = FALSE}
-# Bioconductor dependencies
-source("https://bioconductor.org/biocLite.R")
-biocLite(c("AnnotationDbi", "foreign", "limma", "Biobase", 
-         "gdata", "cluster", "gplots", "RColorBrewer", 
-         "snowfall", "scatterplot3d", "made4", "locfit", 
-         "lisp", "ade4", "sfsmisc"))
-
-# Loading package in R
-library(deco)
+### Installing package in R
+# biocLite("deco")
 ```
 
 It can be also done using `devtools` R package to install dependencies from local directory (in this case the user has to decompress .tar.gz previously):
@@ -454,10 +448,10 @@ An **extended report** (as PDF file) including more detailed information of the 
 DECO R package implements an additional function to help users to view and analyse the output results. It contains a detailed representation of main results (subclasses found, main biomarkers, $h$ statistic heatmap, best feature profiles, feature's overlapping signal...). Here, we briefly describe how to run `decoReport()` R function:
 
 ```{r, warning = FALSE}
-### microarray results
-decoReport(deco_results, sub_binary, pdf.file = "Report.pdf",
-           info.sample = pData(ALCLdata)[,c("Type","Blood.paper"), drop = FALSE],
-           cex.names = 0.3, print.annot = TRUE)
+### Example of decoReport using microarray dataset
+# decoReport(deco_results, sub_binary, pdf.file = "Report.pdf",
+#            info.sample = pData(ALCLdata)[,c("Type","Blood.paper"), drop = FALSE],
+#            cex.names = 0.3, print.annot = TRUE)
 ```
 
 A main result of DECO analysis is the *$h$ statistic matrix* derived from both combination of RDA and NSCA information. In this way, `decoReport()` generates the **heatmap** representation of this *$h$ statistic matrix* that includes a double correlation analysis between samples and between features and two derived clustering dendrograms. In this way the **heatmap** reveals subclasses of samples and feature patterns.

@@ -1773,7 +1773,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   }
   nbr <- length(breaks)
   ncol <- length(breaks) - 1
-  if (class(col) == "function")
+  if (is(col, "function"))
     col <- col(ncol)
   min.breaks <- min(breaks)
   max.breaks <- max(breaks)

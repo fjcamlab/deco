@@ -80,17 +80,18 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 ## See also the DECO vignette.
 
 # an example of absolute frequency matrix from ALCLdata analysis
-incidenceMatrix <- deco@NSCAcluster$Case$incidenceMatrix
+# incidenceMatrix <- deco@NSCAcluster$Case$incidenceMatrix
 
 # vector of names to replace.
-ids <- sapply(rownames(incidenceMatrix), function(x) unlist(strsplit(x,split = "_",
-              fixed = TRUE))[1])
-id.names <- deco@featureTable[match(ids, deco@featureTable[,c("ID")]),c("ID")]
-names(id.names) <- names(ids)
+# ids <- sapply(rownames(incidenceMatrix), function(x) unlist(strsplit(x,split = "_",
+#              fixed = TRUE))[1])
+
+# id.names <- deco@featureTable[match(ids, deco@featureTable[,c("ID")]),c("ID")]
+# names(id.names) <- names(ids)
 
 ## NSCAcluster function
-res_nscaclus <- NSCAcluster(mx = incidenceMatrix, id.names = id.names,
-                            data = exprs(ALCLdata), k = NULL, label = NA,
-                            v = 80, method.dend = "ward.D")
+# res_nscaclus <- NSCAcluster(mx = incidenceMatrix, id.names = id.names,
+#                             data = exprs(ALCLdata), k = NULL, label = NA,
+#                             v = 80, method.dend = "ward.D")
 
 }

@@ -100,7 +100,7 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 ########################
 # Loading example data #
 ########################
-# Data from two subtypes (ALK+ and ALK-) of Anaplastic Large Cell Leukemia (ALCL).
+## Data from two subtypes (ALK+ and ALK-) of Anaplastic Large Cell Leukemia (ALCL).
 data(ALCLdata)
 
 ## Classes vector to run a binary analysis to compare both classes.
@@ -121,13 +121,13 @@ names(classes.ALCL) <- sampleNames(ALCLdata)
 
 ## Slots included in returned R object.
 
-names(sub.ma.3r.10K)
+# names(sub.ma.3r.10K)
 # [1] "data"            "results"         "subStatFeature"  "incidenceMatrix" "classes"
 # [6] "resampleSize"    "control"         "pos.iter"        "q.val"           "call"
 
 
 ## Top-10 RDA features.
-head(sub.ma.3r.10K$subStatFeature, 10)
+# head(sub.ma.3r.10K$subStatFeature, 10)
 
 
 #################################################################
