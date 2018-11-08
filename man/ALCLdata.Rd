@@ -28,7 +28,13 @@ Scarfo, Irene et al. \bold{Identification of a new subclass of ALK negative ALCL
 }
 \examples{
 data(ALCLdata)
+
+## list objects included
+ls()
+
+# slots of the ExpressionSet object
 str(ALCLdata)
+# [1] "ALCLdata"        "sub.ma.3r.1K"    "deco.results.ma"
 
 # phenodata of each sample
 pData(ALCLdata)

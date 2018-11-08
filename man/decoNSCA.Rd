@@ -87,9 +87,10 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 }
 \examples{
 ## User has to provide a RDA R object, running decoRDA() previously
-## Slots included in the returned RDA object are:
+data(ALCLdata)
 
-# names(sub.ma.3r.10K)
+## Slots included in the returned RDA object are:
+names(sub.ma.3r.1K)
 # [1] "data"            "results"         "subStatFeature"  "incidenceMatrix" "classes"
 # [6] "resampleSize"    "control"         "pos.iter"        "q.val"           "call"
 
@@ -98,8 +99,8 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 # RUNNING NSCA STEP: Looking for subclasses within a category/class of samples compared #
 #########################################################################################
 
-deco.results.ma <- decoNSCA(sub = sub.ma.3r.10K, v = 80, method = "ward.D",
-                          k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 10,
+deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, method = "ward.D",
+                          k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5,
                           parallel = FALSE, cpus = 2, rm.complete = FALSE, overlap = TRUE)
 
 
@@ -180,7 +181,7 @@ print(deco.results.ma)
 #########################################################################
 
 ## Not run as example
-# deco.results.ma.uns <- decoNSCA(sub = sub.ma.3r.10K.uns, v = 80, method = "ward.D",
+# deco.results.ma.uns <- decoNSCA(sub = sub.ma.3r.1K.uns, v = 80, method = "ward.D",
 #                         k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 3,
 #                         parallel = FALSE, cpus = 2, rm.complete = FALSE, overlap = TRUE)
 
@@ -189,7 +190,7 @@ print(deco.results.ma)
 ########################################
 
 ## Not run as example
-# deco.results.ma.multi <- decoNSCA(sub = sub.ma.3r.10K.multi, v = 80, method = "ward.D",
+# deco.results.ma.multi <- decoNSCA(sub = sub.ma.3r.1K.multi, v = 80, method = "ward.D",
 #                         k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 3,
 #                         parallel = FALSE, cpus = 2, rm.complete = FALSE, overlap = TRUE)
 

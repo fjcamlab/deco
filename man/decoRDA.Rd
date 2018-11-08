@@ -113,21 +113,21 @@ names(classes.ALCL) <- sampleNames(ALCLdata)
 # library(org.Hs.eg.db) # for gene annotation
 
 ## Not run as example
-# sub.ma.3r.10K <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.01,
+# sub.ma.3r.1K <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.01,
 #               rm.xy = TRUE, r = NULL, cpus = 2, parallel = FALSE, temp.path = getwd(),
-#               control = "pos", annot = TRUE, id.type = "ENSEMBL", iterations = 10000,
+#               control = "pos", annot = TRUE, id.type = "ENSEMBL", iterations = 1000,
 #               pack.db = "org.Hs.eg.db")
 
 
 ## Slots included in returned R object.
 
-# names(sub.ma.3r.10K)
+# names(sub.ma.3r.1K)
 # [1] "data"            "results"         "subStatFeature"  "incidenceMatrix" "classes"
 # [6] "resampleSize"    "control"         "pos.iter"        "q.val"           "call"
 
 
 ## Top-10 RDA features.
-# head(sub.ma.3r.10K$subStatFeature, 10)
+# head(sub.ma.3r.1K$subStatFeature, 10)
 
 
 #################################################################
@@ -135,9 +135,9 @@ names(classes.ALCL) <- sampleNames(ALCLdata)
 #################################################################
 
 ## Not run as example
-# sub.ma.3r.10K.uns <- decoRDA(data = exprs(ALCLdata), q.val = 0.01,
+# sub.ma.3r.1K.uns <- decoRDA(data = exprs(ALCLdata), q.val = 0.01,
 #                      rm.xy = TRUE, r = 3, cpus = 2, parallel = FALSE, temp.path = getwd(),
-#                      annot = TRUE, id.type = "ENSEMBL", iterations = 10000,
+#                      annot = TRUE, id.type = "ENSEMBL", iterations = 1000,
 #                      pack.db = "org.Hs.eg.db")
 
 
@@ -151,8 +151,8 @@ multi.cl <- as.factor(apply(pData(ALCLdata)[,8:9],1,function(x) paste(x,collapse
 head(multi.cl)
 
 ## Not run as example
-# sub.ma.3r.10K.multi <- decoRDA(data = exprs(ALCLdata), classes = multi.cl, q.val = 0.01,
+# sub.ma.3r.1K.multi <- decoRDA(data = exprs(ALCLdata), classes = multi.cl, q.val = 0.01,
 #                      rm.xy = TRUE, r = 3, cpus = 2, parallel = FALSE, temp.path = getwd(),
-#                      annot = TRUE, id.type = "ENSEMBL", iterations = 10000,
+#                      annot = TRUE, id.type = "ENSEMBL", iterations = 1000,
 #                      pack.db = "org.Hs.eg.db")
 }

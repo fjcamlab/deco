@@ -56,7 +56,7 @@ names(classes.ALCL) <- sampleNames(ALCLdata)
 # if annotation and rm.xy == TRUE, then
 # library(org.Hs.eg.db)
 
-sub.ma.3r.10K <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.01,
+sub.ma.3r.1K <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.01,
                rm.xy = TRUE, r = NULL, cpus = 8, parallel = FALSE, temp.path = getwd(),
                control = "pos", annot = FALSE, id.type = "ENSEMBL", iterations = 10000,
                pack.db = "org.Hs.eg.db")
@@ -66,7 +66,7 @@ sub.ma.3r.10K <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val =
 # RUNNING NSCA STEP: Looking for subclasses within a category/class of samples compared #
 #########################################################################################
 
-deco.results.ma <- decoNSCA(sub = sub.ma.3r.10K, v = 80, method = "ward.D",
+deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, method = "ward.D",
                        k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 10,
                        parallel = FALSE, cpus = 2, rm.complete = FALSE, overlap = TRUE)
 
@@ -80,7 +80,7 @@ pData(ALCLdata)
 ## Generate PDF report with relevant information and several plots.
 
 ## Binary example (ALK+ vs ALK-) -not run as example-
-# decoReport(deco.results.ma, sub.ma.3r.10K,
+# decoReport(deco.results.ma, sub.ma.3r.1K,
 #           pdf.file = "report_example_microarray_binary.pdf",
 #           info.sample = pData(ALCLdata)[,8:10],
 #           cex.names = 0.3, print.annot = TRUE)

@@ -70,19 +70,19 @@ pData(ALCLdata)
 # Both objects will be saved in your working directory if any path is given in PDF name.
 
 ## Binary example (ALK+ vs ALK-)
-# decoReport(deco.results.ma, sub.ma.3r.10K,
+# decoReport(deco.results.ma, sub.ma.3r.1K,
 #            pdf.file = "report_example_microarray_binary.pdf",
 #            info.sample = pData(ALCLdata)[,8:10],
 #            cex.names = 0.3, print.annot = TRUE)
 
 ## Unsupervised example (no classes)
-# decoReport(deco.results.ma.uns, sub.ma.3r.10K.uns,
+# decoReport(deco.results.ma.uns, sub.ma.3r.1K.uns,
 #            pdf.file = "report_example_microarray_unsupervised.pdf",
 #            info.sample = pData(ALCLdata)[,8:10],
 #            cex.names = 0.3, print.annot = TRUE)
 
 ## Multiclass example (ALK+ vs PTCL vs ALK-(noPTCL))
-# decoReport(deco.results.ma.multi, sub.ma.3r.10K.multi,
+# decoReport(deco.results.ma.multi, sub.ma.3r.1K.multi,
 #            pdf.file = "report_example_microarray_multi.pdf",
 #            info.sample = pData(ALCLdata)[,8:10],
 #            cex.names = 0.3, print.annot = TRUE)
