@@ -133,6 +133,8 @@ Here, a normalized microarray gene expression matrix from clinical samples is us
 The main interest to include this dataset, to be analysed with DECO, is because using this sample set [Scarfo et al.](#references) [3] identified of **a subset of patients within the ALK(-) class** discovering high ectopic expression of several gene markers. To do so, the authors applied one of the most used methods for detection of outliers and heterogeneous behavior, that is [COPA](#references) [5]. Further comparisons between **COPA** and other related methods can be found in our [paper about DECO](#references) [1]. The phenotypic information about this sample set provided by GEO database were included in an *ExpressionSet* object. This R object called `ALCLdata` could be directly loaded as follows:
 
 ```{r, message = FALSE}
+library(deco)
+
 data(ALCLdata)
 # to see the ExpressionSet object
 ALCLdata
