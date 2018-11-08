@@ -56,6 +56,7 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 \examples{
 #### Further information in DECO vignette(s).
 ## Run after decoRDA and decoNSCA steps on 'ALCLdata'
+data(ALCLdata)
 ALCLdata
 
 ### ERBB4 gene profile
