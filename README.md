@@ -1,5 +1,5 @@
 # deco
-R package
+R package. URL: http://bioinfow.dep.usal.es/deco/
 ---------------------------------------------------
 DECO:
 Decomposing heterogeneous population cohorts for patient stratification and discovery of subclass biomarkers using omic data profiling.
