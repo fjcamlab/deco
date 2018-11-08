@@ -258,7 +258,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
   if(all(is.na(classes)) | multi){UP[,seq_len(n1)] <- 0}else{UP[,seq_len(n1+n2)] <- 0}
   DOWN <- UP
   mx <- UP
-  results <- cbind(results,counter = seq(seq_lendim(results)[1]))
+  results <- cbind(results,counter = seq(seq_len(dim(results)[1])))
 
   # Subsampling loop with 'sfApply' or 'apply'.
   if(parallel==TRUE & dim(results)[1] > 1)

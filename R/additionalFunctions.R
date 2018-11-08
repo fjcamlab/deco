@@ -232,7 +232,7 @@ cophDECO <- function(data, method.heatmap = "ward.D", k = NULL, scale = FALSE,
   d[is.na(d)] <- 0
 
   if(coph)
-    hmet <- sapply(as.list(method.heatmap), function(x){
+    hmet <- sapply(method.heatmap, function(x){
       sampleTree <- as.dendrogram(hclust(d, method = x))
       coph <- cor(c(d), c(cophenetic(sampleTree)),
                   method = "pearson")
