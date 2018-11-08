@@ -397,7 +397,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
   }
   # Vector containing direction of differential event if 'binary'
   UpDw <- c(rep("UP",length(rownames(UP)[apply(UP[,seq_len(n1)],1,sum) == 0])),
-            rep("DOWN",length(rownames(UP)[apply(UP[,seq_lenn1)],1,sum) > 0])),
+            rep("DOWN",length(rownames(UP)[apply(UP[,seq_len(n1)],1,sum) > 0])),
             rep("MIXED",length(both.gene)))
   names(UpDw) <- c(rownames(UP)[apply(UP[,seq_len(n1)],1,sum) == 0],
                    rownames(UP)[apply(UP[,seq_len(n1)],1,sum) > 0],both.gene)
