@@ -605,10 +605,12 @@ decoNSCA <- function(sub, rm.complete = FALSE, v = 80, k.control = NULL,
                          control = cl1, analysis = "Binary")
         })
       }else
-        overlap <- sapply(rownames(sub$subStatFeature), function(x)
+        overlap <- vapply(rownames(sub$subStatFeature), function(x)
           overlapFeature(id = x, data = sub$data, classes = sub$classes,
-                         control = cl1, analysis = "Binary"))
-      prof <- sapply(overlap, function(x) max(which(c(0,0.2,0.4,0.75) <= x)))
+                         control = cl1, analysis = "Binary"),
+          FUN.VALUE = numeric(1))
+      prof <- vapply(overlap, function(x) max(which(c(0,0.2,0.4,0.75) <= x)),
+                     FUN.VALUE = numeric(1))
       profile <- prof
       profile[prof %in% c(3,4)] <- "Minority"
       profile[prof == 2] <- "Majority"

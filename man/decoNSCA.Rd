@@ -118,26 +118,26 @@ class(deco.results.ma)
 
 
 ## Top-10 features from DECO analysis based on "Standard.Chi.Square"
-# head(deco.results.ma@featureTable[order(deco.results.ma@featureTable$Standard.Chi.Square,
+# head(slot(deco.results.ma, "featureTable")[order(deco.results.ma@featureTable$Standard.Chi.Square,
 #      decreasing = TRUE),], 10)
 
 
 #### Matrix of 'h statistic' calculated by DECO per category of samples
 # (if binary analysis was carried out).
-# dim(deco.results.ma@NSCAcluster$Control$NSCA$h)
-# dim(deco.results.ma@NSCAcluster$Case$NSCA$h)
+# dim(slot(deco.results.ma, "NSCAcluster")$Control$NSCA$h)
+# dim(slot(deco.results.ma, "NSCAcluster")$Case$NSCA$h)
 
 
 ## Top-10 discriminant features for CASE samples (ALK-) based on 'h statistic per subclass found.
-head(deco.results.ma@NSCAcluster$Case$rankingFeature.h, 10)
+head(slot(deco.results.ma, "NSCAcluster")$Case$rankingFeature.h, 10)
 
 
 ### Sample and subclass information could be found in two slots within 'NSCAcluster':
 ## General information about subclasses
-# deco.results.ma@NSCAcluster$Case$infoSubclass
+# slot(deco.results.ma, "NSCAcluster")$Case$infoSubclass
 
 ## Sample membership to a subclass.
-# deco.results.ma@NSCAcluster$Case$samplesSubclass
+# slot(deco.results.ma, "NSCAcluster")$Case$samplesSubclass
 
 
 ## Both 'hclust' dendrogram information of CASE samples and features.
@@ -145,10 +145,10 @@ head(deco.results.ma@NSCAcluster$Case$rankingFeature.h, 10)
 ## correlation between dendrogram distances
 # and distance matrix.
 
-#names(deco.results.ma@NSCAcluster$Case$hclustSamp)
+#names(slot(deco.results.ma, "NSCAcluster")$Case$hclustSamp)
 #[1] "dend"    "coph"    "cluster" "huber"
 
-#names(deco.results.ma@NSCAcluster$Case$hclustFeat)
+#names(slot(deco.results.ma, "NSCAcluster")$Case$hclustFeat)
 #[1] "dend"    "coph"    "cluster" "huber"
 
 ###### Get summary info about "DECO" analysis:

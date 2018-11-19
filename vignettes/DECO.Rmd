@@ -374,10 +374,10 @@ After running NSCA function *decoNSCA*, the method produces an R object of *deco
 The main output table with relevant feature information from RDA, NSCA and subclasses searching corresponds to *featureTable*. 
 
 ```{r, warning = FALSE, results='hide'}
-dim(deco_results@featureTable)
+dim(slot(deco_results, "featureTable"))
 
 # Statistics of top-10 features
-deco_results@featureTable[1:10,]
+slot(deco_results, "featureTable")[1:10,]
 ```
 
 The most relevant statistic derived from [RDA](#5) technique is the *Standard.Chi.Square*. The amount of *differential events* or *Repeats* that each gene (each feature) appears differentially changed among classes or samples is also very important, and it is summarized in *Standard.Chi.Square* since this parameter weights the significance of the DE. Genes with similar *Repeats* values which correspond to lower *adj.p.value* resemble higher *Standard.Chi.Square* values, meanwhile genes with higher *adj.p.value*, or near *q.val* threshold imposed by user, give lower *Standard.Chi.Square* values.
@@ -397,10 +397,10 @@ To see how samples are grouped into different *subclasses* within class:
 
 ```{r, warning = FALSE, results='hide'}
 # If SUPERVISED analysis
-sampleSubclass <- rbind(deco_results@NSCAcluster$Control$samplesSubclass, 
-                        deco_results@NSCAcluster$Case$samplesSubclass)
+sampleSubclass <- rbind(slot(deco_results, "NSCAcluster")$Control$samplesSubclass, 
+                        slot(deco_results, "NSCAcluster")$Case$samplesSubclass)
 # If UNSUPERVISED analysis
-sampleSubclass <- deco_results@NSCAcluster$All$samplesSubclass
+sampleSubclass <- slot(deco_results, "NSCAcluster")$All$samplesSubclass
 ## Sample subclass membership
 head(sampleSubclass)
 
@@ -482,7 +482,6 @@ plotDECOProfile(deco = deco_results, id = "ENSG00000171094",
 \pagebreak
 \pagebreak
 \pagebreak
-
 
 # 8. References
 

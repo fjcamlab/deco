@@ -66,8 +66,9 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     rel <- c(rep(p.val[1] <= 0.05, dim(deco@NSCAcluster$Control$infoSubclass)[1]),rep(p.val[2] <= 0.05, dim(
       deco@NSCAcluster$Case$infoSubclass)[1]))
     infoSubclass <- data.frame(infoSubclass, Binary = rep(0,dim(infoSubclass)[1]), isRelevant = as.character(rel))
-    infoSubclass[sapply(rownames(infoSubclass),
-                        function(x)unlist(strsplit(x,split=" Subclass"))[1]) != deco@control, "Binary"] <- 1
+    infoSubclass[vapply(rownames(infoSubclass),
+                        function(x) unlist(strsplit(x,split=" Subclass"))[1],
+                        character(1)) != deco@control, "Binary"] <- 1
     # Sample membership to subclasses.
     samplesSubclass <- rbind(cbind(deco@NSCAcluster$Control$samplesSubclass[order(deco@NSCAcluster$Control$samplesSubclass[,1]),]),
                              cbind(deco@NSCAcluster$Case$samplesSubclass[order(deco@NSCAcluster$Case$samplesSubclass[,1]),]))
@@ -80,8 +81,8 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     colnames(nsc) <- c("Control samples","Case samples")
     rownames(nsc) <- c("Variability explained by NSCA", "NSCA C-statistic p.value", "Huber's gamma")
     # Assignment of colors to all subclasses. It will be conserved along all the report.
-    count <- table(sapply(rownames(infoSubclass),
-                          function(x)unlist(strsplit(x,split=" Subclass"))[1]) != deco@control)
+    count <- table(vapply(rownames(infoSubclass),
+                          function(x) unlist(strsplit(x,split=" Subclass"))[1], character(1)) != deco@control)
     color.cluster <- c(colorRampPalette(c("navyblue","lightblue"))(count[1]),colorRampPalette(c("orange","darkred"))(count[2]))
     names(color.cluster) <- rownames(infoSubclass)
     # Columns of 'featureTable' to be printed.
@@ -728,7 +729,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
       # Ordering raw data using clustering information.
       data <- data[,ord]
       names(colors) <- names(count)
-      count.col <- unlist(sapply(colors,function(x) rep(x,count[which(colors == x)])))
+      count.col <- rep(colors, count[names(colors)])
 
       # Plot feature profile.
       plot(x = seq_len(dim(data)[2]), y = data[as.character(id0[a]),], ylim = limy, pch=21, xaxt="n",
@@ -775,19 +776,18 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
       par(mar = c(7,5,4,5))
       # 'h' statistic per Subclass of samples.
       d <- data.frame(samplesSubclass, h = tab.info[samplesSubclass[,"Samples"]])
-      m <- sapply(names(color.cluster), function(x) mean(d[d[,"Subclass"] == x,"h"]))
-      s <- sapply(names(color.cluster), function(x)
-        sd(d[d[,"Subclass"] == x,"h"])/sqrt(length(d[d[,"Subclass"] == x,"h"])))
+      m <- vapply(names(color.cluster), function(x) mean(d[d[,"Subclass"] == x,"h"]), numeric(1))
+      s <- vapply(names(color.cluster), function(x)
+        sd(d[d[,"Subclass"] == x,"h"])/sqrt(length(d[d[,"Subclass"] == x,"h"])), numeric(1))
       par(xpd=NA)
       plot(0,xlim = c(0,length(m)), ylim = limb, type = "n", axes = FALSE,
            xlab = "", ylab = "h mean per DECO subclass")
-      h <- sapply(rownames(infoSubclass), function(x) d[d[,"Subclass"] == x,"h"])
       rect(xleft = 0:(length(m)-1), xright = seq_len(length(m))-0.1, ybottom = 0, ytop = m,
            col = adjustcolor(color.cluster, 0.6), border = NA)
       segments(x0 = seq(0.45,length(m),1), x1 = seq(0.45,length(m),1), y0 = m-s, y1 = m+s)
       segments(x0 = seq(0.45,length(m),1)-0.1, x1 = seq(0.45,length(m),1)+0.1, y0 = m-s, y1 = m-s)
       segments(x0 = seq(0.45,length(m),1)-0.1, x1 = seq(0.45,length(m),1)+0.1, y0 = m+s, y1 = m+s)
-      lab <- unlist(lapply(sapply(names(color.cluster), function(x) strsplit(x, split = " Subclass ")),
+      lab <- unlist(lapply(vapply(names(color.cluster), function(x) strsplit(x, split = " Subclass "), list(1)),
                            function(x) paste(x,collapse = ".")))
       axis(1, labels = lab, at = seq(0.45,length(m),1),
            lty = 0, las = 2, cex.axis = 1.3)
@@ -902,7 +902,8 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   else
     names <- id
 
-  g.names <- sapply(sort(rownames(sub$incidenceMatrix)), function(x) unlist(strsplit(x,split = "deco",fixed = TRUE))[1])
+  g.names <- vapply(sort(rownames(sub$incidenceMatrix)), function(x) unlist(strsplit(x,split = "deco",fixed = TRUE))[1],
+                    character(1))
 
   if(all(is.na(sub$classes)) || length(levels(sub$classes)) > 2){
     x <- apply(sub$incidenceMatrix[sort(rownames(sub$incidenceMatrix)),], 1,
@@ -914,12 +915,12 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     names(x) <- names(z)
   }
   else{
-    x <- sapply(unique(g.names), function(x)
+    x <- vapply(unique(g.names), function(x)
       sum(apply(sub$incidenceMatrix[grepl(rownames(sub$incidenceMatrix), pattern = x, fixed = TRUE),],1,
-                function(x) length(which(x > 0))))/dim(sub$incidenceMatrix)[2])
-    z <- sapply(unique(g.names), function(x)
+                function(x) length(which(x > 0))))/dim(sub$incidenceMatrix)[2], numeric(1))
+    z <- vapply(unique(g.names), function(x)
       sum(apply(sub$incidenceMatrix[grepl(rownames(sub$incidenceMatrix), pattern = x, fixed = TRUE),],1,
-                function(x) length(which(x > deco@rep.thr))))/dim(sub$incidenceMatrix)[2])
+                function(x) length(which(x > deco@rep.thr))))/dim(sub$incidenceMatrix)[2], numeric(1))
   }
 
   y <- sub$subStatFeature[order(as.character(sub$subStatFeature$ID)),"Repeats"]
@@ -928,7 +929,8 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   data <- data.frame(x,z)
 
   # Setting up Colors
-  col <- sapply(y, function(j) max(which(seq(1,max(y),length.out = 16) <= j)))
+  col <- vapply(y, function(j) max(which(seq(1,max(y),length.out = 16) <= j)),
+                numeric(1))
   color <- colorRampPalette(c("orange","brown","green","blue"))(16)
   col <- color[col]
   col[!names(y) %in% deco@featureTable$ID] <- "red"
@@ -1066,7 +1068,9 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
 {
   if(all(is.na(labels)))
   {
-    labels <- sapply(names(sort(x[[1]]$NSCA$di, decreasing = TRUE)),function(y) unlist(strsplit(y,"deco"))[1])
+    labels <- vapply(names(sort(x[[1]]$NSCA$di, decreasing = TRUE)),
+                     function(y) unlist(strsplit(y,"deco"))[1],
+                     character(1))
     names(labels) <- labels
   }
   for(j in seq_len(2))
@@ -1083,7 +1087,9 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
         gene <- gene[names(sort(apply(apply(gene,2,rank),1,mean),decreasing = TRUE)[seq_len(n)]),]
       else
         gene <- gene[names(sort(apply(apply(gene,2,rank),1,mean),decreasing = FALSE)[seq_len(n)]),]
-      rownames(gene) <- sapply(rownames(gene),function(x)unlist(strsplit(x,split="deco"))[1])
+      rownames(gene) <- vapply(rownames(gene),
+                               function(x) unlist(strsplit(x,split="deco"))[1],
+                               character(1))
       layout(mat = rbind(c(1,2),c(3,4)), widths = c(2,1), heights = c(1,1))
     }
     else{
@@ -1318,8 +1324,9 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   else
     names <- id
 
-  g.names <- sapply(sort(rownames(sub$incidenceMatrix)), function(x)
-    unlist(strsplit(x,split = "deco",fixed = TRUE))[1])
+  g.names <- vapply(sort(rownames(sub$incidenceMatrix)), function(x)
+    unlist(strsplit(x,split = "deco",fixed = TRUE))[1],
+    character(1))
 
   if(all(is.na(sub$classes))){
     x <- apply(sub$incidenceMatrix[sort(rownames(sub$incidenceMatrix)),], 1,
@@ -1329,19 +1336,22 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
     names(z) <- g.names[names(g.names)%in%names(z)]
   }
   else{
-    x <- sapply(unique(g.names), function(x)
+    x <- vapply(unique(g.names), function(x)
       sum(apply(sub$incidenceMatrix[grepl(rownames(sub$incidenceMatrix), pattern = x, fixed = TRUE),],1,
-                function(x) length(which(x > 0))))/dim(sub$incidenceMatrix)[2])
-    z <- sapply(unique(g.names), function(x)
+                function(x) length(which(x > 0))))/dim(sub$incidenceMatrix)[2],
+      numeric(1))
+    z <- vapply(unique(g.names), function(x)
       sum(apply(sub$incidenceMatrix[grepl(rownames(sub$incidenceMatrix), pattern = x, fixed = TRUE),],1,
-                function(x) length(which(x > deco@rep.thr))))/dim(sub$incidenceMatrix)[2])
+                function(x) length(which(x > deco@rep.thr))))/dim(sub$incidenceMatrix)[2],
+      numeric(1))
   }
 
   y <- sub$subStatFeature[order(sub$subStatFeature$ID),"Repeats"]
   data <- data.frame(x,y)
 
   # Setting up Colors
-  col <- sapply(z, function(x) max(which(seq(0,1,deco@samp.perc) <= x)))
+  col <- vapply(z, function(x) max(which(seq(0,1,deco@samp.perc) <= x)),
+                numeric(1))
   color <- adjustcolor(c("red",colorRampPalette(c("orange","brown","green","blue"))(length(seq(0,1,deco@samp.perc))-1)),0.6)
   col <- color[col]
   n <- length(which(col == "red"))
@@ -1599,7 +1609,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
     if (missing(x) || is.null(x) || length(x) == 0)
       return(TRUE)
     if (is.list(x))
-      return(all(sapply(x, invalid)))
+      return(all(vapply(x, invalid, logical(1))))
     else if (is.vector(x))
       return(all(is.na(x)))
     else return(FALSE)
@@ -2089,7 +2099,8 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
 
   names(names) <- as.character(deco@featureTable[,"ID"])
 
-  col <- sapply(m$residuals, function(x) max(which(seq(min(m$residuals),max(m$residuals),length.out = 32) <= x)))
+  col <- vapply(m$residuals, function(x) max(which(seq(min(m$residuals),max(m$residuals),length.out = 32) <= x)),
+                numeric(1))
   color <- colorRampPalette(c("blue","green","orange","red"))(32)
   col <- color[col]
 
@@ -2193,8 +2204,8 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
       # Subclasses
       infoSubclass <- rbind(deco@NSCAcluster$Control$infoSubclass,deco@NSCAcluster$Case$infoSubclass)
       # Assignment of colors to all subclasses. It will be conserved along all the report.
-      count <- table(sapply(rownames(infoSubclass),
-                            function(x)unlist(strsplit(x,split=" Subclass"))[1]) != deco@control)
+      count <- table(vapply(rownames(infoSubclass),
+                            function(x) unlist(strsplit(x,split=" Subclass"))[1], character(1)) != deco@control)
       color.cluster <- c(colorRampPalette(c("navyblue","lightblue"))(count[1]),colorRampPalette(c("orange","darkred"))(count[2]))
       names(color.cluster) <- rownames(infoSubclass)
       # h-statistic vector
@@ -2244,7 +2255,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     # Ordering raw data using clustering information.
     data <- data[,ord]
     names(colors) <- names(count)
-    count.col <- unlist(sapply(colors,function(x) rep(x,count[which(colors == x)])))
+    count.col <- rep(colors, count[names(colors)])
 
     # Plot feature profile.
     if(!plot.h)
@@ -2255,8 +2266,8 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     else{
       interval <- unique(c(seq(rangeH[1],0,length.out = 10),seq(0,rangeH[2],length.out = 11)))
       colorH <- colorRampPalette(c("blue","lightblue","grey","tomato","red"))(20)
-      bg.col <- adjustcolor(colorH[sapply(tab.info[ord], function(x)
-        max(which(interval<=x)))],0.8)
+      bg.col <- adjustcolor(colorH[vapply(tab.info[ord], function(x)
+        max(which(interval<=x)), numeric(1))],0.8)
       plot(data[as.character(id0[a]),], ylim = limy, pch=22, xaxt="n", lwd = 1.2,
          xlim=c(1,ncol(data)), main=main[a], type="p", ylab = "Raw Data Signal", col = adjustcolor("white",0.6),
          bg = bg.col, xlab="", cex = cex.samples+0.5, axes = FALSE)
@@ -2298,13 +2309,14 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     par(mar = c(7,5,4,5))
     # 'h' statistic per Subclass of samples.
     d <- data.frame(samplesSubclass, h = tab.info[samplesSubclass[,"Samples"]])
-    m <- sapply(names(color.cluster), function(x) mean(d[d[,"Subclass"] == x,"h"]))
-    s <- sapply(names(color.cluster), function(x)
-      sd(d[d[,"Subclass"] == x,"h"])/sqrt(length(d[d[,"Subclass"] == x,"h"])))
+    m <- vapply(names(color.cluster), function(x) mean(d[d[,"Subclass"] == x,"h"]),
+                numeric(1))
+    s <- vapply(names(color.cluster), function(x)
+      sd(d[d[,"Subclass"] == x,"h"])/sqrt(length(d[d[,"Subclass"] == x,"h"])),
+      numeric(1))
     par(xpd=NA)
     plot(0,xlim = c(0,length(m)), ylim = limb, type = "n", axes = FALSE,
          xlab = "", ylab = "h mean per DECO subclass")
-    h <- sapply(rownames(infoSubclass), function(x) d[d[,"Subclass"] == x,"h"])
     rect(xleft = 0:(length(m)-1), xright = seq_len(length(m))-0.1, ybottom = 0, ytop = m,
          col = adjustcolor(color.cluster, 0.6), border = NA)
     segments(x0 = seq(0.45,length(m),1), x1 = seq(0.45,length(m),1), y0 = m-s, y1 = m+s)

@@ -232,11 +232,11 @@ cophDECO <- function(data, method.heatmap = "ward.D", k = NULL, scale = FALSE,
   d[is.na(d)] <- 0
 
   if(coph)
-    hmet <- sapply(method.heatmap, function(x){
+    hmet <- vapply(method.heatmap, function(x){
       sampleTree <- as.dendrogram(hclust(d, method = x))
       coph <- cor(c(d), c(cophenetic(sampleTree)),
                   method = "pearson")
-    })
+    }, FUN.VALUE = numeric(1))
   else{
     hmet <- rep(1,length(method.heatmap))
     names(hmet) <- method.heatmap
@@ -319,20 +319,21 @@ overlapFeature <- function(id, data, classes, control, analysis, infoS = NA, plo
   }
   if(analysis == "Multiclass")
   {
-    d <- sapply(levels(classes), function(x) {
+    d <- vapply(levels(classes), function(x) {
       error=try(expr = {d <- density.lf(as.matrix(data[id,names(classes[classes == x])]),
                                         from = range(data)[1], to = range(data)[2], n = 1000, width = 1)$y}, silent = TRUE)
       if(inherits(error, "try-error"))
-        d <- density(as.numeric(data[id,names(classes[classes == x])]))$y
+        d <- density(as.numeric(data[id,names(classes[classes == x])]), n = 1000)$y
       return(d)
-      })
+      }, FUN.VALUE = numeric(1000))
     error=try(expr = {x <- density.lf(as.matrix(data[id,names(classes[classes == levels(classes)[1]])]),
                                       from = range(data)[1], to = range(data)[2], n = 1000, width = 1)$x}, silent = TRUE)
     if(inherits(error, "try-error"))
-      x <- density(as.numeric(data[id,names(classes[classes == levels(classes)[1]])]))$x
+      x <- density(as.numeric(data[id,names(classes[classes == levels(classes)[1]])]), n = 1000)$x
     w <- apply(apply(expand.grid(levels(classes), levels(classes)), 1, function(y) pmin(d[,y[1]], d[,y[2]])), 1, max)
     d <- data.frame(d, x = x, w = w)
-    total <- sum(sapply(seq_len(length(levels(classes))), function(y) integrate.xy(d$x, d[,y])))^2
+    total <- sum(vapply(seq_len(length(levels(classes))), function(y) integrate.xy(d$x, d[,y]),
+                        FUN.VALUE = numeric(1)))^2
     intersection <- integrate.xy(d$x, d$w)
 
     pos <- seq_len(length(levels(classes)))
@@ -401,70 +402,6 @@ jColor <- function(info)
   }
 
   return(list(orig = info, col = info.sample.color, ty = ty))
-}
-
-##############################
-##############################
-## RNAseqFilter
-
-RNAseqFilter <- function(data, q = 0.95, thr = 1)
-{
-  # thr <- density(data)$x[localMaxima(density(data)$y)][2]
-
-  dataF <- data[apply(data, 1, function(x) length(which(x < thr))/length(x)) >= q,]
-  dataNoF <- data[apply(data, 1, function(x) length(which(x < thr))/length(x)) < q,]
-
-  message(paste(format(Sys.time(), " %H:%M:%S")," NOTE: Number of RNAseq features filtered is", dim(dataF)[1],
-                ",\n",dim(dataNoF)[1],"features have been selected for subsampling."))
-
-  return(dataNoF)
-}
-
-##############################
-##############################
-## calchDi
-
-calchDi <- function(deco, samplesSubclass)
-{
-  n <- table(samplesSubclass[,c("Subclass")])
-  sapply(seq_len(n), function(x) deco@featureTable$Dendrogram.group)
-}
-
-###########################
-### extractBestFeatures ###
-###########################
-# BestFeatures per subclass
-# Returns only a character vector with IDs
-
-bestFeatures <- function(nsca, data, f = 5){
-
-  d <- t(apply(nsca$NSCA$h, 1, function(x) {
-    p <- innerProductAssign(x)
-    match(colnames(nsca$NSCA$h),names(p$cl))
-  }))
-
-  colnames(d) <- colnames(nsca$NSCA$h)
-
-  infoSubclass <- nsca$infoSubclass
-  samplesSubclass <- nsca$samplesSubclass
-
-  r <- sapply(rownames(infoSubclass), function(y)
-    apply(d[,rownames(samplesSubclass)[samplesSubclass[,c("Subclass")]%in%y]],1,function(x)
-      mean(dist(x))))
-
-  h <- sapply(rownames(infoSubclass), function(y)
-    apply(nsca$NSCA$h[,rownames(samplesSubclass)[samplesSubclass[,c("Subclass")]%in%y]],1,function(x)
-      mean(x)))
-
-  for(i in seq_len(dim(infoSubclass)[1]))
-    r[,i] <- r[,i]/((infoSubclass[i,"Samples"]+1)/3)
-
-  res <- h * r
-
-  top1 <- apply(res, 2, function(x) names(sort(x, decreasing = TRUE)[c(seq_len(f),(length(x)-f+1):length(x))]))
-  top2 <- apply(res, 2, function(x) sort(x, decreasing = TRUE)[c(seq_len(f),(length(x)-f+1):length(x))])
-
-  return(list(topN = top1, topV = top2, h = h, r = r))
 }
 
 #################################
@@ -543,7 +480,9 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
   gg2 <- vector(length=k)
   ss <- vector(length=k)
   message(paste(format(Sys.time(), "\r %H:%M:%S"),"-- Optimized for",k,"subclasses."))
-  info <- sapply(seq_len(k), function(y) apply(cbind(as.matrix(ca_res$inner.prod)[, info.dend.samp$cluster==y]), 1, distf))
+  info <- vapply(seq_len(k), function(y) apply(cbind(
+    as.matrix(ca_res$inner.prod)[, info.dend.samp$cluster==y]), 1, distf),
+    FUN.VALUE = numeric(dim(ca_res$inner.prod)[1]))
   info <- cbind(info, ca_res$di[rownames(info)])
 
   if(k > 1)
@@ -560,10 +499,10 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
   for(i in seq_len(k))
   {
     kk[i] <- length(which(colnames(mx) %in% names(info.dend.samp$cluster[which(info.dend.samp$cluster==i)])))
-    gg1[i] <- length(which(info[which(sapply(rownames(info), function(x) unlist(
-      strsplit(x,split = "deco",fixed = TRUE))[2])=="UP"),"Closer.subclass"] == i))
-    gg2[i] <- length(which(info[which(sapply(rownames(info), function(x) unlist(
-      strsplit(x,split = "deco",fixed = TRUE))[2])=="DOWN"),"Closer.subclass"] == i))
+    gg1[i] <- length(which(info[which(vapply(rownames(info), function(x) unlist(
+      strsplit(x,split = "deco",fixed = TRUE))[2], character(1))=="UP"),"Closer.subclass"] == i))
+    gg2[i] <- length(which(info[which(vapply(rownames(info), function(x) unlist(
+      strsplit(x,split = "deco",fixed = TRUE))[2], character(1))=="DOWN"),"Closer.subclass"] == i))
     p <- abs(info[info[,"Closer.subclass"] == i, i])
     ss[i] <- mean(p[order(p, decreasing = TRUE)][seq_len((length(p)*0.05))])
   }
@@ -597,8 +536,8 @@ NSCAcluster <- function(mx, data = NULL, id.names = NULL, k = NULL,
   names(ord) <- rownames(ca_res$inner.prod)[rev(info.dend.feat$dend$order)]
   patt <- info.dend.feat$cluster
   for(i in seq_len(max(info.dend.feat$cluster)))
-    patt[info.dend.feat$cluster == i] <- which(order(sapply(seq_len(max(info.dend.feat$cluster)), function(x)
-      mean(which(info.dend.feat$cluster[rev(info.dend.feat$dend$order)] == x)))) == i)
+    patt[info.dend.feat$cluster == i] <- which(order(vapply(seq_len(max(info.dend.feat$cluster)), function(x)
+      mean(which(info.dend.feat$cluster[rev(info.dend.feat$dend$order)] == x)), numeric(1))) == i)
   info.dend.feat$cluster <- patt
   info <- data.frame(info, h.Range = apply(info[,seq_len(k)],1,function(x) diff(range(x))),
                      Dendrogram.group = info.dend.feat$cluster[rownames(info)], Dendrogram.order = ord[rownames(info)])
