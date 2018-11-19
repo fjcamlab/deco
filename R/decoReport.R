@@ -2079,47 +2079,6 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
 }
 
 
-##################################################################################################################################
-
-.plotFeatureGaining <- function(h, sd, deco, print.annot, main, id = NA){
-
-  # h <- apply(deco@NSCAcluster$All$NSCA$h, 1, function(x) sum(abs(range(x))))
-  # h <- log2((range01(h)+1)/(range01(sd)+1))
-  # sd <- 0.5*log2((range01(h)+1)*(range01(sd)+1))
-
-  names(h) <- as.character(deco@featureTable[,"ID"])
-  names(sd) <- as.character(deco@featureTable[,"ID"])
-  # sd <- sd[names(h)]
-  m <- lm(h ~ sd)
-
-  if(print.annot & "SYMBOL"%in%colnames(deco@featureTable))
-    names <- as.character(deco@featureTable[,"SYMBOL"])
-  else
-    names <- as.character(deco@featureTable[,"ID"])
-
-  names(names) <- as.character(deco@featureTable[,"ID"])
-
-  col <- vapply(m$residuals, function(x) max(which(seq(min(m$residuals),max(m$residuals),length.out = 32) <= x)),
-                numeric(1))
-  color <- colorRampPalette(c("blue","green","orange","red"))(32)
-  col <- color[col]
-
-  plot(sd, h, bg = adjustcolor(col,0.7), col = adjustcolor("grey",0.5), xlab = "Standard deviation", ylab = "h Range",
-       pch = 21, xlim = c(0,max(sd)), ylim = c(0,max(h)), cex = 1.2)
-  abline(h = 0, col = adjustcolor("grey",0.6))
-  lines(smooth.spline(sd, predict(m)), lwd = 3, lty = 5, col = adjustcolor("darkblue",0.7))
-  text(sd[names(sort(abs(m$residuals), decreasing = TRUE))[seq_len(10)]], h[names(sort(abs(m$residuals), decreasing = TRUE))[seq_len(10)]],
-       labels = names[names(sort(abs(m$residuals), decreasing = TRUE))[seq_len(10)]], font = 2, col = "black", cex = 0.9)
-  text(sd[id], h[id], labels = names[id], font = 2, col = "red", cex = 0.9)
-  mtext(side = 3, text = main, font = 2, col = "deepskyblue4")
-  mtext(side = 1, text = paste("Adjusted R-squared =",round(summary(m)$adj.r.squared, 3),"\n h =",
-                               round(summary(m)$coefficients[2,1],3), "* sd + (",round(summary(m)$coefficients[1,1],3),")"),
-        line = -1)
-  title(list("Feature gaining respect to original variance.\nHigher values of 'h' remarks specificity feature-sample.",
-             font = 2, cex = 1.4), outer = TRUE, line = -4)
-
-}
-
 
 ##################################################################################################################################
 ##################################################################################################################################
