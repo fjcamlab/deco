@@ -17,7 +17,7 @@ summary.deco <- function(object, ...)
     cat("Multiclass\nClasses compared:");print(table(object@classes))}
 
   cat("\n")
-  thr <- data.frame("RDA q.value"= object@q.val, "Minimum repeats" = object@rep.thr,
+  thr <- data.frame("SDA q.value"= object@q.val, "Minimum repeats" = object@rep.thr,
                     "Percentage of affected samples" = object@samp.perc*100, "NSCA variability" = object@NSCAcluster[[1]]$var)
   rownames(thr) <- "Thresholds"
   printCoefmat(thr, digits = 3)
@@ -27,8 +27,8 @@ summary.deco <- function(object, ...)
     print(table(object@featureTable$Profile))
   }
   cat("Number of samples affected:",dim(object@incidenceMatrix)[2],"\n")
-  cat("Number of positive RDA comparisons:",object@pos.iter,"\n")
-  cat("Number of total RDA comparisons:", round(object@featureTable[1,c("Repeats")]/object@featureTable[1,c("FR.Repeats")],digits = 0), "\n\n")
+  cat("Number of positive SDA comparisons:",object@pos.iter,"\n")
+  cat("Number of total SDA comparisons:", round(object@featureTable[1,c("Repeats")]/object@featureTable[1,c("FR.Repeats")],digits = 0), "\n\n")
 
 }
 
@@ -48,15 +48,15 @@ print.deco <- function(x, ...)
     cat("Multiclass\nClasses compared:");print(table(x@classes))}
 
   cat("\n")
-  thr <- data.frame("RDA q.value"= x@q.val, "Minimum repeats" = x@rep.thr,
+  thr <- data.frame("SDA q.value"= x@q.val, "Minimum repeats" = x@rep.thr,
                     "Percentage of affected samples" = x@samp.perc*100, "NSCA variability" = x@NSCAcluster[[1]]$var)
   rownames(thr) <- "Thresholds"
   printCoefmat(thr, digits = 3)
   cat("\nNumber of features out of thresholds:",dim(x@featureTable)[1],"\n")
   cat("Number of samples affected:",dim(x@incidenceMatrix)[2],"\n")
-  cat("Number of positive RDA comparisons:",x@pos.iter,"\n")
-  cat("Number of total RDA comparisons:", round(x@featureTable[1,c("Repeats")]/x@featureTable[1,c("FR.Repeats")],digits = 0), "\n\n")
-  cat("RDA call:\n")
+  cat("Number of positive SDA comparisons:",x@pos.iter,"\n")
+  cat("Number of total SDA comparisons:", round(x@featureTable[1,c("Repeats")]/x@featureTable[1,c("FR.Repeats")],digits = 0), "\n\n")
+  cat("SDA call:\n")
   print(x@subsampling.call)
   cat("NSCA call:\n")
   print(x@deco.call)

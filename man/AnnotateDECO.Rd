@@ -54,7 +54,5 @@ ids <- rownames(exprs(ALCLdata))[1:10]
 #                            attributes = c("SYMBOL","CHR","GENENAME"),
 #                            pack.db = "org.Hs.eg.db", rm.redundant = TRUE)
 
-# head(annot)
-
 }
 

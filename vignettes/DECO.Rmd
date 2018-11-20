@@ -100,7 +100,7 @@ opts_chunk$set(warning=FALSE,message=FALSE,cache=TRUE,fig.path='figures/',tidy=F
 
 # 1. Variability and heterogeneity in high-dimensional data
 
-Individual diversity and variability is one of the most complex issues to deal within high-dimensional studies of large populations, as the ones currently performed in biomedical analyses using omic technologies. DECO is a method that combines two main computational procedures: **(i)** a **Recursive Differential Analysis (RDA)** that performs combinatorial sampling without replacement to select multiple sample subsets followed by differential analysis; and **(ii)** a **Non-Symmetrical Correspondence Analysis (NSCA)** of differential events that allow the characterization and assigment of features and samples in a common multidimensional space, combining in a single statistic parameterization both the feature-sample changes detected and a predictor-response information. 
+Individual diversity and variability is one of the most complex issues to deal within high-dimensional studies of large populations, as the ones currently performed in biomedical analyses using omic technologies. DECO is a method that combines two main computational procedures: **(i)** a **Recursive Differential Analysis (SDA)** that performs combinatorial sampling without replacement to select multiple sample subsets followed by differential analysis; and **(ii)** a **Non-Symmetrical Correspondence Analysis (NSCA)** of differential events that allow the characterization and assigment of features and samples in a common multidimensional space, combining in a single statistic parameterization both the feature-sample changes detected and a predictor-response information. 
 
 The statistical procedure followed in both parts of the method are detailed in the original [publication](#references) [1], but this brief **vignette** explains how to use **DECO** to analyze multidimensional datasets that may include heterogeneous samples. The aim is to improve characterization and stratification of complex sample series, mostly focusing on large patient cohorts, where the existence of outlier or mislabeled samples is quite possible.
 
@@ -178,7 +178,7 @@ BRCA_count$dat <- limma::voom(BRCA_count$dat, normalize = "quantile")$E
 
 ```
 
-Then, user can run *voom* normalization method provided in LIMMA R package to calculates matrix of **logCPMs**. Further information about **voom** normalization and its properties can be found in [LIMMA](#references) R package [2]. The normalized matrix is then analysed using the RDA method of DECO. 
+Then, user can run *voom* normalization method provided in LIMMA R package to calculates matrix of **logCPMs**. Further information about **voom** normalization and its properties can be found in [LIMMA](#references) R package [2]. The normalized matrix is then analysed using the SDA method of DECO. 
 
 **DECO** is also able to analyse other RNAseq data types (RPKMs, FPKMs or TPMs values). The data are usually log scaled. Here, we shown an example using data type RPKMs from [TCGA](http://cancergenome.nih.gov/) database.
 
@@ -223,7 +223,7 @@ Additionally, more information about different data platforms available for dire
 \pagebreak
 \pagebreak
 
-# 4. RDA, Recursive Differential Analysis: *Standard.Chi.Square*
+# 4. SDA, Recursive Differential Analysis: *Standard.Chi.Square*
 
 We proposed a recursive subsampling strategy which selects subsets of samples (from the different classes) and compares all against all (in an exhaustive search). When the number of combinations is very large a random selection of all possible subsets is done. In order to obtain the best possible results, three parameters should be taken into consideration before running the analysis: **(i)** the subsampling size called `r` (DECO method calculates an optimal size of subsampling subsets if the user does not define it); **(ii)** number of subsets or combinations, called `iterations`, to compare in this subsampling step; and **(iii)** adjusted.p.value threshold for the differential tests or contrasts, called `q.val` and computed using eBayes from [LIMMA](#references) [2].
 
@@ -231,7 +231,7 @@ Aiming to summarize all positive differential events (DE) for each feature (comb
 
 ## 4.1 Supervised analysis
 
-Depending on *classes* input vector, a *supervised* or *binary* analysis compares just two types of samples (i.e. healthy donors *versus* patients in a typical biomedical study). The `decoRDA()` RDA function will adjust the optimal subsampling size *r* (that the user can modify) to explore all DE signal, and UP and DOWN events will be taken into account for posterior **NSCA**. Here, an example of *decoRDA* function using `ALCLdata` dataset:
+Depending on *classes* input vector, a *supervised* or *binary* analysis compares just two types of samples (i.e. healthy donors *versus* patients in a typical biomedical study). The `decoSDA()` SDA function will adjust the optimal subsampling size *r* (that the user can modify) to explore all DE signal, and UP and DOWN events will be taken into account for posterior **NSCA**. Here, an example of *decoSDA* function using `ALCLdata` dataset:
 
 ```{r, message = FALSE, warning = FALSE, results='hide'}
 # if gene annotation will be required (annot = TRUE or rm.xy = TRUE)
@@ -244,25 +244,25 @@ table(classes.ALCL)
 #    20    11 
 
 # example of SUPERVISED or BINARY design with Affymetrix microarrays data 
-sub_binary <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.05, 
+sub_binary <- decoSDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.05, 
                       iterations = 1000, rm.xy = FALSE, r = NULL, cpus = 6, 
                       parallel = TRUE, temp.path = getwd(), 
                       control = "pos", annot = FALSE, id.type = "ENSEMBL", 
                       pack.db = "org.Hs.eg.db")
 ```
 
-This **RDA** procedure generates an `incidenceMatrix` which counts differential events per gene (feature) per sample. Thus, this matrix would contain just differential genes as rows and samples as columns with one differential event at least.
+This **SDA** procedure generates an `incidenceMatrix` which counts differential events per gene (feature) per sample. Thus, this matrix would contain just differential genes as rows and samples as columns with one differential event at least.
 
 ```{r, message = FALSE, eval = FALSE}
 dim(sub$incidenceMatrix)
 ```
 
-The `incidenceMatrix` produced after the RDA, can reveal the important changes that mark an entire subclass (grey boxes in **Figure 1**), as well as specific signal changes that mark a subclass of samples (red boxes in **Figure 1**). As we can see in a simple example (**Figure 1**), both *Gene 1* and *Gene 2* seem to mark two subclasses (or subtypes) inside each compared class, while *Gene 3* and *Gene 4* reflect the behaviour of control and case classes respectively. Following the RDA step, the NSCA step analyses the numbers of the `incidenceMatrix`. The NSCA analysis is also done splitting UP and DOWN changes when the algorithm is run in *supervised* mode.
+The `incidenceMatrix` produced after the SDA, can reveal the important changes that mark an entire subclass (grey boxes in **Figure 1**), as well as specific signal changes that mark a subclass of samples (red boxes in **Figure 1**). As we can see in a simple example (**Figure 1**), both *Gene 1* and *Gene 2* seem to mark two subclasses (or subtypes) inside each compared class, while *Gene 3* and *Gene 4* reflect the behaviour of control and case classes respectively. Following the SDA step, the NSCA step analyses the numbers of the `incidenceMatrix`. The NSCA analysis is also done splitting UP and DOWN changes when the algorithm is run in *supervised* mode.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=4in]{figures/incidence.jpg}
-\caption{Example of an "incidence matrix" obtained after RDA for a SUPERVISED analysis.}
+\caption{Example of an "incidence matrix" obtained after SDA for a SUPERVISED analysis.}
 \end{figure}
 
 ## 4.2 Unsupervised analysis
@@ -273,17 +273,17 @@ If *classes* input vector is empty, a *unsupervised* analysis is run comparing a
 # if gene annotation will be required (annot = TRUE or rm.xy = TRUE)
 # library(org.Hs.eg.db)
 # example of UNSUPERVISED design with RNA-seq data (log2[RPKM])
-sub_uns <- decoRDA(data = exprs(ALCLdata), q.val = 0.05, r = NULL, cpus = 6, iterations = 1000,
+sub_uns <- decoSDA(data = exprs(ALCLdata), q.val = 0.05, r = NULL, cpus = 6, iterations = 1000,
                    parallel = TRUE, temp.path = getwd(), annot = FALSE, rm.xy = FALSE,
                    id.type = "ENSEMBL", pack.db = "org.Hs.eg.db")
 ```
 
-**RDA** procedure generates in this case an `incidenceMatrix` which counts just UP events per gene per sample.
+**SDA** procedure generates in this case an `incidenceMatrix` which counts just UP events per gene per sample.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=4in]{figures/incidenceUP.jpg}
-\caption{Example of an "incidence matrix" obtained after RDA for a UNSUPERVISED analysis}
+\caption{Example of an "incidence matrix" obtained after SDA for a UNSUPERVISED analysis}
 \end{figure}
 
 ## 4.3 Multiclass analysis 
@@ -298,15 +298,15 @@ table(multiclasses.ALCL)
 #       12        8       11 
 
 # example of MULTICLASS design with RNA-seq data (log2[RPKM])
-sub_multiclass <- decoRDA(data = exprs(ALCLdata), classes = multiclasses.ALCL, q.val = 0.05, 
+sub_multiclass <- decoSDA(data = exprs(ALCLdata), classes = multiclasses.ALCL, q.val = 0.05, 
                           r = NULL, cpus = 6, parallel = TRUE, iterations = 1000,
                           temp.path = getwd(), annot = FALSE, rm.xy = FALSE,
                           id.type = "ENSEMBL", pack.db = "org.Hs.eg.db")
 ```
 
-## 4.4 Running the RDA function: `decoRDA()`
+## 4.4 Running the SDA function: `decoSDA()`
 
-This vignette presented some examples of `decoRDA()` subsampling function for *supervised* and *unsupervised* analyses (if user has two classes of samples or not). Now, details about all the input parameters which control the RDA procedure are indicated:
+This vignette presented some examples of `decoSDA()` subsampling function for *supervised* and *unsupervised* analyses (if user has two classes of samples or not). Now, details about all the input parameters which control the SDA procedure are indicated:
 
 - `data` input corresponds to our expression matrix with features as rows and samples as columns.
 
@@ -314,13 +314,13 @@ This vignette presented some examples of `decoRDA()` subsampling function for *s
 
 - `r` is the resampling size.
 
-- `temp.path` defines a location in your computer where `decoRDA()` would save temporary results.
+- `temp.path` defines a location in your computer where `decoSDA()` would save temporary results.
 
 - `classes` is a character vector or factor indicating to which class each sample belongs.
 
 - `control` is a character indicating which label has to be set as control class in a *supervised* analysis.
 
-- `rm.xy` is a logical indicating if *X* or *Y* chromosome placed genes/proteins/features should be removed before run RDA (requires `id.type` and `annot` inputs).
+- `rm.xy` is a logical indicating if *X* or *Y* chromosome placed genes/proteins/features should be removed before run SDA (requires `id.type` and `annot` inputs).
 
 All the rest of parameters are used to annotate features or to establish a parallel computation of processes, so they are explained within a longer and more detailed vignette included in the DECO R package.
 
@@ -367,11 +367,11 @@ After running NSCA function *decoNSCA*, the method produces an R object of *deco
 
 - `q.val` is the adjusted.p.val threshold previously defined.
 
-- `subsampling.call` and `deco.call` correspond to both `decoRDA` and `decoNSCA` function calls.
+- `subsampling.call` and `deco.call` correspond to both `decoSDA` and `decoNSCA` function calls.
 
 #### Feature ranking and statistics
 
-The main output table with relevant feature information from RDA, NSCA and subclasses searching corresponds to *featureTable*. 
+The main output table with relevant feature information from SDA, NSCA and subclasses searching corresponds to *featureTable*. 
 
 ```{r, warning = FALSE, results='hide'}
 dim(slot(deco_results, "featureTable"))
@@ -380,7 +380,7 @@ dim(slot(deco_results, "featureTable"))
 slot(deco_results, "featureTable")[1:10,]
 ```
 
-The most relevant statistic derived from [RDA](#5) technique is the *Standard.Chi.Square*. The amount of *differential events* or *Repeats* that each gene (each feature) appears differentially changed among classes or samples is also very important, and it is summarized in *Standard.Chi.Square* since this parameter weights the significance of the DE. Genes with similar *Repeats* values which correspond to lower *adj.p.value* resemble higher *Standard.Chi.Square* values, meanwhile genes with higher *adj.p.value*, or near *q.val* threshold imposed by user, give lower *Standard.Chi.Square* values.
+The most relevant statistic derived from [SDA](#5) technique is the *Standard.Chi.Square*. The amount of *differential events* or *Repeats* that each gene (each feature) appears differentially changed among classes or samples is also very important, and it is summarized in *Standard.Chi.Square* since this parameter weights the significance of the DE. Genes with similar *Repeats* values which correspond to lower *adj.p.value* resemble higher *Standard.Chi.Square* values, meanwhile genes with higher *adj.p.value*, or near *q.val* threshold imposed by user, give lower *Standard.Chi.Square* values.
 
  IDs | Standard.Chi.Square  | Repeats | adj.p.values | h.Range | Dendrogram.group
 ------------- | ------------- | ------------ | ------------ | ------------ | ------------
@@ -389,7 +389,7 @@ DE feature 2  | 150  | 100 | ~ 0.05 | 12.65 | 5
 
 Moreover, for *supervised* analysis the *exprsUpDw* character indicates if case class shows UP or DOWN regulation of each feature. In some cases, several genes could follow deregulation in both classes for some subgroup of samples, which we called change-type **MIXED**. This kind of change pattern could explain some hidden characteristic of the samples and allows finding outliers: a subgroup of samples that only change in a subset of genes. In this cases there are not differences between the mean or median for the whole classes, and so classical methods like **SAM** or **LIMMA** do not find these patterns.
 
-After RDA and NSCA analysis, the statistics referred to sample subclasses found is used to rank DE features properly. In this way, $h$ statistic obtained per feature is used to determine how each feature discriminates each subclass found. As we mentioned above, this statistic combines both the DE changes and the predictor-response relationship between features and samples, so it refers to feature's discriminant ability. Furthermore, `Dendrogram.group` helps to identify to which pattern belongs each feature and each sample within the $h$ statistic heatmap (`decoReport()` PDF report).
+After SDA and NSCA analysis, the statistics referred to sample subclasses found is used to rank DE features properly. In this way, $h$ statistic obtained per feature is used to determine how each feature discriminates each subclass found. As we mentioned above, this statistic combines both the DE changes and the predictor-response relationship between features and samples, so it refers to feature's discriminant ability. Furthermore, `Dendrogram.group` helps to identify to which pattern belongs each feature and each sample within the $h$ statistic heatmap (`decoReport()` PDF report).
 
 #### Sample subclasses membership
 
@@ -418,15 +418,15 @@ summary(deco_results)
 # Classes compared:
 # neg pos 
 #  20  11 
-#            RDA.q.value Minimum.repeats Percentage.of.affected.samples NSCA.variability
+#            SDA.q.value Minimum.repeats Percentage.of.affected.samples NSCA.variability
 # Thresholds        0.01          10.00                            5.00               86
 # Number of features out of thresholds: 297 
 # Feature profile table:
 # Complete Majority Minority    Mixed 
 #       12       87      197        1 
 # Number of samples affected: 31 
-# Number of positive RDA comparisons: 1999 
-# Number of total RDA comparisons: 10000 
+# Number of positive SDA comparisons: 1999 
+# Number of total SDA comparisons: 10000 
 ```
 
 An **extended report** (as PDF file) including more detailed information of the analysis and several plots illustrating all the results (as the bi-clustering approach to `h` statistic matrix) can be also produced with the `decoReport()` R function. Information about the extended report is included in longer and more detailed vignette in the DECO R package.
@@ -443,7 +443,7 @@ DECO R package implements an additional function to help users to view and analy
 #            cex.names = 0.3, print.annot = TRUE)
 ```
 
-A main result of DECO analysis is the *$h$ statistic matrix* derived from both combination of RDA and NSCA information. In this way, `decoReport()` generates the **heatmap** representation of this *$h$ statistic matrix* that includes a double correlation analysis between samples and between features and two derived clustering dendrograms. In this way the **heatmap** reveals subclasses of samples and feature patterns.
+A main result of DECO analysis is the *$h$ statistic matrix* derived from both combination of SDA and NSCA information. In this way, `decoReport()` generates the **heatmap** representation of this *$h$ statistic matrix* that includes a double correlation analysis between samples and between features and two derived clustering dendrograms. In this way the **heatmap** reveals subclasses of samples and feature patterns.
 
 \begin{figure}[h]
 \textbf{Heatmap (based on double correlation and clustering of h matrix) including features found.}\par\medskip

@@ -1,7 +1,7 @@
 ########################################################################################
 ### DECO ###
 # algorithm to find differential significant markers in heterogeneous cohorts
-# using jackknife-like and Non-Symmetrical Correspondence Analysis approach
+# involving a subsampling and posterior Non-Symmetrical Correspondence Analysis approach
 #
 # Authors: Francisco J. Campos-Laborie, Jose Manuel Sanchez-Santos & Javier De Las Rivas
 # Bioinformatics & Functional Genomics Group
@@ -10,31 +10,7 @@
 # http://www.cicancer.org/
 # http://bioinfow.dep.usal.es
 #
-# version beta: v1.0
-# All Rights Reserved. License to be established.
-# Last update: 03-11-2016
 ########################################################################################
-
-# Run in R
-# R version 3.2.3 (2015-12-10)
-# Platform: x86_64-redhat-linux-gnu (64-bit)
-# require(Biobase)
-# require(AnnotationDbi)
-# require(limma)
-# require(snowfall)
-# require(foreign)
-# require(plsdof)
-# require(cluster)
-# require(RColorBrewer)
-# require(gplots)
-# require(made4)
-# require(ade4)
-# require(gdata)
-# require(locfit)
-# require(org.Hs.eg.db)
-# require(sfsmisc)
-# require(scatterplot3d)
-#
 
 ############################################
 slots <- c("data.frame","list","data.frame","factor","numeric","character","numeric","numeric","numeric","call","call")
@@ -42,17 +18,17 @@ names(slots) <- c("featureTable","NSCAcluster","incidenceMatrix","classes","pos.
                   "q.val", "rep.thr", "samp.perc","subsampling.call","deco.call")
 setClass(Class = "deco", slots = slots, sealed = FALSE)
 
-
 ############################################
 options(repos = c(CRAN="http://cran.r-project.org"))
 
 
 ###################################
-###         decoRDA           ###
+###         decoSDA           ###
 ###################################
-## Recursive function to select differentially expressed features using LIMMA R package (eBayes method) along the data.
+## Iterative function to discover differentially expressed features
+## using LIMMA R package (eBayes method) along the data.
 
-decoRDA <- function(data, classes = NA, control = NA, r = NULL,
+decoSDA <- function(data, classes = NA, control = NA, r = NULL,
                     q.val = 0.01, iterations = 10000, cpus = 2, parallel = FALSE,
                     temp.path = tempdir(), annot = FALSE, id.type = NA,
                     attributes = NA, rm.xy = FALSE, pack.db = "org.Hs.eg.db")
@@ -434,7 +410,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
       res_ <- vector(length = 12)
       names(res_) <- names(name)
       lines <- top_eje[as.character(top_eje[,c("ID")]) %in% as.character(name[c("ID")]),]
-      # Statistics from this RDA step.
+      # Statistics from this SDA step.
       if(length(lines[,c("ID")])>0)
       {
         res_[c("Avrg.logFC")] <- .colMeans(lines[,c("logFC")],
@@ -460,7 +436,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     for(i in seq_len(length(unique(top_eje[,c("ID")]))))
     {
       lines <- top_eje[top_eje[,c("ID")] %in% as.character(res$subStatFeature[i,c("ID")]),]
-      # Statistics from this RDA step.
+      # Statistics from this SDA step.
       if(length(lines[1,c("ID")])>0)
       {
         res$subStatFeature[i,c("Avrg.logFC")] <- .colMeans(lines[,c("logFC")],
@@ -571,7 +547,7 @@ decoNSCA <- function(sub, rm.complete = FALSE, v = 80, k.control = NULL,
   # Setting up both classes and control for 'supervised' design.
   if(all(!(is.na(sub$classes))) & !length(levels(sub$classes)) > 2)
   {
-    # Instructions just for 'supervised' RDA design.
+    # Instructions just for 'supervised' SDA design.
     if(is.na(sub$control))
     {
       cl1 <- levels(sub$classes)[1]

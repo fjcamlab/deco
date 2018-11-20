@@ -1,12 +1,12 @@
-\name{decoRDA}
-\alias{decoRDA}
+\name{decoSDA}
+\alias{decoSDA}
 \title{
 Subsampling function to find out differential events along samples from an omic dataset
 }
 \description{
-RDA R function within 'deco' R package. This function allows user to subsampling a omic data matrix to find out significant differential features characterizing any hidden subclass or group of samples included.}
+SDA R function within 'deco' R package. This function allows user to subsampling a omic data matrix to find out significant differential features characterizing any hidden subclass or group of samples included.}
 \usage{
-decoRDA(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
+decoSDA(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
               iterations = 10000, cpus = 2, parallel = FALSE,
               temp.path = tempdir(), annot = FALSE, id.type = NA,
               attributes = NA, rm.xy = FALSE, pack.db = "org.Hs.eg.db")
@@ -16,7 +16,7 @@ decoRDA(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
 matrix of normalized gene expression data with 'g' features (rows) by 'n' samples (columns).
 }
   \item{classes}{
-factor or character vector of 's' size with two classes to contrast ('Supervised' analysis). Names of vector must match with colnames of 'data'. If any vector of classes is given, 'Unsupervised' analysis will be run with all samples.
+factor or character vector of 's' size with two ('Supervised' or 'Binary' analysis) or more classes ('Multiclass' analysis) to contrast. Names of vector must match with colnames of 'data'. If any vector of classes is given, 'Unsupervised' analysis will be run with all samples.
 }
   \item{control}{
 character label defining 'control' or '0' class for LIMMA contrast design.
@@ -55,11 +55,11 @@ logical indicating if features located on chromosomes 'X' or 'Y' have to be remo
 character naming annotation package to be used. \emph{Homo sapiens} annotation package \emph{org.Hs.eg.db} set as default, try first 'AnnotateDECO' R function with any other annotation package from Bioconductor to find out any problem.
 }}
 \details{
-The \bold{RDA step} is primarly conditioned by contrast design. Our capacity to highlight \emph{majority} or \emph{minority} features will vary depending on how much we want focusing the analyisis on classes or individual samples, or what is the same, the \bold{granularity of RDA}.
+The \bold{SDA step} is primarly conditioned by contrast design. Our capacity to highlight \emph{majority} or \emph{minority} features will vary depending on how much we want focusing the analyisis on classes or individual samples, or what is the same, the \bold{granularity of SDA}.
 
-In this way, it is necessary to highlight that two \bold{RDA strategies} could be: (a) a \bold{majority} one trying to improve our generic differential expression with higher subsampling size; and (b) a \bold{minority} strategy to find out all possible hidden subclasses. By default, \code{decoRDA()} defines an optimal subsample size \emph{r}. Let \emph{n} be the number of samples included in the analysis (if two classes are compared, it will be splitted), so based on previous analysis done by Babu et al.: \deqn{r = \sqrt{min(n)}}
+In this way, it is necessary to highlight that two \bold{SDA strategies} could be: (a) a \bold{majority} one trying to improve our generic differential expression with higher subsampling size; and (b) a \bold{minority} strategy to find out all possible hidden subclasses. By default, \code{decoSDA()} defines an optimal subsample size \emph{r}. Let \emph{n} be the number of samples included in the analysis (if two classes are compared, it will be splitted), so based on previous analysis done by Babu et al.: \deqn{r = \sqrt{min(n)}}
 
-The analysis can be set to find differences among two populations or classes and to find differences within the whole cohort of samples. Besides, \code{decoRDA()} can work under both scenarios: \bold{binary} analysis with two classes or \bold{unsupervised} analysis contrasting all samples. The \emph{classes} input is used to define it. If the user introduces any vector with labels of two classes for each sample, a \bold{binary} analysis will be run. Otherwise, without any \emph{classes} vector all samples will be compared with each other.
+The analysis can be set to find differences among two populations or classes and to find differences within the whole cohort of samples. Besides, \code{decoSDA()} can work under both scenarios: \bold{binary} analysis with two classes or \bold{unsupervised} analysis contrasting all samples. The \emph{classes} input is used to define it. If the user introduces any vector with labels of two classes for each sample, a \bold{binary} analysis will be run. Otherwise, without any \emph{classes} vector all samples will be compared with each other.
 }
 \value{
 Returns a list containing:
@@ -113,7 +113,7 @@ names(classes.ALCL) <- sampleNames(ALCLdata)
 # library(org.Hs.eg.db) # for gene annotation
 
 ## Not run as example
-# sub.ma.3r.1K <- decoRDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.01,
+# sub.ma.3r.1K <- decoSDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.01,
 #               rm.xy = TRUE, r = NULL, cpus = 2, parallel = FALSE, temp.path = getwd(),
 #               control = "pos", annot = TRUE, id.type = "ENSEMBL", iterations = 1000,
 #               pack.db = "org.Hs.eg.db")
@@ -126,7 +126,7 @@ names(classes.ALCL) <- sampleNames(ALCLdata)
 # [6] "resampleSize"    "control"         "pos.iter"        "q.val"           "call"
 
 
-## Top-10 RDA features.
+## Top-10 SDA features.
 # head(sub.ma.3r.1K$subStatFeature, 10)
 
 
@@ -135,7 +135,7 @@ names(classes.ALCL) <- sampleNames(ALCLdata)
 #################################################################
 
 ## Not run as example
-# sub.ma.3r.1K.uns <- decoRDA(data = exprs(ALCLdata), q.val = 0.01,
+# sub.ma.3r.1K.uns <- decoSDA(data = exprs(ALCLdata), q.val = 0.01,
 #                      rm.xy = TRUE, r = 3, cpus = 2, parallel = FALSE, temp.path = getwd(),
 #                      annot = TRUE, id.type = "ENSEMBL", iterations = 1000,
 #                      pack.db = "org.Hs.eg.db")
@@ -151,7 +151,7 @@ multi.cl <- as.factor(apply(pData(ALCLdata)[,8:9],1,function(x) paste(x,collapse
 head(multi.cl)
 
 ## Not run as example
-# sub.ma.3r.1K.multi <- decoRDA(data = exprs(ALCLdata), classes = multi.cl, q.val = 0.01,
+# sub.ma.3r.1K.multi <- decoSDA(data = exprs(ALCLdata), classes = multi.cl, q.val = 0.01,
 #                      rm.xy = TRUE, r = 3, cpus = 2, parallel = FALSE, temp.path = getwd(),
 #                      annot = TRUE, id.type = "ENSEMBL", iterations = 1000,
 #                      pack.db = "org.Hs.eg.db")

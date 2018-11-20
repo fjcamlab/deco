@@ -4,7 +4,7 @@
 Non-Symmetrical Correspondence Analysis (NSCA) applied to a subsampled dataset
 }
 \description{
-This function needs R object from 'decoRDA' function to operate. It will applied NSCA to the frequency matrix of differential events, so it could calculate 'h' statistic per feature per samples to find out new subclasses of samples.
+This function needs R object from 'decoSDA' function to operate. It will applied NSCA to the frequency matrix of differential events, so it could calculate 'h' statistic per feature per samples to find out new subclasses of samples.
 }
 \usage{
 decoNSCA(sub, rm.complete = FALSE, v = 80, k.control = NULL,
@@ -14,7 +14,7 @@ decoNSCA(sub, rm.complete = FALSE, v = 80, k.control = NULL,
          overlap = TRUE)
 }
 \arguments{
-  \item{sub}{an output R object from 'decoRDA' R function.
+  \item{sub}{an output R object from 'decoSDA' R function.
 }
   \item{rm.complete}{logical indicating if features showing a 'complete' profile should be removed while two classes contrast was set up.
 }
@@ -47,7 +47,7 @@ In this context, NSCA stablishes an assymetric and directional association betwe
 \value{
 Returns a "deco" object with following slots:
   \item{featureTable}{
-table of results with gene or feature statistical information about NSCA merged with subsampling information contained in previous 'diffgenes' value from 'decoRDA' function results.
+table of results with gene or feature statistical information about NSCA merged with subsampling information contained in previous 'diffgenes' value from 'decoSDA' function results.
 }
   \item{NSCAcluster}{
 list from 'NSCAcluster' R function containing information about NSCA. If 'Binary' analysis was previously set, two lists corresponding to each class are contained.
@@ -65,10 +65,10 @@ label if control class was defined.
 lowest number of repeats after applying 'decoNSCA' threshold.
 }
   \item{q.val}{
-adjusted.p.value threshold defined to each subsampling iteration with LIMMA within 'decoRDA' function.
+adjusted.p.value threshold defined to each subsampling iteration with LIMMA within 'decoSDA' function.
 }
   \item{subsampling.call}{
-call to decoRDA previously run.
+call to decoSDA previously run.
 }
   \item{deco.call}{
 call to decoNSCA previously run.
@@ -83,13 +83,13 @@ Beh, E.J. and Lombardo, R. (2014). \bold{Correspondence Analysis. Theory, Practi
 Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 }
 \seealso{
-\code{\link[deco]{decoRDA}}, \code{\link[stats]{hclust}}
+\code{\link[deco]{decoSDA}}, \code{\link[stats]{hclust}}
 }
 \examples{
-## User has to provide a RDA R object, running decoRDA() previously
+## User has to provide a SDA R object, running decoSDA() previously
 data(ALCLdata)
 
-## Slots included in the returned RDA object are:
+## Slots included in the returned SDA object are:
 names(sub.ma.3r.1K)
 # [1] "data"            "results"         "subStatFeature"  "incidenceMatrix" "classes"
 # [6] "resampleSize"    "control"         "pos.iter"        "q.val"           "call"
@@ -162,7 +162,7 @@ summary(deco.results.ma)
 # neg pos
 #  20  11
 
-#            RDA.q.value Minimum.repeats Percentage.of.affected.samples NSCA.variability
+#            SDA.q.value Minimum.repeats Percentage.of.affected.samples NSCA.variability
 # Thresholds        0.01           10.00                           5.00             84.1
 
 # Number of features out of thresholds: 255
@@ -170,8 +170,8 @@ summary(deco.results.ma)
 # Complete Majority Minority
 #       12       79      164
 # Number of samples affected: 31
-# Number of positive RDA comparisons: 1955
-# Number of total RDA comparisons: 10000
+# Number of positive SDA comparisons: 1955
+# Number of total SDA comparisons: 10000
 
 ###### Get info about "DECO" analysis
 print(deco.results.ma)

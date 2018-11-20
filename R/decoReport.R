@@ -148,7 +148,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
 
   ### FIRST SECTION
 
-  # RDA information table
+  # SDA information table
   j <- rbind(analysis, dim(deco@incidenceMatrix)[2], round(deco@featureTable[1,c("Repeats")]/deco@featureTable[1,c("FR.Repeats")],digits = 0),
              deco@pos.iter, round(deco@pos.iter/round(deco@featureTable[1,c("Repeats")]/deco@featureTable[1,c("FR.Repeats")],digits = 0)*100, 2),
              dim(deco@featureTable)[1], min(deco@featureTable$Repeats)-1, deco@q.val, sub$resampleSize)
@@ -160,16 +160,16 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
     infoS <- jColor(info.sample)
   else
     infoS <- NA
-  # Configuring device to print RDA and NSCA general information.
+  # Configuring device to print SDA and NSCA general information.
   layout(mat = matrix(c(1,2,3,4,5,5,5,5),nrow = 4, 2, byrow = FALSE), heights = c(2,0.75,1.5,2))
-  # Information about RDA step.
+  # Information about SDA step.
   colnames(j) <- c("")
   rownames(j) <- c("Contrast design:", "Number of samples:", "Total iterations:",
                    "Positive DE iterations:","% positive DE iterations:",
                    "DE features:","Minimum repeats:","LIMMA q.value threshold:",
-                   "RDA resampling size:")
+                   "SDA resampling size:")
   textplot(j, col.rownames = "darkblue", cex = 2, valign = "bottom")
-  mtext(text = "RDA information", cex = 1.4, font = 2, line = -5)
+  mtext(text = "SDA information", cex = 1.4, font = 2, line = -5)
   # Information about NSCA and subclasses clustering.
   color.table <- matrix(data = c(rep("black", dim(nsc)[2])), nrow = 3, ncol = dim(nsc)[2], byrow = FALSE)
   color.table[2, nsc[2,] > 0.05] <- "red"
@@ -282,9 +282,9 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
              mar = c(1,1,2,1), show.rownames = FALSE,
              col.colnames = c(rep("deepskyblue4",dim(textF)[2]-2),rep("darkred",3)),
              col.data = color.table[seq_len(info.size),])
-    title(list(paste("RDA: Top 50 feature signature."),
+    title(list(paste("SDA: Top 50 feature signature."),
                cex = 1.5), outer = TRUE, line = -2.5)
-    legend("bottomright",legend = c("RDA info","NSCA info"), title = "Colnames color",
+    legend("bottomright",legend = c("SDA info","NSCA info"), title = "Colnames color",
            col = c("deepskyblue4","darkred"), xpd = NA, bty = "n",
            pch = 65, cex = 1.3, inset = 0.05, pt.cex = 1.5,
            pt.lwd = 3, text.font = 2)
@@ -333,10 +333,10 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
                cmar = 1.1, mar = c(7,0,4,0), show.rownames = FALSE,
                col.colnames = c(rep("black",dim(tex)[2]-6),rep("navyblue",3),rep("darkred",3)),
                col.data = cbind(rep("black",info.size),color.table))
-      title(list(paste("RDA: Top",table(textF$ID != "")[1],"feature signature,",c("MAJORITIES","MINORITIES")[i],
+      title(list(paste("SDA: Top",table(textF$ID != "")[1],"feature signature,",c("MAJORITIES","MINORITIES")[i],
                        "ranking method was applied"),
                  cex = 1.5), outer = TRUE, line = -2.5)
-      legend("bottom",legend = c("RDA info","NSCA: CONTROL info","NSCA: CASE info"),
+      legend("bottom",legend = c("SDA info","NSCA: CONTROL info","NSCA: CASE info"),
              col = c("black","navyblue","darkred"), xpd = NA, bty = "n",
              pch = 88, cex = 1.3, inset = -0.05, pt.cex = 1.5, horiz = TRUE, yjust = 0,
              pt.lwd = 4, text.font = 2)
@@ -427,7 +427,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
                   shows NSCA p-value > 0.05."))
   while(i %in% seq_len(2))
   {
-    # Taking main data depending on RDA design.
+    # Taking main data depending on SDA design.
     if(analysis != "Binary"){
       i <- 3; MX <- as.matrix(deco@NSCAcluster$All$NSCA$h)
       nsca <- deco@NSCAcluster$All
@@ -771,7 +771,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
         if((x1 - x0) > 1) segments(x0 = x0,x1 = x1,y0 = y0,y1 = y0,col = "black",lty = 1, lwd = 3)
       }
       # Sample information and feature statistics will be plotted on the right side.
-      title(main = list("RDA & NSCA: Single feature patterns", cex = 1.5,
+      title(main = list("SDA & NSCA: Single feature patterns", cex = 1.5,
                         font = 2), outer = TRUE, line = -2)
       par(mar = c(7,5,4,5))
       # 'h' statistic per Subclass of samples.
@@ -960,7 +960,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   image(x = 0:1,y1,z1,col=color, cex = 1.2,
         axes=FALSE,xlab="",ylab=paste("Repeats"))
   axis(2, at = seq(1,max(y),length.out = 16), labels = round(seq(1,max(y),length.out = 16),0), font = 2, las = 2)
-  title(main = list("RDA: Repeats threshold based on differential events distribution per feature", font = 2, cex = 1.4),
+  title(main = list("SDA: Repeats threshold based on differential events distribution per feature", font = 2, cex = 1.4),
         outer = TRUE, line = -5)
 
   layout(mat = 1)
@@ -1023,7 +1023,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
   }
   par(xpd = FALSE)
 
-  title(list("RDA: Differential events counted per sample", cex = 1.3), outer = TRUE, line = -3)
+  title(list("SDA: Differential events counted per sample", cex = 1.3), outer = TRUE, line = -3)
   mtext(text = "Samples with higher amounts of 'Repeats' resemble\nmore different profiles from other class of samples.",
         outer = TRUE, line = -7, cex = 1.1)
 }
@@ -1264,7 +1264,7 @@ stackpoly.2 <- function (x, y = NULL, main = "", xlab = "", ylab = "", xat = NA,
        col = bo.color, bg = id.color, cex.lab = 1.5)
   abline(v = 0, h = c(0.2,0.4,0.75),
          lty = 2, xpd = FALSE, lwd = 1)
-  title(main = list("RDA: overlap Signal VS delta Signal plot", cex = 1.5), outer = TRUE, line = -4)
+  title(main = list("SDA: overlap Signal VS delta Signal plot", cex = 1.5), outer = TRUE, line = -4)
   high <- as.character(deco@featureTable[order(deco@featureTable$Standard.Chi.Square, decreasing = TRUE),]$ID)[seq_len(10)]
   text(s[high, ], labels = symbol[high], cex = 0.9, col = "darkred", font = 2)
   if(any(!id %in% high))
@@ -1383,7 +1383,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE)
   par(mar = c(8,10,5,8))
   textplot(round(summary(m)$coefficients, 4), cex = 1.3)
   mtext(paste("Calculated non-linear model, adjusted r-squared =",round(summary(m)$adj.r.squared,3)), las = 1)
-  title(main = list("RDA: Repeats threshold based on differential events distribution per feature", font = 2, cex = 1.4),
+  title(main = list("SDA: Repeats threshold based on differential events distribution per feature", font = 2, cex = 1.4),
         outer = TRUE, line = -5)
 
   layout(mat = 1)
@@ -2263,7 +2263,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     }
     par(xpd=FALSE)
     # Sample information and feature statistics will be plotted on the right side.
-    title(main = list("RDA & NSCA: Single feature pattern", cex = 1.8,
+    title(main = list("SDA & NSCA: Single feature pattern", cex = 1.8,
                       font = 2), outer = TRUE, line = -2)
     par(mar = c(7,5,4,5))
     # 'h' statistic per Subclass of samples.
@@ -2318,7 +2318,7 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
              cex = cex.legend+0.5)}
     else{
       plot(1, type = "n", axes=FALSE, xlab="", ylab="")
-      legend("center",legend = c("No classes were defined\nfor RDA subsampling"),
+      legend("center",legend = c("No classes were defined\nfor SDA subsampling"),
              bty = "n", pt.cex = 2, xpd = TRUE, xjust = 0.5,
              cex = cex.legend+0.5)
     }
