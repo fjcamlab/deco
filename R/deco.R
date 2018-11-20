@@ -18,10 +18,6 @@ names(slots) <- c("featureTable","NSCAcluster","incidenceMatrix","classes","pos.
                   "q.val", "rep.thr", "samp.perc","subsampling.call","deco.call")
 setClass(Class = "deco", slots = slots, sealed = FALSE)
 
-############################################
-options(repos = c(CRAN="http://cran.r-project.org"))
-
-
 ###################################
 ###         decoSDA           ###
 ###################################
@@ -174,7 +170,8 @@ decoSDA <- function(data, classes = NA, control = NA, r = NULL,
         stop("Non-integer argument passed as number of combinations.")
     }
   }
-  # Calculate random or all possible combinations between samples if 'binary' or 'unsupervised' has been proposed.
+  # Calculate random or all possible combinations between samples if 'binary',
+  # 'multiclass' or 'unsupervised' has been proposed.
   if(user == "y" & !multi)
   {
     allCombControl <- combn(n1,r)

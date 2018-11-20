@@ -100,7 +100,7 @@ opts_chunk$set(warning=FALSE,message=FALSE,cache=TRUE,fig.path='figures/',tidy=F
 
 # 1. Variability and heterogeneity in high-dimensional data
 
-Individual diversity and variability is one of the most complex issues to deal within high-dimensional studies of large populations, as the ones currently performed in biomedical analyses using omic technologies. DECO is a method that combines two main computational procedures: **(i)** a **Recursive Differential Analysis (SDA)** that performs combinatorial sampling without replacement to select multiple sample subsets followed by differential analysis; and **(ii)** a **Non-Symmetrical Correspondence Analysis (NSCA)** of differential events that allow the characterization and assigment of features and samples in a common multidimensional space, combining in a single statistic parameterization both the feature-sample changes detected and a predictor-response information. 
+Individual diversity and variability is one of the most complex issues to deal within high-dimensional studies of large populations, as the ones currently performed in biomedical analyses using omic technologies. DECO is a method that combines two main computational procedures: **(i)** a **Stratified Differential Analysis (SDA)** that performs combinatorial sampling without replacement to select multiple sample subsets followed by differential analysis; and **(ii)** a **Non-Symmetrical Correspondence Analysis (NSCA)** of differential events that allow the characterization and assigment of features and samples in a common multidimensional space, combining in a single statistic parameterization both the feature-sample changes detected and a predictor-response information. 
 
 The statistical procedure followed in both parts of the method are detailed in the original [publication](#references) [1], but this brief **vignette** explains how to use **DECO** to analyze multidimensional datasets that may include heterogeneous samples. The aim is to improve characterization and stratification of complex sample series, mostly focusing on large patient cohorts, where the existence of outlier or mislabeled samples is quite possible.
 
@@ -223,9 +223,9 @@ Additionally, more information about different data platforms available for dire
 \pagebreak
 \pagebreak
 
-# 4. SDA, Recursive Differential Analysis: *Standard.Chi.Square*
+# 4. SDA, Stratified Differential Analysis: *Standard.Chi.Square*
 
-We proposed a recursive subsampling strategy which selects subsets of samples (from the different classes) and compares all against all (in an exhaustive search). When the number of combinations is very large a random selection of all possible subsets is done. In order to obtain the best possible results, three parameters should be taken into consideration before running the analysis: **(i)** the subsampling size called `r` (DECO method calculates an optimal size of subsampling subsets if the user does not define it); **(ii)** number of subsets or combinations, called `iterations`, to compare in this subsampling step; and **(iii)** adjusted.p.value threshold for the differential tests or contrasts, called `q.val` and computed using eBayes from [LIMMA](#references) [2].
+We proposed a exhaustive subsampling strategy which selects subsets of samples (from the different classes) and compares all against all (in an exhaustive search). When the number of combinations is very large a random selection of all possible subsets is done. In order to obtain the best possible results, three parameters should be taken into consideration before running the analysis: **(i)** the subsampling size called `r` (DECO method calculates an optimal size of subsampling subsets if the user does not define it); **(ii)** number of subsets or combinations, called `iterations`, to compare in this subsampling step; and **(iii)** adjusted.p.value threshold for the differential tests or contrasts, called `q.val` and computed using eBayes from [LIMMA](#references) [2].
 
 Aiming to summarize all positive differential events (DE) for each feature (combinations with a lower *adj.p.value* than threshold), Fisher's combined probability test is applied to each final feature vector of *adj.p.values* to obtain a **Standard.Chi.Square**, which will is not affected by type of analysis (*supervised* or *unsupervised*) because it only takes into account number of positive DE events.
 
@@ -234,16 +234,17 @@ Aiming to summarize all positive differential events (DE) for each feature (comb
 Depending on *classes* input vector, a *supervised* or *binary* analysis compares just two types of samples (i.e. healthy donors *versus* patients in a typical biomedical study). The `decoSDA()` SDA function will adjust the optimal subsampling size *r* (that the user can modify) to explore all DE signal, and UP and DOWN events will be taken into account for posterior **NSCA**. Here, an example of *decoSDA* function using `ALCLdata` dataset:
 
 ```{r, message = FALSE, warning = FALSE, results='hide'}
-# if gene annotation will be required (annot = TRUE or rm.xy = TRUE)
+## if gene annotation will be required (annot = TRUE or rm.xy = TRUE)
 # library(org.Hs.eg.db)
 
-# number of samples per category
+## number of samples per category
 table(classes.ALCL)
 # classes.ALCL
 #   neg   pos 
 #    20    11 
 
-# example of SUPERVISED or BINARY design with Affymetrix microarrays data 
+## example of SUPERVISED or BINARY design with Affymetrix microarrays data 
+# set annot = TRUE if annotation is required and corresponding library was loaded
 sub_binary <- decoSDA(data = exprs(ALCLdata), classes = classes.ALCL, q.val = 0.05, 
                       iterations = 1000, rm.xy = FALSE, r = NULL, cpus = 6, 
                       parallel = TRUE, temp.path = getwd(), 
@@ -306,7 +307,7 @@ sub_multiclass <- decoSDA(data = exprs(ALCLdata), classes = multiclasses.ALCL, q
 
 ## 4.4 Running the SDA function: `decoSDA()`
 
-This vignette presented some examples of `decoSDA()` subsampling function for *supervised* and *unsupervised* analyses (if user has two classes of samples or not). Now, details about all the input parameters which control the SDA procedure are indicated:
+This vignette presented some examples of `decoSDA()` subsampling function for *supervised*, *multiclass* and *unsupervised* analyses. Now, the details about all the input parameters which control the SDA procedure are indicated:
 
 - `data` input corresponds to our expression matrix with features as rows and samples as columns.
 
@@ -324,7 +325,7 @@ This vignette presented some examples of `decoSDA()` subsampling function for *s
 
 All the rest of parameters are used to annotate features or to establish a parallel computation of processes, so they are explained within a longer and more detailed vignette included in the DECO R package.
 
-# 5. NSCA, Non-Symmetrical Correspondence Analysis: *h* statistic
+# 5. NSCA, Non-Symmetrical Correspondence Analysis: *h-statistic*
 
 Once the frequency matrix of DE events or *incidenceMatrix* has been produced, DECO follows applying a [NSCA](#references) [7] procedure. **NSCA** allows analyse all dependencies and covariances between differential features and samples placing them in the same relational space. Further information can be found in a more detailed vignette included in the DECO R package and also in our original [publication](#references) [1].
 
@@ -347,7 +348,7 @@ deco_results <- decoNSCA(sub = sub_binary, v = 80, method = "ward.D",
 
 Several important **input parameters** of this `decoNSCA()` function can be set up by user. Further information could be found in `?decoNSCA` help page. Finally, this function will return an output R object `deco` that is described in the following section.
 
-# 6. Description of output results
+# 6. Description of final output results
 
 ```{r, message = FALSE, results='hide'}
 slotNames(deco_results)
