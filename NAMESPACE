@@ -1,23 +1,23 @@
-export(decoSDA)
+export(decoRDA)
 export(decoNSCA)
 export(decoReport)
 export(AnnotateDECO)
 export(plotDECOProfile)
-S3method(summary,deco)
-S3method(print,deco)
 
 exportClasses(deco)
+exportMethods(summary)
+exportMethods(show)
+exportMethods(featureTable)
+exportMethods(NSCAcluster)
 
-import(grDevices)
-import(graphics)
-import(utils)
 import(stats)
 import(methods)
 import(Biobase)
+import(SummarizedExperiment)
 import(AnnotationDbi)
 import(limma)
 import(locfit)
-import(snowfall)
+import(BiocParallel)
 import(cluster)
 import(made4)
 import(ade4)
@@ -33,4 +33,5 @@ importFrom("graphics", "abline", "axis", "boxplot", "hist", "image",
            "layout", "legend", "lines", "mtext", "par", "pie", "plot",
            "plot.new", "points", "polygon", "rect", "segments",
            "stripchart", "text", "title")
-importFrom("utils", "combn", "write.table")
+importFrom("utils", "combn", "write.table",
+           "setTxtProgressBar", "txtProgressBar")

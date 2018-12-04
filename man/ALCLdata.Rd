@@ -21,7 +21,7 @@ GEO database ID: GSE65823
 
 GATExplorer CDF genemappers:
 
-\url{http://bioinfow.dep.usal.es/xgate/principal.php}
+\url{https://doi.org/10.1186/1471-2105-11-221}
 }
 \references{
 Scarfo, Irene et al. \bold{Identification of a new subclass of ALK negative ALCL expressing aberrant levels of ERBB4 transcripts.} \emph{Blood} (2015). \url{http://dx.doi.org/10.1182/blood-2014-12-614503}.
@@ -31,25 +31,23 @@ data(ALCLdata)
 
 ## list objects included
 ls()
-
-# slots of the ExpressionSet object
-str(ALCLdata)
 # [1] "ALCLdata"        "sub.ma.3r.1K"    "deco.results.ma"
 
 # phenodata of each sample
-pData(ALCLdata)
+head(colData(ALCLdata))
 
 # classes vector
-classes.ALCL <- pData(ALCLdata)[,"Alk.positivity"]
-names(classes.ALCL) <- sampleNames(ALCLdata)
+classes.ALCL <- colData(ALCL)[,"Alk.positivity"]
+names(classes.ALCL) <- colnames(ALCL)
 
 # gene expression matrix with 1000 ENSEMBL genes (mapped using GATExplorer genemappers)
 # and 31 samples (11 ALK+ and 20 ALK-)
-dim(exprs(ALCLdata))
+dim(assay(ALCL))
 # [1] 1000    31
 
 # density plot of RMA gene values from all dataset
-plot(density(exprs(ALCLdata)))
+plot(density(assay(ALCL)))
 
 }
-\keyword{datasets}
+\keyword{dataset}
+\keyword{transcriptomic}

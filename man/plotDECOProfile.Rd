@@ -32,7 +32,7 @@ logical indicating if points corresponding to 'h' relative values should be plot
 a factor or data.frame with relevant information of samples to be plot on 'Heatmap'.
 }
   \item{print.annot}{
-logical indicating if annotation (gene SYMBOL) should be printed instead original IDs. This option needs previous annotation within 'decoSDA' function or late annotation binding information to @featureTable slot of 'deco' R object.
+logical indicating if annotation (gene SYMBOL) should be printed instead original IDs. This option needs previous annotation within 'decoRDA' function or late annotation binding information to @featureTable slot of 'deco' R object.
 }
   \item{cex.legend}{
 numerical value giving the amount of magnification of legend.
@@ -55,13 +55,14 @@ Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 }
 \examples{
 #### Further information in DECO vignette(s).
-## Run after decoSDA and decoNSCA steps on 'ALCLdata'
+## Run after decoRDA and decoNSCA steps on 'ALCLdata'
 data(ALCLdata)
-ALCLdata
+ALCL
 
 ### ERBB4 gene profile
 # plotDECOProfile(deco = deco.results.ma, id = "ENSG00000178568",
-#                 data = exprs(ALCLdata), pdf.file = "ERBB4_ALCLdata.pdf",
-#                 cex.samples = 2, info.sample = pData(ALCLdata)[,c(9,8,10)])
+#                 data = assay(ALCL), pdf.file = "ERBB4_ALCLdata.pdf",
+#                 cex.samples = 2,
+#                 info.sample = as.data.frame(colData(ALCL))[,c(9,8,10)])
 
 }

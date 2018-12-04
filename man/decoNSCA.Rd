@@ -4,19 +4,17 @@
 Non-Symmetrical Correspondence Analysis (NSCA) applied to a subsampled dataset
 }
 \description{
-This function needs R object from 'decoSDA' function to operate. It will applied NSCA to the frequency matrix of differential events, so it could calculate 'h' statistic per feature per samples to find out new subclasses of samples.
+This function needs R object from 'decoRDA' function to operate. It will applied NSCA to the frequency matrix of differential events, so it could calculate 'h' statistic per feature per samples to find out new subclasses of samples.
 }
 \usage{
-decoNSCA(sub, rm.complete = FALSE, v = 80, k.control = NULL,
+decoNSCA(sub, v = 80, k.control = NULL,
          k.case = NULL, rep.thr = 3,
          samp.perc = 0.05,
-         method = "ward.D", parallel = FALSE, cpus = 2,
-         overlap = TRUE)
+         method = "ward.D",
+         parallel = FALSE, cpus = 2)
 }
 \arguments{
-  \item{sub}{an output R object from 'decoSDA' R function.
-}
-  \item{rm.complete}{logical indicating if features showing a 'complete' profile should be removed while two classes contrast was set up.
+  \item{sub}{an output R object from 'decoRDA' R function.
 }
   \item{v}{minimum percentage of variability that NSCA have to explain.
 }
@@ -34,8 +32,6 @@ decoNSCA(sub, rm.complete = FALSE, v = 80, k.control = NULL,
 }
   \item{cpus}{number of cores to parallel process.
 }
-  \item{overlap}{logical indicating if overlap measure of raw omic signal between 'Control' and 'Case' samples per feature should be done. Intern option to make faster some processes.
-}
 }
 \details{
 Once we obtain frequency matrix of DE events or \emph{incidenceMatrix}, we applied a \bold{NSCA} procedure. NSCA let us to analyse all dependendent structures between differential features and samples derived from the same relational space (dataset).
@@ -47,7 +43,7 @@ In this context, NSCA stablishes an assymetric and directional association betwe
 \value{
 Returns a "deco" object with following slots:
   \item{featureTable}{
-table of results with gene or feature statistical information about NSCA merged with subsampling information contained in previous 'diffgenes' value from 'decoSDA' function results.
+table of results with gene or feature statistical information about NSCA merged with subsampling information contained in previous 'diffgenes' value from 'decoRDA' function results.
 }
   \item{NSCAcluster}{
 list from 'NSCAcluster' R function containing information about NSCA. If 'Binary' analysis was previously set, two lists corresponding to each class are contained.
@@ -65,10 +61,10 @@ label if control class was defined.
 lowest number of repeats after applying 'decoNSCA' threshold.
 }
   \item{q.val}{
-adjusted.p.value threshold defined to each subsampling iteration with LIMMA within 'decoSDA' function.
+adjusted.p.value threshold defined to each subsampling iteration with LIMMA within 'decoRDA' function.
 }
   \item{subsampling.call}{
-call to decoSDA previously run.
+call to decoRDA previously run.
 }
   \item{deco.call}{
 call to decoNSCA previously run.
@@ -83,13 +79,13 @@ Beh, E.J. and Lombardo, R. (2014). \bold{Correspondence Analysis. Theory, Practi
 Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 }
 \seealso{
-\code{\link[deco]{decoSDA}}, \code{\link[stats]{hclust}}
+\code{\link[deco]{decoRDA}}, \code{\link[stats]{hclust}}
 }
 \examples{
-## User has to provide a SDA R object, running decoSDA() previously
+## User has to provide a RDA R object, running decoRDA() previously
 data(ALCLdata)
 
-## Slots included in the returned SDA object are:
+## Slots included in the returned RDA object are:
 names(sub.ma.3r.1K)
 # [1] "data"            "results"         "subStatFeature"  "incidenceMatrix" "classes"
 # [6] "resampleSize"    "control"         "pos.iter"        "q.val"           "call"
@@ -114,30 +110,31 @@ class(deco.results.ma)
 # slotNames(deco.results.ma)
 # [1] "featureTable"     "NSCAcluster"      "incidenceMatrix"  "classes"          "pos.iter"
 # [6] "control"          "q.val"            "rep.thr"          "samp.perc"        "subsampling.call"
-#[11] "deco.call"
+#[11] "nsca.call"
 
 
 ## Top-10 features from DECO analysis based on "Standard.Chi.Square"
-# head(slot(deco.results.ma, "featureTable")[order(deco.results.ma@featureTable$Standard.Chi.Square,
-#      decreasing = TRUE),], 10)
+head(featureTable(deco.results.ma)[order(featureTable(deco.results.ma)$Standard.Chi.Square,
+     decreasing = TRUE),], 10)
 
 
-#### Matrix of 'h statistic' calculated by DECO per category of samples
-# (if binary analysis was carried out).
-# dim(slot(deco.results.ma, "NSCAcluster")$Control$NSCA$h)
-# dim(slot(deco.results.ma, "NSCAcluster")$Case$NSCA$h)
+## Matrix of 'h statistic' calculated by DECO per category of samples
+# if binary analysis was carried out.
+dim(NSCAcluster(deco.results.ma)$Control$NSCA$h)
+dim(NSCAcluster(deco.results.ma)$Case$NSCA$h)
 
 
-## Top-10 discriminant features for CASE samples (ALK-) based on 'h statistic per subclass found.
-head(slot(deco.results.ma, "NSCAcluster")$Case$rankingFeature.h, 10)
+## Top-10 discriminant features for CASE samples (ALK-) based on
+# 'h statistic per subclass found.
+head(NSCAcluster(deco.results.ma)$Case$rankingFeature.h, 10)
 
 
 ### Sample and subclass information could be found in two slots within 'NSCAcluster':
 ## General information about subclasses
-# slot(deco.results.ma, "NSCAcluster")$Case$infoSubclass
+# NSCAcluster(deco.results.ma)$Case$infoSubclass
 
 ## Sample membership to a subclass.
-# slot(deco.results.ma, "NSCAcluster")$Case$samplesSubclass
+# NSCAcluster(deco.results.ma)$Case$samplesSubclass
 
 
 ## Both 'hclust' dendrogram information of CASE samples and features.
@@ -145,10 +142,10 @@ head(slot(deco.results.ma, "NSCAcluster")$Case$rankingFeature.h, 10)
 ## correlation between dendrogram distances
 # and distance matrix.
 
-#names(slot(deco.results.ma, "NSCAcluster")$Case$hclustSamp)
+#names(NSCAcluster(deco.results.ma)$Case$hclustSamp)
 #[1] "dend"    "coph"    "cluster" "huber"
 
-#names(slot(deco.results.ma, "NSCAcluster")$Case$hclustFeat)
+#names(NSCAcluster(deco.results.ma)$Case$hclustFeat)
 #[1] "dend"    "coph"    "cluster" "huber"
 
 ###### Get summary info about "DECO" analysis:
@@ -162,7 +159,7 @@ summary(deco.results.ma)
 # neg pos
 #  20  11
 
-#            SDA.q.value Minimum.repeats Percentage.of.affected.samples NSCA.variability
+#            RDA.q.value Minimum.repeats Percentage.of.affected.samples NSCA.variability
 # Thresholds        0.01           10.00                           5.00             84.1
 
 # Number of features out of thresholds: 255
@@ -170,11 +167,11 @@ summary(deco.results.ma)
 # Complete Majority Minority
 #       12       79      164
 # Number of samples affected: 31
-# Number of positive SDA comparisons: 1955
-# Number of total SDA comparisons: 10000
+# Number of positive RDA comparisons: 1955
+# Number of total RDA comparisons: 10000
 
 ###### Get info about "DECO" analysis
-print(deco.results.ma)
+show(deco.results.ma)
 
 #########################################################################
 # RUNNING NSCA STEP: Looking for subclasses within all samples compared #
@@ -183,7 +180,7 @@ print(deco.results.ma)
 ## Not run as example
 # deco.results.ma.uns <- decoNSCA(sub = sub.ma.3r.1K.uns, v = 80, method = "ward.D",
 #                         k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 3,
-#                         parallel = FALSE, cpus = 2, rm.complete = FALSE, overlap = TRUE)
+#                         parallel = FALSE, cpus = 2)
 
 ########################################
 # RUNNING NSCA STEP: Multiclass design #
@@ -192,6 +189,6 @@ print(deco.results.ma)
 ## Not run as example
 # deco.results.ma.multi <- decoNSCA(sub = sub.ma.3r.1K.multi, v = 80, method = "ward.D",
 #                         k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 3,
-#                         parallel = FALSE, cpus = 2, rm.complete = FALSE, overlap = TRUE)
+#                         parallel = FALSE, cpus = 2)
 
 }

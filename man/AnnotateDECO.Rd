@@ -45,9 +45,9 @@ Francisco Jose Campos Laborie <fjcamlab@usal.es>
 
 # columns(x = org.Hs.eg.db)
 
-# Selecting first 10 original IDs from ALCLdata
+# Selecting first 10 original IDs from ALCL dataset
 data(ALCLdata)
-ids <- rownames(exprs(ALCLdata))[1:10]
+ids <- rownames(assay(ALCL))[1:10]
 
 ## Not run as example
 # annot <- AnnotateDECO(ids, id.type = "ENSEMBL",
