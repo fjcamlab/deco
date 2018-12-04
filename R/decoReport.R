@@ -302,11 +302,11 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf",
         rankingH <- deco@NSCAcluster[[1]]$rankingFeature.h
     }
 
-    # txt.file <- rev(unlist(strsplit(pdf.file, split = "/", fixed = T)))[1]
-    txt.fileF <- paste(unlist(strsplit(pdf.file, split = ".pdf", fixed = TRUE))[1], "_DECO_feature_statistics", ".tsv", sep = "")
-    txt.fileH <- paste(unlist(strsplit(pdf.file, split = ".pdf", fixed = TRUE))[1], "_DECO_feature_h", ".tsv", sep = "")
-    txt.fileS <- paste(unlist(strsplit(pdf.file, split = ".pdf", fixed = TRUE))[1], "_DECO_samples_subclass_membership", ".tsv", sep = "")
-    write.table(deco@featureTable, txt.fileF, sep = "\t", row.names = FALSE)
+    txt.file <- unlist(strsplit(pdf.file, split = ".pdf", fixed = TRUE))[1]
+    txt.fileF <- paste(txt.file, "_DECO_feature_statistics", ".tsv", sep = "")
+    txt.fileH <- paste(txt.file, "_DECO_feature_h", ".tsv", sep = "")
+    txt.fileS <- paste(txt.file, "_DECO_samples_subclass_membership", ".tsv", sep = "")
+    write.table(featureTable(deco), txt.fileF, sep = "\t", row.names = FALSE)
     write.table(data.frame(ID = rownames(rankingH), rankingH), txt.fileH, sep = "\t", row.names = FALSE)
     write.table(data.frame(RefNumber = rownames(formatObj$samplesSubclass), formatObj$samplesSubclass), txt.fileS, sep = "\t", row.names = FALSE)
 
