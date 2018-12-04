@@ -1,5 +1,6 @@
 ---
-title: "DECO: DEcomposing heterogeneous Cohorts using Omic profiling data"
+title: "DECO"
+subtitle: "DEcomposing heterogeneous Cohorts using Omic profiling data"
 author:
   - name: FJ Campos-Laborie 
   - name: JM Sanchez-Santos
@@ -110,7 +111,7 @@ multiclasses.ALCL <- factor(apply(
 
 Here, we show a RNAseq dataset analysed using DECO, downloaded from [The Cancer Genome Atlas (TCGA)](http://cancergenome.nih.gov/). It is composed by 1212 clinical samples from patients with different [subtypes of Breast Cancer](#references) [6], which includes standard histological subtypes (given by markers ESR1, PGR and HER2) and two classes associated to the cell-type, called: **Invasive Ductal Carcinoma** (IDC) and **Invasive Lobular Carcinoma** (ILC). The genes of the dataset are mapped to HGNC symbol IDs and the dataset can be loaded directly in R or downlad from the [TCGA data portal](https://gdc-portal.nci.nih.gov/):
 
-```{r, message = FALSE, eval = FALSE}
+```{r, message = FALSE, eval=FALSE}
 # Loading library
 library(curatedTCGAData)
 library(MultiAssayExperiment)
@@ -146,7 +147,7 @@ Then, user can run *voom* normalization method provided in LIMMA R package to ca
 
 Together with RNA-seq or microarray platforms, DECO algorithm can be applied to datasets obtained with other **omic platforms** (as far as a correct normalization of the data per sample can be achieved). In order to provide an example of other platform, we show an example of a **miRNAs dataset** from same TCGA library used above:
 
-```{r, message = FALSE, eval = FALSE}
+```{r, message = FALSE, eval=FALSE}
 # Download counts from RNAseq data of miRNAs
 BRCA_dataset_counts_mirna <- curatedTCGAData(
     diseaseCode = "BRCA",
@@ -163,6 +164,32 @@ BRCA_exp_mirna <- limma::voom(BRCA_counts_mirna)$E # logCPMs
 ```
 
 Additionally, more information about different omic platforms and sample information is available on `curatedTCGA` or `MultiAssayExperiment` R package vignettes. Despite the sample information, we could design group-vs-group (binary), multiclass or unsupervised comparisons in TCGA datasets using `deco` and `curatedTCGA` R packages.
+
+# Intern parallelization with `BiocParallel`
+
+The computational cost of DECO algorithm is depending on the size of our omic matrix: number of features, number of samples, number of categories, etc. For this reason, the `deco` R package includes intern parallelization based on [BiocParallel R package](http://bioconductor.org/packages/release/bioc/html/BiocParallel.html):
+
+- `SnowParam()` for computing in distributed memory
+
+- `MulticoreParam()` for computing in shared memory
+
+- `BatchJobsParam()` for computing with cluster schedulers
+
+- `DoparParam()` for computing with foreach
+
+- `SerialParam()` for non-parallel evaluation
+
+Before running the main functions `decoRDA()` or `decoNSCA()` R functions, the user can set up the number of cpus following the procedures described in the `BiocParallel` vignette:
+
+```{r, message = FALSE}
+library(BiocParallel)
+
+# Non-parallel computing
+register(SerialParam())
+
+# Computing in shared memory
+register(MulticoreParam(workers = 4))
+```
 
 # RDA, Recurrent-sampling Differential Analysis: *Standard.Chi.Square*
 
@@ -198,7 +225,7 @@ sub_binary <- decoRDA(
 
 This **RDA** procedure generates an `incidenceMatrix` which counts differential events per gene (feature) per sample. Thus, this matrix would contain just differential genes as rows and samples as columns with one differential event at least.
 
-```{r, message = FALSE, eval=FALSE}
+```{r, message = FALSE}
 dim(sub_binary$incidenceMatrix)
 ```
 
@@ -211,7 +238,7 @@ The `incidenceMatrix` produced after the RDA, can reveal the important changes t
 
 If *classes* input vector is empty, a *unsupervised* analysis is run comparing all against all samples taking different subsets (each combination of samples is unique) and looking for UP events. Then, those samples which show any differential change with statistical significance will be counted. In order to clarify final results of NSCA analysis, it is important to underline that just UP regulated events will be assigned to samples, while both UP and DOWN regulation events are counted in the *supervised* analyisis explain above.
 
-```{r, message = FALSE, results='hide', eval=FALSE}
+```{r, message = FALSE, results='hide'}
 # if gene annotation will be required (annot = TRUE or rm.xy = TRUE)
 # library(org.Hs.eg.db)
 # example of UNSUPERVISED design with RNA-seq data (log2[RPKM])
@@ -231,7 +258,7 @@ In this case, the **RDA** procedure will generate an `incidenceMatrix` which cou
 
 Together with *supervised* or *unsupervised* analyses, the method can be run for *multiclass comparison*, taking subsets of samples from several classes identified *a priori* and forcing them to be compared. Then, we would count differential events per feature per sample but there will not be mix between different classes. Here, we show an example of a breast cancer dataset (from [Ciriello et al.](#references) [6], log2(RPKM+1) scaled) that uses the well-defined PAM50 classes:
 
-```{r, message = FALSE, results='hide', eval=FALSE}
+```{r, message = FALSE, results='hide'}
 # number of samples per category
 table(multiclasses.ALCL)
 # multiclasses.ALCL
@@ -279,7 +306,7 @@ Additionally, all different *agglomeration methods* to creates a dendrogram (see
 
 Here, we show an example (based on group-vs-group comparison using `ALCLdata`) of how user can run the second step of **DECO**:
 
-```{r, message = FALSE, results='hide', eval=FALSE}
+```{r, message = FALSE, results='hide'}
 # It can be applied to any subsampling design (BINARY, MULTICLASS, or UNSUPERVISED)
 deco_results <- decoNSCA(
     sub = sub_binary, v = 80, method = "ward.D",
@@ -304,7 +331,7 @@ Several important **input parameters** of this `decoNSCA()` function can be set 
 
 # Description of final output results
 
-```{r, message = FALSE, results='hide', eval=FALSE}
+```{r, message = FALSE}
 slotNames(deco_results)
 ```
 
@@ -328,7 +355,7 @@ After running NSCA function *decoNSCA*, the method produces an R object of *deco
 
 The main output table with relevant feature information from RDA, NSCA and subclasses searching corresponds to *featureTable*. 
 
-```{r, warning=TRUE, results='hide', eval=FALSE}
+```{r, warning=TRUE}
 resultsTable <- featureTable(deco_results)
 dim(resultsTable)
 
@@ -351,7 +378,7 @@ After RDA and NSCA analysis, the statistics referred to sample subclasses found 
 
 To see how samples are grouped into different *subclasses* within class:
 
-```{r, warning=TRUE, eval=FALSE}
+```{r, warning=TRUE}
 # If SUPERVISED analysis
 sampleSubclass <- rbind(
     NSCAcluster(deco_results)$Control$samplesSubclass,
@@ -366,7 +393,7 @@ head(sampleSubclass)
 
 Additionally, we can print a brief summary of DECO analysis using `summary` or `show` native R functions.
 
-```{r, warning=TRUE, results='hide', eval=FALSE}
+```{r, warning=TRUE, results='hide'}
 ## Example of summary of a 'deco' R object (ALCL supervised/binary example)
 
 summary(deco_results)

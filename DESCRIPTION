@@ -1,7 +1,7 @@
 Package: deco
 Type: Package
 Title: Decomposing Heterogeneous Cohorts using Omic Data Profiling
-Version: 0.99.32
+Version: 0.99.33
 Date: 2018-12-04
 Author: Francisco Jose Campos-Laborie, Jose Manuel Sanchez-Santos and Javier De
     Las Rivas. Bioinformatics and Functional Genomics Group. Cancer Research Center
@@ -15,10 +15,10 @@ Description: This package discovers differential features in hetero- and homogen
     by a two-step method including subsampling LIMMA and NSCA. DECO reveals
     feature associations to hidden subclasses not exclusively related to
     higher deregulation levels.
-Depends: R (>= 3.6.0), AnnotationDbi, graphics, utils, SummarizedExperiment
-Imports: stats, methods, limma, foreign, BiocParallel, BiocStyle,
+Depends: R (>= 3.6.0), AnnotationDbi, BiocParallel, SummarizedExperiment
+Imports: stats, methods, limma, foreign, graphics, BiocStyle,
         Biobase, cluster, gplots, RColorBrewer, locfit, made4,
-        ade4, sfsmisc, scatterplot3d, gdata, grDevices
+        ade4, sfsmisc, scatterplot3d, gdata, grDevices, utils
 Suggests: knitr
 License: GPL (>=3)
 URL: http://bioinfow.dep.usal.es/deco/

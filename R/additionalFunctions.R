@@ -6,6 +6,27 @@
 .timestamp <- function()
     format(Sys.time(), " %H:%M:%S")
 
+# Temporary directory
+
+.createTempFile <- function()
+{
+  uniqueName <- unlist(
+    strsplit(tempfile(pattern = "DECO_temp"), 
+                                split = "//")
+    )[2]
+  
+  uniqueName <- paste(
+    unlist(strsplit(uniqueName, split = "/")), 
+    collapse = "_"
+  )
+  
+  temp.path <- paste(getwd(), "/", uniqueName, sep = "")
+  
+  dir.create(temp.path)
+  
+  return(temp.path)
+}
+
 ################################################
 ################################################
 # localMinima and localMaxima
@@ -694,7 +715,6 @@ jColor <- function(info) {
 
     suppressWarnings(limma1 <- bplapply(seq_len(dim(results)[1]),
         FUN = .limmaSubsamp,
-        BPPARAM = MulticoreParam(cpus),
         results = results[, seq_len(2 * r)], r = r,
         data = data, q.val = q.val,
         temp.path = temp.path
@@ -776,7 +796,7 @@ jColor <- function(info) {
 
     # Generating intermediate files in temporary dir. If any DE feature is found for
     # any combination, no file would be created.
-    resultfile <- paste(temp.path, c("diff", "incid"),
+    resultfile <- paste(temp.path, "/", c("diff", "incid"),
         counter, ".dta",
         sep = ""
     )
@@ -905,7 +925,6 @@ jColor <- function(info) {
 
 .repThr <- function(sub, rep.thr, samp.perc, cpus) {
     suppressWarnings(g.names <- unlist(bplapply(rownames(sub$incidenceMatrix),
-        BPPARAM = MulticoreParam(cpus),
         FUN = function(x) unlist(strsplit(x, split = "deco", fixed = TRUE))[1]
     )))
     names(g.names) <- rownames(sub$incidenceMatrix)
@@ -971,7 +990,6 @@ overlapC <- function(sub, cl1, cpus) {
     ## Calculating overlap...
     suppressWarnings(overlap <- bplapply(
         X = rownames(sub$subStatFeature),
-        BPPARAM = MulticoreParam(cpus),
         FUN = overlapFeature,
         data = sub$data, classes = sub$classes,
         control = cl1, analysis = "Binary"

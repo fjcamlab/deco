@@ -52,7 +52,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     }
 
     # Setting up temporary directory to write intermediate results.
-    temp.path <- tempdir()
+    temp.path <- .createTempFile()
     message("'temp' folder will be created to store internal loop data.")
 
     # Annotating IDs to chromosome location (locus) in order to remove those placed on X or Y.
@@ -222,15 +222,9 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     res$subStatFeature[, 3:10] <- 0
     ncomb <- dim(results)[1]
 
-    ## Summarizing statistics...
-    if (dim(res$subStatFeature)[1] > 1) {
-        cpusC <- cpus
-    } else {
-        cpusC <- 1
-    }
+    # ## Summarizing statistics...
     suppressWarnings(limma2 <- bplapply(seq_len(dim(res$subStatFeature)[1]),
         FUN = .statCalc,
-        BPPARAM = MulticoreParam(cpusC),
         tab = res$subStatFeature,
         top_eje, ncomb, j
     ))
