@@ -687,7 +687,7 @@ jColor <- function(info) {
 ### Internal LIMMA calculations
 
 .LIMMAcalc <- function(data, results, classes, control, q.val,
-                       call, r, temp.path,
+                       call, r, temp.path, bpparam, 
                        multi, n1, n2) {
     # Creating final variable containing all subsampling results.
     res <- list(
@@ -714,7 +714,7 @@ jColor <- function(info) {
     results <- cbind(results, counter = seq(seq_len(dim(results)[1])))
 
     suppressWarnings(limma1 <- bplapply(seq_len(dim(results)[1]),
-        FUN = .limmaSubsamp,
+        FUN = .limmaSubsamp, BPPARAM = bpparam,
         results = results[, seq_len(2 * r)], r = r,
         data = data, q.val = q.val,
         temp.path = temp.path
@@ -923,8 +923,9 @@ jColor <- function(info) {
 ### Function for filtering features
 ### by Repeats
 
-.repThr <- function(sub, rep.thr, samp.perc) {
-    suppressWarnings(g.names <- unlist(bplapply(rownames(sub$incidenceMatrix),
+.repThr <- function(sub, rep.thr, samp.perc, bpparam) {
+    suppressWarnings(g.names <- unlist(bplapply(rownames(sub$incidenceMatrix), 
+        BPPARAM = bpparam,
         FUN = function(x) unlist(strsplit(x, split = "deco", fixed = TRUE))[1]
     )))
     names(g.names) <- rownames(sub$incidenceMatrix)
@@ -984,13 +985,13 @@ jColor <- function(info) {
 #################################
 ### Function to call overlapFeature
 
-overlapC <- function(sub, cl1) {
+overlapC <- function(sub, cl1, bpparam) {
     message(.timestamp(), " -- Calculating overlapping signal per feature...")
 
     ## Calculating overlap...
     suppressWarnings(overlap <- bplapply(
         X = rownames(sub$subStatFeature),
-        FUN = overlapFeature,
+        FUN = overlapFeature, BPPARAM = bpparam,
         data = sub$data, classes = sub$classes,
         control = cl1, analysis = "Binary"
     ))

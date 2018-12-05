@@ -9,6 +9,7 @@ This function needs R object from 'decoRDA' function to operate. It will applied
 \usage{
 decoNSCA(sub, v = 80, k.control = NULL,
          k.case = NULL, rep.thr = 3,
+         bpparam = SerialParam(),
          samp.perc = 0.05,
          method = "ward.D")
 }
@@ -22,6 +23,8 @@ decoNSCA(sub, v = 80, k.control = NULL,
   \item{k.case}{number of subclasses to find out within 'Case' samples (binary contrast).
 }
   \item{rep.thr}{numeric, it should correspond to the minimum number of differential events that should have each sample within 'samp.perc' percentage at least. Both 'rep.thr' and 'samp.perc' compounds a threshold to remove noisy features not explicity associated to any subgroup of samples.
+}
+  \item{bpparam}{registered parallelization using BiocParallel R functions: SerialParam(), MulticoreParam(), SnowParam(), etc. Further information available in vignette.
 }
   \item{samp.perc}{numeric, it should correspond to the minimum percentage of samples having to be affected with a minimum 'rep.thr' number of differential events per feature. Both 'rep.thr' and 'samp.perc' compounds a threshold to remove noisy features not explicity associated to any subgroup of samples.
 }
@@ -85,12 +88,15 @@ names(sub.ma.3r.1K)
 # [1] "data"            "results"         "subStatFeature"  "incidenceMatrix" "classes"
 # [6] "resampleSize"    "control"         "pos.iter"        "q.val"           "call"
 
+# Computing in shared memory
+# all cores by deault
+bpparam <- MulticoreParam()
 
 #########################################################################################
 # RUNNING NSCA STEP: Looking for subclasses within a category/class of samples compared #
 #########################################################################################
 
-deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, method = "ward.D",
+deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, method = "ward.D", bpparam = bpparam,
                           k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5,
                           rm.complete = FALSE, overlap = TRUE)
 

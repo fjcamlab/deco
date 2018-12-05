@@ -185,10 +185,10 @@ Before running the main functions `decoRDA()` or `decoNSCA()` R functions, the u
 library(BiocParallel)
 
 # Non-parallel computing
-register(SerialParam())
+bpparam <- SerialParam()
 
 # Computing in shared memory
-register(MulticoreParam(workers = 4))
+bpparam <- MulticoreParam()
 ```
 
 # RDA, Recurrent-sampling Differential Analysis: *Standard.Chi.Square*
@@ -218,7 +218,7 @@ table(classes.ALCL)
 sub_binary <- decoRDA(
     data = assay(ALCL), classes = classes.ALCL, q.val = 0.01,
     iterations = 1000, rm.xy = FALSE, r = NULL, 
-    control = "pos", annot = FALSE,
+    control = "pos", annot = FALSE, bpparam = bpparam,
     id.type = "ENSEMBL", pack.db = "org.Hs.eg.db"
 )
 ```
@@ -245,7 +245,8 @@ If *classes* input vector is empty, a *unsupervised* analysis is run comparing a
 sub_uns <- decoRDA(
     data = assay(ALCL), q.val = 0.05, r = NULL,
     iterations = 1000, annot = FALSE, rm.xy = FALSE,
-    id.type = "ENSEMBL", pack.db = "org.Hs.eg.db"
+    bpparam = bpparam, id.type = "ENSEMBL", 
+    pack.db = "org.Hs.eg.db"
 )
 ```
 
@@ -267,7 +268,8 @@ table(multiclasses.ALCL)
 # example of MULTICLASS design with RNA-seq data (log2[RPKM])
 sub_multiclass <- decoRDA(
     data = assay(ALCL), classes = multiclasses.ALCL, q.val = 0.05,
-    r = NULL, iterations = 1000, annot = FALSE, rm.xy = FALSE,
+    r = NULL, iterations = 1000, annot = FALSE, 
+    bpparam = bpparam, rm.xy = FALSE,
     id.type = "ENSEMBL", pack.db = "org.Hs.eg.db"
 )
 ```
@@ -318,17 +320,17 @@ Here, we show an example (based on group-vs-group comparison using `ALCLdata`) o
 ```{r, message = FALSE, results='hide'}
 # It can be applied to any subsampling design (BINARY, MULTICLASS, or UNSUPERVISED)
 deco_results <- decoNSCA(
-    sub = sub_binary, v = 80, method = "ward.D",
+    sub = sub_binary, v = 80, method = "ward.D", bpparam = bpparam,
     k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5
 )
 
 deco_results_multiclass <- decoNSCA(
-    sub = sub_multiclass, v = 80, method = "ward.D",
+    sub = sub_multiclass, v = 80, method = "ward.D", bpparam = bpparam,
     k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5
 )
 
 deco_results_uns <- decoNSCA(
-    sub = sub_uns, v = 80, method = "ward.D",
+    sub = sub_uns, v = 80, method = "ward.D", bpparam = bpparam,
     k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5
 )
 ```

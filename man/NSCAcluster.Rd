@@ -23,6 +23,8 @@ Francisco Jose Campos Laborie. <fjcamlab@gmail.com>
 }
 \examples{
 ##
+## Loading pre-calculated objects...
+data(ALCLdata)
 
 resNSCA <- NSCAcluster(deco.results.ma)
 

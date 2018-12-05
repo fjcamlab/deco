@@ -21,7 +21,7 @@
 ## using LIMMA R package (eBayes method) along the data.
 
 decoRDA <- function(data, classes = NA, control = NA, r = NULL,
-                    q.val = 0.01, iterations = 10000, 
+                    q.val = 0.01, iterations = 10000, bpparam = SerialParam(),
                     annot = FALSE, id.type = NA, attributes = NA,
                     rm.xy = FALSE, pack.db = "org.Hs.eg.db") {
     call <- match.call()
@@ -168,7 +168,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     ## SUBSAMPLING STEP using LIMMA
     limmaRes <- .LIMMAcalc(
         data, results, classes, control, q.val,
-        call, r, temp.path,
+        call, r, temp.path, bpparam,
         multi, n1, n2
     )
     res <- limmaRes$res
@@ -224,7 +224,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
 
     # ## Summarizing statistics...
     suppressWarnings(limma2 <- bplapply(seq_len(dim(res$subStatFeature)[1]),
-        FUN = .statCalc,
+        FUN = .statCalc, BPPARAM = bpparam, 
         tab = res$subStatFeature,
         top_eje, ncomb, j
     ))
@@ -307,6 +307,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
 
 decoNSCA <- function(sub, v = 80, k.control = NULL,
                      k.case = NULL, rep.thr = 3,
+                     bpparam = SerialParam(),
                      samp.perc = 0.05,
                      method = "ward.D") {
     call <- match.call()
@@ -329,7 +330,7 @@ decoNSCA <- function(sub, v = 80, k.control = NULL,
     ## Threshold for Repeats
     Sub <- .repThr(
         sub, rep.thr,
-        samp.perc
+        samp.perc, bpparam
     )
     g.names <- Sub$g.names
     sub <- Sub$sub
@@ -370,7 +371,7 @@ decoNSCA <- function(sub, v = 80, k.control = NULL,
 
         # Classification of feature profiles: 'ideal', 'generic', 'specific, and 'both'.
         overlap <- overlapC(
-          sub, cl1
+          sub, cl1, bpparam
         )
 
         profile <- overlap$profile

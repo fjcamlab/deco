@@ -22,7 +22,8 @@ Francisco Jose Campos Laborie. <fjcamlab@gmail.com>
 \code{\link[deco]{decoRDA}}
 }
 \examples{
-##
+## Loading pre-calculated objects...
+data(ALCLdata)
 
 featTable <- featureTable(deco.results.ma)
 

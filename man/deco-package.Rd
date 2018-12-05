@@ -49,6 +49,15 @@ data(ALCLdata)
 classes.ALCL <- colData(ALCL)[,"Alk.positivity"]
 names(classes.ALCL) <- colnames(ALCL)
 
+####################################
+# Parallelization via BiocParallel #
+####################################
+# Non-parallel computing
+bpparam <- SerialParam()
+
+# Computing in shared memory
+# all cores by deault
+bpparam <- MulticoreParam()
 
 #######################################################################
 # RUNNING SUBSAMPLING OF DATA: BINARY design (two classes of samples) #
@@ -58,7 +67,7 @@ names(classes.ALCL) <- colnames(ALCL)
 
 # Not run as example
 # sub.ma.3r.1K <- decoRDA(data = assay(ALCL), classes = classes.ALCL, q.val = 0.01,
-#                rm.xy = TRUE, r = NULL, control = "pos", annot = FALSE, 
+#                rm.xy = TRUE, r = NULL, control = "pos", annot = FALSE, bpparam = bpparam,
 #                id.type = "ENSEMBL", iterations = 10000, pack.db = "org.Hs.eg.db")
 
 
@@ -66,7 +75,7 @@ names(classes.ALCL) <- colnames(ALCL)
 # RUNNING NSCA STEP: Looking for subclasses within a category/class of samples compared #
 #########################################################################################
 # Not run as example
-# deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, method = "ward.D",
+# deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, method = "ward.D", bpparam = bpparam,
 #                        k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 10)
 
 

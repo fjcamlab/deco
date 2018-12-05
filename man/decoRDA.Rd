@@ -7,8 +7,8 @@ Subsampling function to find out differential events along samples from an omic 
 RDA R function within 'deco' R package. This function allows user to subsampling a omic data matrix to find out significant differential features characterizing any hidden subclass or group of samples included.}
 \usage{
 decoRDA(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
-              iterations = 10000, annot = FALSE, id.type = NA, 
-              attributes = NA, rm.xy = FALSE, 
+              iterations = 10000, bpparam = SerialParam(), annot = FALSE, 
+              id.type = NA, attributes = NA, rm.xy = FALSE, 
               pack.db = "org.Hs.eg.db")
 }
 \arguments{
@@ -29,6 +29,8 @@ p.value threshold for each iteration of subsampling process. It corresponds to \
 }
   \item{iterations}{
 number of iterations to subsample 'data', set as default as 10000. If this value exceeds number of all possible combinations, it would be replaced.
+}
+  \item{bpparam}{registered parallelization using BiocParallel R functions: SerialParam(), MulticoreParam(), SnowParam(), etc. Further information available in vignette.
 }
   \item{annot}{
 logical value indicating if annotation of IDs provided by 'data' as rownames should be done.
