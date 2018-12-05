@@ -8,6 +8,12 @@ We present DECO, a new bioinformatic method to explore and find differences in h
 
 The statistical procedure followed in both parts of the method are detailed in the original [publication](#references) [1]. A detailed **vignette** is included to explain how to use **DECO** for the analysis of multidimensional datasets, which may include heterogeneous samples or categories. The aim is to improve characterization and stratification of complex sample series, mostly focusing on large patient cohorts, where the existence of outlier or mislabeled samples is quite possible.
 
+**DECO** performs a recursive exploration of differential signal changes between samples, finding variables assigned to: 
+**(i)** the main classes or groups of samples that are in the studied cohorts 
+**(ii)** significant variation or alteration among certain individuals (related or not to an a-priori known class) 
+**(iii)** outlier patterns within feature profiles 
+**(iv)** sample outliers (i.e. individuals that behave in a different way to the main groups and have specific markers). 
+
 Alternative URL: http://bioinfow.dep.usal.es/deco/
 
 ---------------------------------------------------
