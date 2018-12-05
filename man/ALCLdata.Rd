@@ -34,7 +34,7 @@ ls()
 # [1] "ALCLdata"        "sub.ma.3r.1K"    "deco.results.ma"
 
 # phenodata of each sample
-head(colData(ALCLdata))
+head(colData(ALCL))
 
 # classes vector
 classes.ALCL <- colData(ALCL)[,"Alk.positivity"]

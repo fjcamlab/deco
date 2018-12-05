@@ -51,8 +51,8 @@ ids <- rownames(assay(ALCL))[1:10]
 
 ## Not run as example
 # annot <- AnnotateDECO(ids, id.type = "ENSEMBL",
-#                            attributes = c("SYMBOL","CHR","GENENAME"),
-#                            pack.db = "org.Hs.eg.db", rm.redundant = TRUE)
+#                       attributes = c("SYMBOL","CHR","GENENAME"),
+#                       pack.db = "org.Hs.eg.db", rm.redundant = TRUE)
 
 }
 

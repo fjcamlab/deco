@@ -58,9 +58,8 @@ names(classes.ALCL) <- colnames(ALCL)
 
 # Not run as example
 # sub.ma.3r.1K <- decoRDA(data = assay(ALCL), classes = classes.ALCL, q.val = 0.01,
-#                rm.xy = TRUE, r = NULL, cpus = 8, parallel = FALSE,
-#                control = "pos", annot = FALSE, id.type = "ENSEMBL", iterations = 10000,
-#                pack.db = "org.Hs.eg.db")
+#                rm.xy = TRUE, r = NULL, control = "pos", annot = FALSE, 
+#                id.type = "ENSEMBL", iterations = 10000, pack.db = "org.Hs.eg.db")
 
 
 #########################################################################################
@@ -68,8 +67,7 @@ names(classes.ALCL) <- colnames(ALCL)
 #########################################################################################
 # Not run as example
 # deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, method = "ward.D",
-#                        k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 10,
-#                        parallel = FALSE, cpus = 2)
+#                        k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 10)
 
 
 # Phenotypical data from TCGA RNAseq samples.

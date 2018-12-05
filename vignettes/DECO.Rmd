@@ -109,9 +109,9 @@ multiclasses.ALCL <- factor(apply(
 
 ## RNA-seq dataset: study on breast cancer subtypes
 
-Here, we show a RNAseq dataset analysed using DECO, downloaded from [The Cancer Genome Atlas (TCGA)](http://cancergenome.nih.gov/). It is composed by 1212 clinical samples from patients with different [subtypes of Breast Cancer](#references) [6], which includes standard histological subtypes (given by markers ESR1, PGR and HER2) and two classes associated to the cell-type, called: **Invasive Ductal Carcinoma** (IDC) and **Invasive Lobular Carcinoma** (ILC). The genes of the dataset are mapped to HGNC symbol IDs and the dataset can be loaded directly in R or downlad from the [TCGA data portal](https://gdc-portal.nci.nih.gov/):
+Here, we show a RNAseq dataset analysed using DECO, downloaded from [The Cancer Genome Atlas (TCGA)](http://cancergenome.nih.gov/). It is composed by 1212 clinical samples from patients with different [subtypes of Breast Cancer](#references) [6], which includes standard histological subtypes (given by markers ESR1, PGR and HER2) and two classes associated to the cell-type, called: **Invasive Ductal Carcinoma** (IDC) and **Invasive Lobular Carcinoma** (ILC). The genes of the dataset are mapped to HGNC symbol IDs and the dataset can be loaded directly in R or downlad from the [TCGA data portal](https://portal.gdc.cancer.gov/):
 
-```{r, message = FALSE, eval=FALSE}
+```{r, message = FALSE}
 # Loading library
 library(curatedTCGAData)
 library(MultiAssayExperiment)
@@ -147,7 +147,7 @@ Then, user can run *voom* normalization method provided in LIMMA R package to ca
 
 Together with RNA-seq or microarray platforms, DECO algorithm can be applied to datasets obtained with other **omic platforms** (as far as a correct normalization of the data per sample can be achieved). In order to provide an example of other platform, we show an example of a **miRNAs dataset** from same TCGA library used above:
 
-```{r, message = FALSE, eval=FALSE}
+```{r, message = FALSE}
 # Download counts from RNAseq data of miRNAs
 BRCA_dataset_counts_mirna <- curatedTCGAData(
     diseaseCode = "BRCA",
@@ -217,8 +217,8 @@ table(classes.ALCL)
 # set annot = TRUE if annotation is required and corresponding library was loaded
 sub_binary <- decoRDA(
     data = assay(ALCL), classes = classes.ALCL, q.val = 0.01,
-    iterations = 1000, rm.xy = FALSE, r = NULL, cpus = 6,
-    parallel = TRUE, control = "pos", annot = FALSE,
+    iterations = 1000, rm.xy = FALSE, r = NULL, 
+    control = "pos", annot = FALSE,
     id.type = "ENSEMBL", pack.db = "org.Hs.eg.db"
 )
 ```
@@ -244,8 +244,7 @@ If *classes* input vector is empty, a *unsupervised* analysis is run comparing a
 # example of UNSUPERVISED design with RNA-seq data (log2[RPKM])
 sub_uns <- decoRDA(
     data = assay(ALCL), q.val = 0.05, r = NULL,
-    cpus = 6, iterations = 1000,
-    parallel = TRUE, annot = FALSE, rm.xy = FALSE,
+    iterations = 1000, annot = FALSE, rm.xy = FALSE,
     id.type = "ENSEMBL", pack.db = "org.Hs.eg.db"
 )
 ```
@@ -268,8 +267,7 @@ table(multiclasses.ALCL)
 # example of MULTICLASS design with RNA-seq data (log2[RPKM])
 sub_multiclass <- decoRDA(
     data = assay(ALCL), classes = multiclasses.ALCL, q.val = 0.05,
-    r = NULL, cpus = 6, parallel = TRUE, iterations = 1000,
-    annot = FALSE, rm.xy = FALSE,
+    r = NULL, iterations = 1000, annot = FALSE, rm.xy = FALSE,
     id.type = "ENSEMBL", pack.db = "org.Hs.eg.db"
 )
 ```
@@ -290,9 +288,20 @@ This vignette presented some examples of `decoRDA()` subsampling function for *s
 
 - `control` is a character indicating which label has to be set as control class in a *supervised* analysis.
 
-- `rm.xy` is a logical indicating if *X* or *Y* chromosome placed genes/proteins/features should be removed before run RDA (requires `id.type` and `annot` inputs).
+- `rm.xy` is a logical indicating if genes/proteins/features placed on *X* or *Y* chromosomes should be removed before run RDA (it requires `id.type` and `annot` inputs). We recommended to set `TRUE` if genre unbalance is present in the dataset.
 
-All the rest of parameters are used to annotate features or to establish a parallel computation of processes, so they are explained within a longer and more detailed vignette included in the DECO R package.
+- `annot` logical indicating if feature annotation is required.
+
+- `id.type` is a character describing the type of id corresponding to the rownames of `data` input. These types can be found:`
+
+```{r, message = FALSE}
+# load the annotation package
+library(org.Hs.eg.db) # for human
+
+AnnotationDbi::columns(org.Hs.eg.db)
+```
+
+- `pack.db` is a character corresponding to the annotation library (by default `org.Hs.eg.db`).
 
 # NSCA, Non-Symmetrical Correspondence Analysis: *h-statistic*
 
@@ -310,20 +319,17 @@ Here, we show an example (based on group-vs-group comparison using `ALCLdata`) o
 # It can be applied to any subsampling design (BINARY, MULTICLASS, or UNSUPERVISED)
 deco_results <- decoNSCA(
     sub = sub_binary, v = 80, method = "ward.D",
-    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5,
-    parallel = TRUE, cpus = 6
+    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5
 )
 
 deco_results_multiclass <- decoNSCA(
     sub = sub_multiclass, v = 80, method = "ward.D",
-    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5,
-    parallel = TRUE, cpus = 6
+    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5
 )
 
 deco_results_uns <- decoNSCA(
     sub = sub_uns, v = 80, method = "ward.D",
-    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5,
-    parallel = TRUE, cpus = 6
+    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5
 )
 ```
 
@@ -479,15 +485,15 @@ Figure 5 corresponds to ALK gene profile, including a plot of its raw expression
 
 1: Campos-Laborie FJ, Risueño A, Roson-Burgo B, Droste C, Fontanillo C, Ortiz-Estevez M, Trotter MW, Sánchez-Santos JM and De Las Rivas J (2018). **DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling.** Article in revision.
 
-2: Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W and Smyth GK (2015). **limma powers differential expression analyses for RNA-sequencing and microarray studies.** *Nucleic Acids Res.*, 43:e47. doi:10.1093/nar/gkv007.
+2: Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W and Smyth GK (2015). **limma powers differential expression analyses for RNA-sequencing and microarray studies.** *Nucleic Acids Res.*, 43:e47. \doi{doi:10.1093/nar/gkv007}.
 
-3: Scarfo I, Pellegrino E, Mereu E, Kwee I, Agnelli L, Bergaggio E, Garaffo G, Vitale N, Caputo M, Machiorlatti R, Circosta P, Abate F, Barreca A, Novero D, Mathew S, Rinaldi A, Tiacci E, Serra S, Deaglio S, Neri A, Falini B, Rabadan R, Bertoni F, Inghirami G, Piva R; European T-Cell Lymphoma Study Group (2016). **Identification of a new subclass of ALK-negative ALCL expressing aberrant levels of ERBB4 transcripts.** *Blood*, 127:221-232. doi:10.1182/blood-2014-12-614503.
+3: Scarfo I, Pellegrino E, Mereu E, Kwee I, Agnelli L, Bergaggio E, Garaffo G, Vitale N, Caputo M, Machiorlatti R, Circosta P, Abate F, Barreca A, Novero D, Mathew S, Rinaldi A, Tiacci E, Serra S, Deaglio S, Neri A, Falini B, Rabadan R, Bertoni F, Inghirami G, Piva R; European T-Cell Lymphoma Study Group (2016). **Identification of a new subclass of ALK-negative ALCL expressing aberrant levels of ERBB4 transcripts.** *Blood*, 127:221-232. \doi{doi:10.1182/blood-2014-12-614503}.
 
-4: Risueño A, Fontanillo C, Dinger ME, De Las Rivas J (2010). **GATExplorer: genomic and transcriptomic explorer; mapping expression probes to gene loci, transcripts, exons and ncRNAs.** *BMC Bioinformatics*, 11:221. doi:10.1186/1471-2105-11-221.
+4: Risueño A, Fontanillo C, Dinger ME, De Las Rivas J (2010). **GATExplorer: genomic and transcriptomic explorer; mapping expression probes to gene loci, transcripts, exons and ncRNAs.** *BMC Bioinformatics*, 11:221. \doi{doi:10.1186/1471-2105-11-221}.
 
-5: MacDonald JW and Ghosh D (2006). **COPA--Cancer Outlier Profile Analysis.** *Bioinformatics*, 22:2950-2951. doi:10.1093/bioinformatics/btl433
+5: MacDonald JW and Ghosh D (2006). **COPA--Cancer Outlier Profile Analysis.** *Bioinformatics*, 22:2950-2951. \doi{doi:10.1093/bioinformatics/btl433}.
 
-6: Ciriello G, Gatza ML, Beck AH, Wilkerson MD, Rhie SK, Pastore A, Zhang H, McLellan M, Yau C, Kandoth C, Bowlby R, Shen H, Hayat S, Fieldhouse R, Lester SC, Tse GM, Factor RE, Collins LC, Allison KH, Chen YY, Jensen K, Johnson NB, Oesterreich S, Mills GB, Cherniack AD, Robertson G, Benz C, Sander C, Laird PW, Hoadley KA, King TA; TCGA Research Network., Perou CM (2015). **Comprehensive molecular portraits of invasive lobular breast cancer**. *Cell*, 163:505-519. doi:10.1016/j.cell.2015.09.033.
+6: Ciriello G, Gatza ML, Beck AH, Wilkerson MD, Rhie SK, Pastore A, Zhang H, McLellan M, Yau C, Kandoth C, Bowlby R, Shen H, Hayat S, Fieldhouse R, Lester SC, Tse GM, Factor RE, Collins LC, Allison KH, Chen YY, Jensen K, Johnson NB, Oesterreich S, Mills GB, Cherniack AD, Robertson G, Benz C, Sander C, Laird PW, Hoadley KA, King TA; TCGA Research Network., Perou CM (2015). **Comprehensive molecular portraits of invasive lobular breast cancer**. *Cell*, 163:505-519. \doi{doi:10.1016/j.cell.2015.09.033}.
 
 7: Lauro N and D'Ambra L (1984). **L'analyse non symetrique des correspondances.** In: *Data Analysis and Informatics III*, (Diday E, Jambu M, Lebart L, Pages J and Tomassone R Eds.). North Holland, Amsterdam, p.433-446.
 

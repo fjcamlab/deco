@@ -1,4 +1,11 @@
 ############################################
+#' Class deco
+#'
+#' Class \code{deco}.
+#'
+#' @name deco-class
+#' @rdname deco-class
+#' @exportClass deco
 setClass(
     Class = "deco",
     slots = c(
@@ -12,25 +19,39 @@ setClass(
 )
 
 ############################################
+#' Method featureTable
+#' @name featureTable
+#' @rdname deco-class
+#' @exportMethod featureTable
 setGeneric("featureTable", function(object) standardGeneric("featureTable"))
 
+#'
+#' @rdname deco-class
+#' @aliases featureTable,deco-method
 setMethod("featureTable",
     signature = "deco", definition =
         function(object) object@featureTable
 )
 
-###
+############################################
+#' Method NSCAcluster
+#' @name NSCAcluster
+#' @rdname deco-class
+#' @exportMethod NSCAcluster
 setGeneric("NSCAcluster", function(object) standardGeneric("NSCAcluster"))
 
+#'
+#' @rdname deco-class
+#' @aliases NSCAcluster,deco-method
 setMethod("NSCAcluster",
     signature = "deco", definition =
         function(object) object@NSCAcluster
 )
 
-################################################
-################################################
-# R show function for 'deco' object
-
+############################################
+#'
+#' @rdname deco-class
+#' @aliases show,deco-method
 setMethod("show", "deco", function(object) {
     cat("\nDecomposing Heterogeneous Cohorts from Omic profiling: DECO\nSummary:\n")
     cat("\nAnalysis design: ")
@@ -70,10 +91,12 @@ setMethod("show", "deco", function(object) {
     print(object@nsca.call)
 })
 
-################################################
-################################################
-# R summary function for 'deco' object
+############################################
+#' Method summary
 
+#'
+#' @rdname deco-class
+#' @aliases summary,deco-method
 setMethod("summary", "deco", function(object, ...) {
     cat("Decomposing Heterogeneous Cohorts from Omic profiling: DECO\nSummary:\n")
     cat("\nAnalysis design: ")

@@ -687,7 +687,7 @@ jColor <- function(info) {
 ### Internal LIMMA calculations
 
 .LIMMAcalc <- function(data, results, classes, control, q.val,
-                       call, r, cpus, parallel, temp.path,
+                       call, r, temp.path,
                        multi, n1, n2) {
     # Creating final variable containing all subsampling results.
     res <- list(
@@ -923,7 +923,7 @@ jColor <- function(info) {
 ### Function for filtering features
 ### by Repeats
 
-.repThr <- function(sub, rep.thr, samp.perc, cpus) {
+.repThr <- function(sub, rep.thr, samp.perc) {
     suppressWarnings(g.names <- unlist(bplapply(rownames(sub$incidenceMatrix),
         FUN = function(x) unlist(strsplit(x, split = "deco", fixed = TRUE))[1]
     )))
@@ -984,7 +984,7 @@ jColor <- function(info) {
 #################################
 ### Function to call overlapFeature
 
-overlapC <- function(sub, cl1, cpus) {
+overlapC <- function(sub, cl1) {
     message(.timestamp(), " -- Calculating overlapping signal per feature...")
 
     ## Calculating overlap...

@@ -2,6 +2,10 @@
 \Rdversion{1.1}
 \docType{class}
 \alias{deco-class}
+\alias{summary,deco-method}
+\alias{show,deco-method}
+\alias{featureTable,deco-method}
+\alias{NSCAcluster,deco-method}
 
 \title{Class \code{"deco"}}
 \description{
@@ -26,9 +30,24 @@ Objects can be created by calls of the form \code{new("deco", ...)}.
     \item{\code{nsca.call}:}{Object of class \code{"numeric"}: number of minimum repeats per sample to establish a differential event threshold.}
   }
 }
-\section{Methods}{
-No methods defined with class "deco" in the signature.
-}
+\section{Methods}{ 
+  \describe{ 
+    \item{summary}{\code{summary(object = "deco")}: Prints a summary of the 
+      information inside a 'deco' R object.} 
+    }
+  \describe{ 
+    \item{show}{\code{show(object = "deco")}: Prints the 
+      information inside a 'deco' R object.} 
+    }
+  \describe{ 
+    \item{featureTable}{\code{featureTable(object = "deco")}: Extract the 
+      featureTable containing all feature statistics.} 
+    }
+  \describe{ 
+    \item{NSCAcluster}{\code{NSCAcluster(object = "deco")}: Extract the 
+      NSCAcluster list containing all information and tables derived from decoNSCA step.} 
+    }
+} 
 \author{
 Francisco Jose Campos Laborie. <fjcamlab@usal.es>
 }

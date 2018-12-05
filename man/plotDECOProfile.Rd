@@ -61,8 +61,7 @@ ALCL
 
 ### ERBB4 gene profile
 # plotDECOProfile(deco = deco.results.ma, id = "ENSG00000178568",
-#                 data = assay(ALCL), pdf.file = "ERBB4_ALCLdata.pdf",
-#                 cex.samples = 2,
+#                 data = assay(ALCL), cex.samples = 2,
+#                 pdf.file = "ERBB4_profile_ALCL.pdf",
 #                 info.sample = as.data.frame(colData(ALCL))[,c(9,8,10)])
-
 }

@@ -7,9 +7,9 @@ Subsampling function to find out differential events along samples from an omic 
 RDA R function within 'deco' R package. This function allows user to subsampling a omic data matrix to find out significant differential features characterizing any hidden subclass or group of samples included.}
 \usage{
 decoRDA(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
-              iterations = 10000, cpus = 2, parallel = FALSE,
-              annot = FALSE, id.type = NA, attributes = NA,
-              rm.xy = FALSE, pack.db = "org.Hs.eg.db")
+              iterations = 10000, annot = FALSE, id.type = NA, 
+              attributes = NA, rm.xy = FALSE, 
+              pack.db = "org.Hs.eg.db")
 }
 \arguments{
   \item{data}{
@@ -29,12 +29,6 @@ p.value threshold for each iteration of subsampling process. It corresponds to \
 }
   \item{iterations}{
 number of iterations to subsample 'data', set as default as 10000. If this value exceeds number of all possible combinations, it would be replaced.
-}
-  \item{cpus}{
-number of cores to parallel process.
-}
-  \item{parallel}{
-logical value indicating if \bold{snowfall} R package should be use to parallel process.
 }
   \item{annot}{
 logical value indicating if annotation of IDs provided by 'data' as rownames should be done.
@@ -111,8 +105,8 @@ names(classes.ALCL) <- colnames(ALCL)
 
 ## Not run as example
 # sub.ma.3r.1K <- decoRDA(data = assay(ALCL), classes = classes.ALCL, q.val = 0.01,
-#               rm.xy = TRUE, r = NULL, cpus = 2, parallel = FALSE, temp.path = getwd(),
-#               control = "pos", annot = TRUE, id.type = "ENSEMBL", iterations = 1000,
+#               rm.xy = TRUE, r = NULL, control = "pos", annot = TRUE, 
+#               id.type = "ENSEMBL", iterations = 1000,
 #               pack.db = "org.Hs.eg.db")
 
 
@@ -133,8 +127,8 @@ names(classes.ALCL) <- colnames(ALCL)
 
 ## Not run as example
 # sub.ma.3r.1K.uns <- decoRDA(data = assay(ALCL), q.val = 0.01,
-#                      rm.xy = TRUE, r = 3, cpus = 2, parallel = FALSE,
-#                      annot = TRUE, id.type = "ENSEMBL", iterations = 1000,
+#                      rm.xy = TRUE, r = 3, annot = TRUE, 
+#                      id.type = "ENSEMBL", iterations = 1000,
 #                      pack.db = "org.Hs.eg.db")
 
 
@@ -151,8 +145,8 @@ multiclasses.ALCL <- factor(apply(
 head(multiclasses.ALCL)
 
 ## Not run as example
-# sub.ma.3r.1K.multi <- decoRDA(data = exprs(ALCLdata), classes = multiclasses.ALCL,
-#                       q.val = 0.01, rm.xy = TRUE, r = 3, cpus = 2, parallel = FALSE,
-#                       annot = TRUE, id.type = "ENSEMBL", iterations = 1000,
+# sub.ma.3r.1K.multi <- decoRDA(data = assay(ALCL), classes = multiclasses.ALCL,
+#                       q.val = 0.01, rm.xy = TRUE, r = 3, annot = TRUE, 
+#                       id.type = "ENSEMBL", iterations = 1000,
 #                       pack.db = "org.Hs.eg.db")
 }

@@ -21,7 +21,7 @@
 ## using LIMMA R package (eBayes method) along the data.
 
 decoRDA <- function(data, classes = NA, control = NA, r = NULL,
-                    q.val = 0.01, iterations = 10000, cpus = 2, parallel = FALSE,
+                    q.val = 0.01, iterations = 10000, 
                     annot = FALSE, id.type = NA, attributes = NA,
                     rm.xy = FALSE, pack.db = "org.Hs.eg.db") {
     call <- match.call()
@@ -168,7 +168,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
     ## SUBSAMPLING STEP using LIMMA
     limmaRes <- .LIMMAcalc(
         data, results, classes, control, q.val,
-        call, r, cpus, parallel, temp.path,
+        call, r, temp.path,
         multi, n1, n2
     )
     res <- limmaRes$res
@@ -308,8 +308,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL,
 decoNSCA <- function(sub, v = 80, k.control = NULL,
                      k.case = NULL, rep.thr = 3,
                      samp.perc = 0.05,
-                     method = "ward.D",
-                     parallel = FALSE, cpus = 2) {
+                     method = "ward.D") {
     call <- match.call()
 
     # Agglomeration method for hierarchical clustering of samples.
@@ -330,7 +329,7 @@ decoNSCA <- function(sub, v = 80, k.control = NULL,
     ## Threshold for Repeats
     Sub <- .repThr(
         sub, rep.thr,
-        samp.perc, cpus
+        samp.perc
     )
     g.names <- Sub$g.names
     sub <- Sub$sub
@@ -371,8 +370,7 @@ decoNSCA <- function(sub, v = 80, k.control = NULL,
 
         # Classification of feature profiles: 'ideal', 'generic', 'specific, and 'both'.
         overlap <- overlapC(
-          sub, cl1,
-          ifelse(parallel, cpus, 1)
+          sub, cl1
         )
 
         profile <- overlap$profile

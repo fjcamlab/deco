@@ -10,8 +10,7 @@ This function needs R object from 'decoRDA' function to operate. It will applied
 decoNSCA(sub, v = 80, k.control = NULL,
          k.case = NULL, rep.thr = 3,
          samp.perc = 0.05,
-         method = "ward.D",
-         parallel = FALSE, cpus = 2)
+         method = "ward.D")
 }
 \arguments{
   \item{sub}{an output R object from 'decoRDA' R function.
@@ -27,10 +26,6 @@ decoNSCA(sub, v = 80, k.control = NULL,
   \item{samp.perc}{numeric, it should correspond to the minimum percentage of samples having to be affected with a minimum 'rep.thr' number of differential events per feature. Both 'rep.thr' and 'samp.perc' compounds a threshold to remove noisy features not explicity associated to any subgroup of samples.
 }
   \item{method}{character indicating which agglomerative method should be used to generate sample dendrogram. If is NULL (by default), all possible methods would be tested and corresponding to the highest cophenetic correlation would be selected.
-}
-  \item{parallel}{logical value indicating if 'snowfall' R package should be use to parallel process.
-}
-  \item{cpus}{number of cores to parallel process.
 }
 }
 \details{
@@ -76,7 +71,7 @@ Lauro, N. and D'Ambra, L. (1984). \bold{L'analyse non symetrique des corresponda
 Beh, E.J. and Lombardo, R. (2014). \bold{Correspondence Analysis. Theory, Practice and New Strategies}. \emph{John Wiley & Sons}
 }
 \author{
-Francisco Jose Campos Laborie. <fjcamlab@usal.es>
+Francisco Jose Campos Laborie. <fjcamlab@gmail.com>
 }
 \seealso{
 \code{\link[deco]{decoRDA}}, \code{\link[stats]{hclust}}
@@ -97,7 +92,7 @@ names(sub.ma.3r.1K)
 
 deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, method = "ward.D",
                           k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5,
-                          parallel = FALSE, cpus = 2, rm.complete = FALSE, overlap = TRUE)
+                          rm.complete = FALSE, overlap = TRUE)
 
 
 ## Class 'deco'
@@ -179,8 +174,7 @@ show(deco.results.ma)
 
 ## Not run as example
 # deco.results.ma.uns <- decoNSCA(sub = sub.ma.3r.1K.uns, v = 80, method = "ward.D",
-#                         k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 3,
-#                         parallel = FALSE, cpus = 2)
+#                         k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 3)
 
 ########################################
 # RUNNING NSCA STEP: Multiclass design #
@@ -188,7 +182,6 @@ show(deco.results.ma)
 
 ## Not run as example
 # deco.results.ma.multi <- decoNSCA(sub = sub.ma.3r.1K.multi, v = 80, method = "ward.D",
-#                         k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 3,
-#                         parallel = FALSE, cpus = 2)
+#                         k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 3)
 
 }
