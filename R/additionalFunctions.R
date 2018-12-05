@@ -923,12 +923,12 @@ jColor <- function(info) {
 ### Function for filtering features
 ### by Repeats
 
-.repThr <- function(sub, rep.thr, samp.perc, bpparam) {
-    suppressWarnings(g.names <- unlist(bplapply(rownames(sub$incidenceMatrix), 
-        BPPARAM = bpparam,
-        FUN = function(x) unlist(strsplit(x, split = "deco", fixed = TRUE))[1]
-    )))
-    names(g.names) <- rownames(sub$incidenceMatrix)
+.repThr <- function(sub, rep.thr, samp.perc) {
+    g.names <- vapply(
+      rownames(sub$incidenceMatrix), 
+      function(x) unlist(strsplit(x, split = "deco", fixed = TRUE))[1],
+      FUN.VALUE = character(1)
+    )
 
     if (all(is.na(sub$classes)) || length(levels(sub$classes)) > 2) {
         f <- apply(sub$incidenceMatrix, 1, function(x) length(which(x >= rep.thr)))

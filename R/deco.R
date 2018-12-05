@@ -330,7 +330,7 @@ decoNSCA <- function(sub, v = 80, k.control = NULL,
     ## Threshold for Repeats
     Sub <- .repThr(
         sub, rep.thr,
-        samp.perc, bpparam
+        samp.perc
     )
     g.names <- Sub$g.names
     sub <- Sub$sub
