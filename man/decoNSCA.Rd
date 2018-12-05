@@ -96,9 +96,9 @@ bpparam <- MulticoreParam()
 # RUNNING NSCA STEP: Looking for subclasses within a category/class of samples compared #
 #########################################################################################
 
-deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, method = "ward.D", bpparam = bpparam,
-                          k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5,
-                          rm.complete = FALSE, overlap = TRUE)
+deco.results.ma <- decoNSCA(sub = sub.ma.3r.1K, v = 80, 
+        method = "ward.D", bpparam = bpparam,
+        k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5)
 
 
 ## Class 'deco'
