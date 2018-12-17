@@ -32,7 +32,7 @@ abstract: We present a tutorial to use **DECO**, a bioinformatic method
 
 ```{r pre,echo=FALSE,results='hide',warning=TRUE,include=FALSE}
 library(knitr)
-opts_chunk$set(warning=TRUE, message = FALSE, cache = TRUE, fig.path = "figures/", tidy = FALSE, tidy.opts = list(width.cutoff = 60))
+opts_chunk$set(warning=TRUE, message = FALSE, cache = FALSE, fig.path = "figures/", tidy = FALSE, tidy.opts = list(width.cutoff = 60))
 ```
 
 ---
