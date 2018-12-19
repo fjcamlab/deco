@@ -563,6 +563,7 @@ jColor <- function(info) {
     res <- list(data = as.matrix(data), results = results, subStatFeature = NULL, 
         incidenceMatrix = NULL, classes = classes, resampleSize = r, control = control, 
         pos.iter = 0, q.val = q.val, call = call)
+    
     # Some variables definition to parallel subsampling.
     top_eje <- matrix(ncol = 7)
     colnames(top_eje) <- c("logFC", "AveExpr", "t", "P.Value", "adj.P.Val", 
@@ -614,7 +615,7 @@ jColor <- function(info) {
     if (length(lines[, c("ID")]) > 0) {
         res_[c("Avrg.logFC")] <- .colMeans(lines[, c("logFC")], m = length(lines[, 
             c("ID")]), n = 1)
-        res_[c("Best.adj.P.Val")] <- lines[1, c("P.Value")]
+        res_[c("Best.adj.P.Val")] <- lines[1, c("adj.P.Val")]
         res_[c("Repeats")] <- length(lines[, 1])
         res_[c("FR.Repeats")] <- res_[c("Repeats")]/ncomb
         res_[c("RF.Positive.Repeats")] <- res_[c("Repeats")]/j
@@ -640,7 +641,7 @@ jColor <- function(info) {
     cont.mat <- limma::makeContrasts(CASEvsCONTROL = CASE - CONTROL, levels = design)
     fit2 <- limma::contrasts.fit(fit, cont.mat)
     fit3 <- limma::eBayes(fit2)
-    top <- limma::topTable(fit3, adjust.method = "none", number = nrow(data), 
+    top <- limma::topTable(fit3, adjust.method = "fdr", number = nrow(data), 
         p.value = q.val)
     pos <- dim(top)[1]
     

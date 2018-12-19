@@ -1,11 +1,12 @@
-######################################################################################## DECO ### algorithm to find differential significant markers in
-######################################################################################## heterogeneous cohorts including a subsampling approach and posterior
-######################################################################################## integration with a Non-Symmetrical Correspondence Analysis to create the
-######################################################################################## new heterogeneity statistic (h-statistic).  Authors: Francisco J.
-######################################################################################## Campos-Laborie, Jose Manuel Sanchez-Santos & Javier De Las Rivas
-######################################################################################## Bioinformatics & Functional Genomics Group Cancer Research Center
-######################################################################################## (CiC-IBMCC, CSIC/USAL) Salamanca, Spain http://www.cicancer.org/
-######################################################################################## http://bioinfow.dep.usal.es
+#### DECO ####
+## Algorithm to find differential significant markers in
+## heterogeneous cohorts including a subsampling approach and posterior
+## integration with a Non-Symmetrical Correspondence Analysis to create the
+## new heterogeneity statistic (h-statistic).  Authors: Francisco J.
+## Campos-Laborie, Jose Manuel Sanchez-Santos & Javier De Las Rivas
+## Bioinformatics & Functional Genomics Group Cancer Research Center
+## (CiC-IBMCC, CSIC/USAL) Salamanca, Spain http://www.cicancer.org/
+## http://bioinfow.dep.usal.es
 
 ################################### decoRDA ### Iterative function to discover differentially expressed
 ################################### features using LIMMA R package (eBayes method) along the data.
