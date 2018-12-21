@@ -321,17 +321,17 @@ Here, we show an example (based on group-vs-group comparison using `ALCLdata`) o
 # It can be applied to any subsampling design (BINARY, MULTICLASS, or UNSUPERVISED)
 deco_results <- decoNSCA(
     sub = sub_binary, v = 80, method = "ward.D", bpparam = bpparam,
-    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5
+    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 1
 )
 
 deco_results_multiclass <- decoNSCA(
     sub = sub_multiclass, v = 80, method = "ward.D", bpparam = bpparam,
-    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5
+    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 1
 )
 
 deco_results_uns <- decoNSCA(
     sub = sub_uns, v = 80, method = "ward.D", bpparam = bpparam,
-    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 5
+    k.control = 3, k.case = 3, samp.perc = 0.05, rep.thr = 1
 )
 ```
 
