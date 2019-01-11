@@ -79,8 +79,9 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
     unsup <- all(is.na(classes))
     multi <- FALSE
     if (!unsup) {
-        combin <- .combCalcM(data, classes, control, iterations, multi, r, 
-            results)
+        combin <- .combCalcM(data, classes, control, 
+                             iterations, multi, r, 
+                             results)
         
         categories.control <- combin$categories.control
         categories.case <- combin$categories.case
@@ -134,8 +135,9 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
     message(msg)
     
     ## Combinatorial calculations for binary and unsupervised designs
-    results <- .combCalc(iterations, multi, classes, r, results, categories.control, 
-        categories.case, n1, n2)
+    results <- .combCalc(iterations, multi, classes, r, 
+                         results, categories.control, 
+                         categories.case, n1, n2)
     
     ## SUBSAMPLING STEP using LIMMA
     limmaRes <- .LIMMAcalc(data, results, classes, control, q.val, call, r, 

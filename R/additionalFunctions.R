@@ -400,6 +400,8 @@ jColor <- function(info) {
         if (is.null(r) || r <= 0) {
             r <- round(sqrt(min(table(classes))), digits = 0)
         }
+        if(r < 3)
+          r <- 3
         maxSub <- subsamplingProb(x = r, n1 = min(table(classes)), iter = 0)$n.all
         if (iterations == 0) {
             iterations <- maxSub
@@ -435,8 +437,8 @@ jColor <- function(info) {
             }
             combi <- rbind(combi, cbind(combi1, combi2))
         }
-        results <- cbind(combi[2:dim(combi)[1], ], nFeatures = c(rep(0, multIter * 
-            dim(combMulti)[1])))
+        results <- cbind(combi[2:dim(combi)[1], ], 
+                         nFeatures = c(rep(0, multIter * dim(combMulti)[1])))
         colnames(results) <- c(seq_len(2 * r), "nFeatures")
         n1 <- dim(data)[2]
         n2 <- min(table(classes))
