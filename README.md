@@ -65,11 +65,11 @@ names(classes.ALCL) <- colnames(ALCL)
 # RUNNING SUBSAMPLING OF DATA: BINARY design (two classes of samples) #
 #######################################################################
 # if annotation and rm.xy == TRUE, then
-library(org.Hs.eg.db)
+library(Homo.sapiens)
 
 sub.ma.3r.1K <- decoRDA(data = assay(ALCL), classes = classes.ALCL, q.val = 0.01,
                 rm.xy = TRUE, r = NULL, control = "pos", annot = FALSE, bpparam = bpparam,
-                id.type = "ENSEMBL", iterations = 10000, pack.db = "org.Hs.eg.db")
+                id.type = "ENSEMBL", iterations = 10000, pack.db = "Homo.sapiens")
 
 #########################################################################################
 # RUNNING NSCA STEP: Looking for subclasses within a category/class of samples compared #
@@ -108,3 +108,20 @@ decoReport(deco.results.ma, sub.ma.3r.1K,
 1: Campos-Laborie FJ, Risueño A, Roson-Burgo B, Droste C, Fontanillo C, Ortiz-Estevez M, Trotter MW, Sánchez-Santos JM and De Las Rivas J (2018). **DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling.** Article in revision.
 
 2: Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W and Smyth GK (2015). **limma powers differential expression analyses for RNA-sequencing and microarray studies.** *Nucleic Acids Res.*, 43:e47. \doi{doi:10.1093/nar/gkv007}.
+
+
+
+---------------------------------------------------
+**NEWS**
+
+Changes in version 0.99.46 (2019-17-01)
++ Bug fixes.
++ Adapted annotation to new "OrganismDbi" related packages. 
+
+Changes in version 0.99.42 (2018-17-12)
++ Bug fixes.
++ Vignette converted into HTML format.
++ Accepted in Bioconductor. 
+
+Changes in version 0.99.0 (2018-06-11)
++ Submitted to Bioconductor.
