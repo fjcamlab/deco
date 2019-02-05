@@ -112,9 +112,10 @@ decoReport(deco.results.ma, sub.ma.3r.1K,
 ---------------------------------------------------
 **NEWS**
 
-Changes in version 0.99.46 (2019-17-01)
+Changes in version 0.99.46 (2019-30-01)
 + Bug fixes.
-+ Adapted annotation to new "OrganismDbi" related packages. 
++ Annotation adapted to new "OrganismDbi" related packages. 
++ Three new diagnostic (plot) functions.
 
 Changes in version 0.99.42 (2018-17-12)
 + Bug fixes.
