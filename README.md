@@ -14,6 +14,8 @@ The statistical procedure followed in both parts of the method are detailed in t
 **(iii)** outlier patterns within feature profiles 
 **(iv)** sample outliers (i.e. individuals that behave in a different way to the main groups and have specific markers). 
 
+![Workflow](https://github.com/fjcamlab/deco/blob/master/vignettes/figures/flow.jpg)
+
 ---------------------------------------------------
 **INSTALLATION**
 
