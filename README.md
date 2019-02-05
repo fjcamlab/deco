@@ -14,12 +14,10 @@ The statistical procedure followed in both parts of the method are detailed in t
 **(iii)** outlier patterns within feature profiles 
 **(iv)** sample outliers (i.e. individuals that behave in a different way to the main groups and have specific markers). 
 
-Alternative URL: http://bioinfow.dep.usal.es/deco/
-
 ---------------------------------------------------
 **INSTALLATION**
 
-The **deco** R source package can be downloaded from our **[lab website](http://bioinfow.dep.usal.es/deco/)**, directly from **[Bioconductor repository](https://bioconductor.org/)** or **[GitHub repository](https://github.com/fjcamlab/deco)**. This R package contains a experimental dataset as example, two pre-run R objects and all functions needed to run a DECO analysis.
+The **deco** R source package can be directly downloaded from **[Bioconductor repository](https://bioconductor.org/packages/deco/)** or **[GitHub repository](https://github.com/fjcamlab/deco)**. This R package contains a experimental dataset as example, two pre-run R objects and all functions needed to run a DECO analysis.
 
 ```r
 ## Bioconductor repository
@@ -105,7 +103,7 @@ decoReport(deco.results.ma, sub.ma.3r.1K,
 ---------------------------------------------------
 **REFERENCES**
 
-1: Campos-Laborie FJ, Risueño A, Roson-Burgo B, Droste C, Fontanillo C, Ortiz-Estevez M, Trotter MW, Sánchez-Santos JM and De Las Rivas J (2018). **DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling.** Article in revision.
+1: Campos-Laborie FJ, Risueño A, Roson-Burgo B, Droste C, Fontanillo C, Ortiz-Estevez M, Trotter MW, Sánchez-Santos JM and De Las Rivas J (2019). **DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling.** Article in revision.
 
 2: Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W and Smyth GK (2015). **limma powers differential expression analyses for RNA-sequencing and microarray studies.** *Nucleic Acids Res.*, 43:e47. \doi{doi:10.1093/nar/gkv007}.
 
