@@ -114,10 +114,11 @@ decoReport(deco.results.ma, sub.ma.3r.1K,
 ---------------------------------------------------
 **NEWS**
 
-Changes in version 0.99.46 (05-02-2019)
+Changes in version 0.99.46 (21-02-2019)
 + Bug fixes.
 + Annotation adapted to new "OrganismDbi" related packages. 
 + Three new diagnostic (plot) functions.
++ Enlarged vignette.
 
 Changes in version 0.99.42 (17-12-2018)
 + Bug fixes.
@@ -126,3 +127,4 @@ Changes in version 0.99.42 (17-12-2018)
 
 Changes in version 0.99.0 (06-11-2018)
 + Submitted to Bioconductor.
+
