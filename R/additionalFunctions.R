@@ -60,7 +60,7 @@ quantSD <- function(sdx, p = NULL) {
 
 ################################################ AnnotateDECO
 
-AnnotateDECO <- function(ids, id.type, attributes = NA, pack.db = "org.Hs.eg.db", 
+AnnotateDECO <- function(ids, id.type, attributes = NA, pack.db = "Homo.sapiens", 
     rm.redundant = TRUE, verbose = FALSE) {
     if (!exists(pack.db)) {
         stop("ERROR: Annotation package '", pack.db, "' is not in library.")
@@ -72,8 +72,8 @@ AnnotateDECO <- function(ids, id.type, attributes = NA, pack.db = "org.Hs.eg.db"
         message(.timestamp(), "-- Annotating IDs with Bioconductor...")
     }
     
-    if (is.na(attributes)) {
-        attributes <- c("SYMBOL", "ENSEMBL", "ENTREZID", "CHR", "CHRLOC", 
+    if (all(is.na(attributes))) {
+        attributes <- c("SYMBOL", "ENSEMBL", "ENTREZID", "TXCHROM", 
             "GENENAME")
     }
     
@@ -325,12 +325,30 @@ overlapFeature <- function(id, data, classes, control, analysis, infoS = NA,
     return(overlap)
 }
 
+
+############################## 
+############################## 
+
+.analysisType <- function(deco){
+  ## Type of analysis run
+  if(length(NSCAcluster(deco)) == 1 & all(is.na(deco@classes)))
+    analysis <- "Unsupervised" 
+  if(length(NSCAcluster(deco)) == 1 & any(!is.na(deco@classes)))
+    analysis <- "Multiclass" 
+  if(length(NSCAcluster(deco)) > 1)
+    analysis <- "Binary" 
+  
+  return(analysis)
+}
+
+
 ############################## Colors assignment
+############################## 
 
 jColor <- function(info) {
     info <- as.matrix(info)
     nam <- rownames(info)
-    double <- c("ivory2", "gold", "gray30", "cornflowerblue", "chocolate", 
+    double <- c("black", "gold", "ivory3", "cornflowerblue", "chocolate", 
         "honeydew1")
     
     colnames(info) <- paste(rev(LETTERS[seq_len(dim(info)[2])]), ": ", colnames(info), 
@@ -352,8 +370,8 @@ jColor <- function(info) {
     }
     ty <- sort(unlist(apply(info[, !pos, drop = FALSE], 2, unique)))
     tyy <- sort(unlist(apply(info[, pos, drop = FALSE], 2, unique)))
-    myPalette <- c(brewer.pal(name = "Set1", n = 9)[seq_len(6)], "white", 
-        brewer.pal(name = "Set1", n = 9)[8:9], "black")
+    myPalette <- c(RColorBrewer::brewer.pal(name = "Set1", n = 9)[seq_len(6)], "white", 
+        RColorBrewer::brewer.pal(name = "Set1", n = 9)[8:9], "black")
     if (length(ty) > 10) {
         myPalette <- colorRampPalette(myPalette)(length(unlist(apply(info, 
             2, unique))))
@@ -559,7 +577,8 @@ jColor <- function(info) {
 
 ################################# Internal LIMMA calculations
 
-.LIMMAcalc <- function(data, results, classes, control, q.val, call, r, temp.path, 
+.LIMMAcalc <- function(data, results, classes, control, 
+    q.val, call, r, temp.path,  
     bpparam, multi, n1, n2) {
     # Creating final variable containing all subsampling results.
     res <- list(data = as.matrix(data), results = results, subStatFeature = NULL, 
@@ -633,18 +652,23 @@ jColor <- function(info) {
 
 ################################# 
 
-.limmaSubsamp <- function(counter, results, r, data, q.val, temp.path) {
+.limmaSubsamp <- function(counter, results, r, data, q.val, 
+                          temp.path) {
     # Taking different combinations from previous matrix and running LIMMA.
     CASE <- CONTROL <- NULL
     samples <- results[counter, seq_len(r * 2)]
-    design <- cbind(CONTROL = rep(c(1, 0), each = r), CASE = rep(c(0, 1), 
-        each = r))
+    design <- cbind(
+      CONTROL = rep(c(1, 0), each = r), 
+      CASE = rep(c(0, 1), each = r)
+    ) 
     fit <- limma::lmFit(data[, samples], design)
-    cont.mat <- limma::makeContrasts(CASEvsCONTROL = CASE - CONTROL, levels = design)
+    cont.mat <- limma::makeContrasts(CASEvsCONTROL = CASE - CONTROL, 
+                                     levels = design)
     fit2 <- limma::contrasts.fit(fit, cont.mat)
     fit3 <- limma::eBayes(fit2)
-    top <- limma::topTable(fit3, adjust.method = "fdr", number = nrow(data), 
-        p.value = q.val)
+    top <- limma::topTable(fit3, adjust.method = "fdr", 
+                            number = nrow(data), 
+                            p.value = q.val)
     pos <- dim(top)[1]
     
     # Generating intermediate files in temporary dir. If any DE feature is
@@ -670,7 +694,7 @@ jColor <- function(info) {
 .freqMatrix <- function(limmaRes, data, n1, n2, r, multi, unsup) {
     mx0 <- limmaRes$mx
     mx20 <- limmaRes$mx
-    pb <- txtProgressBar(style = 3, min = 1, max = length(limmaRes$limma1) - 
+    pb <- txtProgressBar(style = 3, min = 0, max = length(limmaRes$limma1) - 
         1)
     UP <- limmaRes$UP
     DOWN <- limmaRes$DOWN
@@ -688,11 +712,11 @@ jColor <- function(info) {
         }
         
         # Joining all differential event statistics.
-        top_eje1 <- read.dta(file = resultfile1)
+        top_eje1 <- foreign::read.dta(file = resultfile1)
         colnames(top_eje1) <- colnames(top_eje)
         rownames(top_eje1) <- make.names(rep(LETTERS, dim(data)[1])[seq_len(dim(top_eje1)[1])], 
             unique = TRUE)
-        samples <- as.vector(t(read.dta(file = resultfile2)))
+        samples <- as.vector(t(foreign::read.dta(file = resultfile2)))
         counter <- as.numeric(unlist(strsplit(unlist(strsplit(resultfile1, 
             split = "diff"))[2], split = ".", fixed = TRUE))[1])
         
@@ -830,7 +854,7 @@ overlapC <- function(sub, cl1, bpparam) {
 
 ################################# Intern R function of decoReport
 
-.formattingObj <- function(deco, deco0, analysis, info.size) {
+.formattingObj <- function(deco, deco0, analysis, sub, info.size) {
     ## Formatting R objects to print.
     if (analysis == "Binary") {
         # p.value from NSCA analysis.
@@ -947,7 +971,7 @@ overlapC <- function(sub, cl1, bpparam) {
         ordG <- order(rowMedians(apply(cbind(textF$Standard.Chi.Square, textF$Standard.Chi.Square, 
             textF$Repeats, textF$Repeats, textF$h.Range), 2, function(x) rank(-x, 
             ties.method = "max"))))
-        ord <- ordG
+        ord <- ordS <- ordG
         
         # No sense to make two different ranking for 'Unsupervised' analysis.
         deco@featureTable <- deco@featureTable[ord, ]
@@ -969,6 +993,17 @@ NSCACluster <- function(mx, data = NULL, id.names = NULL, k = NULL, label = NA,
     if (is.null(id.names)) 
         id.names <- rownames(mx)
     
+    ## Considering only UP for "mixed" profiles
+    if(all(!is.null(UpDw))) {
+      
+      mixed <- names(which(table(unname(vapply(rownames(mx), function(x) 
+        unlist(strsplit(x, split = "deco"))[1], "character"))) > 1))
+      
+      if(length(mixed) > 0)
+        mx <- mx[!rownames(mx) %in% paste(mixed, "decoDOWN", sep = ""),]
+    }
+    
+    ## Calculating NSCA...
     ca_res <- NSCA(as.matrix(mx[rowSums(mx) > 0, colSums(mx) > 0]), v = v)
     nd <- min(which(ca_res$Inertia[, 3] >= v))
     if (nd == 1) {
@@ -984,7 +1019,7 @@ NSCACluster <- function(mx, data = NULL, id.names = NULL, k = NULL, label = NA,
             names(id.names)]])
     }
     
-    # Calculating h statistic
+    # Calculating h-statistic
     if (all(!is.null(raw)) & all(!is.null(data))) {
         dispersion <- data[id.names[rownames(ca_res$inner.prod)], colnames(ca_res$inner.prod)] - 
             raw[id.names[rownames(ca_res$inner.prod)]]
@@ -1106,7 +1141,7 @@ NSCACluster <- function(mx, data = NULL, id.names = NULL, k = NULL, label = NA,
     rownames(ca_res$inner.prod)[!(duplicated(id.names[rownames(ca_res$inner.prod)]) | 
         duplicated(id.names[rownames(ca_res$inner.prod)], fromLast = TRUE))] <- id.names[rownames(ca_res$inner.prod)][!(duplicated(id.names[rownames(ca_res$inner.prod)]) | 
         duplicated(id.names[rownames(ca_res$inner.prod)], fromLast = TRUE))]
-    
+
     # Calculating h statistic per feature per subclass of samples.
     ord <- seq_len(length(info.dend.feat$cluster))
     names(ord) <- rownames(ca_res$inner.prod)[rev(info.dend.feat$dend$order)]
@@ -1118,7 +1153,7 @@ NSCACluster <- function(mx, data = NULL, id.names = NULL, k = NULL, label = NA,
     info <- data.frame(info, h.Range = apply(info[, seq_len(k)], 1, function(x) diff(range(x))), 
         Dendrogram.group = info.dend.feat$cluster[rownames(info)], Dendrogram.order = ord[rownames(info)])
     rownames(info) <- as.character(info[, c("ID")])
-    rankingH <- cbind(t(interleave(t(apply(info[, seq_len(k)], 2, function(x) rank(-abs(x), 
+    rankingH <- cbind(t(gdata::interleave(t(apply(info[, seq_len(k)], 2, function(x) rank(-abs(x), 
         ties.method = "max"))), t(info[, seq_len(k)]))), info[, "h.Range"], 
         info[, "Dendrogram.group"], ord[rownames(info)])
     colnames(rankingH) <- c(paste(rep(c("Ranking", "h"), k), rep(paste("Scl", 
@@ -1274,7 +1309,7 @@ NSCACluster <- function(mx, data = NULL, id.names = NULL, k = NULL, label = NA,
             (cwn - 1))
         clus.avg.widths <- avg.width <- NULL
         if (silhouette) {
-            sii <- silhouette(clustering, dmatrix = dmat)
+            sii <- cluster::silhouette(clustering, dmatrix = dmat)
             sc <- summary(sii)
             clus.avg.widths <- sc$clus.avg.widths
             if (noisecluster) {

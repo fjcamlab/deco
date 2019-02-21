@@ -11,9 +11,9 @@ citEntry(entry="Article",
     person(given="Javier", family="De Las Rivas")),
   title ="DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling",
   journal ="Bioinformatics",
-  volume ="Article in revision",
+  volume ="Accepted",
   number = "",
   pages = "",
-  year ="2018",
+  year ="2019",
   doi = "",
-  textVersion = "Campos-Laborie FJ, Risueno A, Roson-Burgo B, Droste C, Fontanillo C, Ortiz-Estevez M, Trotter MW, Sanchez-Santos JM and De Las Rivas J (2018). DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling. Article in revision.")
+  textVersion = "Campos-Laborie FJ, Risueno A, Roson-Burgo B, Droste C, Fontanillo C, Ortiz-Estevez M, Trotter MW, Sanchez-Santos JM and De Las Rivas J (2019). DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling. Bioinformatics. Accepted")

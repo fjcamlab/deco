@@ -9,11 +9,11 @@ RDA R function within 'deco' R package. This function allows user to subsampling
 decoRDA(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
               iterations = 10000, bpparam = SerialParam(), annot = FALSE, 
               id.type = NA, attributes = NA, rm.xy = FALSE, 
-              pack.db = "org.Hs.eg.db")
+              pack.db = "Homo.sapiens")
 }
 \arguments{
   \item{data}{
-matrix of normalized gene expression data with 'g' features (rows) by 'n' samples (columns).
+matrix of normalized omic data with 'f' features (rows) by 'n' samples (columns).
 }
   \item{classes}{
 factor or character vector of 's' size with two ('Supervised' or 'Binary' analysis) or more classes ('Multiclass' analysis) to contrast. Names of vector must match with colnames of 'data'. If any vector of classes is given, 'Unsupervised' analysis will be run with all samples.
@@ -45,7 +45,7 @@ character vector with distinct fields to return by annotation package.
 logical indicating if features located on chromosomes 'X' or 'Y' have to be removed. Features depending on these location could be an artefact of unbalanced contrasts by gender of patients or samples, so removing it should clear final results due to an appropiated subsampling of samples.
 }
   \item{pack.db}{
-character naming annotation package to be used. \emph{Homo sapiens} annotation package \emph{org.Hs.eg.db} set as default, try first 'AnnotateDECO' R function with any other annotation package from Bioconductor to find out any problem.
+character naming annotation package to be used. \emph{Homo.sapiens} annotation package set as default, try first 'AnnotateDECO' R function with any other annotation package from Bioconductor to find out any problem.
 }}
 \details{
 The \bold{RDA step} is primarly conditioned by contrast design. Our capacity to highlight \emph{majority} or \emph{minority} features will vary depending on how much we want focusing the analyisis on classes or individual samples, or what is the same, the \bold{granularity of RDA}.
@@ -103,13 +103,13 @@ names(classes.ALCL) <- colnames(ALCL)
 #######################################################################
 # RUNNING SUBSAMPLING OF DATA: BINARY design (two classes of samples) #
 #######################################################################
-# library(org.Hs.eg.db) # for gene annotation
+# library(Homo.sapiens) # for gene annotation
 
 ## Not run as example
 # sub.ma.3r.1K <- decoRDA(data = assay(ALCL), classes = classes.ALCL, q.val = 0.01,
 #               rm.xy = TRUE, r = NULL, control = "pos", annot = TRUE, 
 #               id.type = "ENSEMBL", iterations = 1000,
-#               pack.db = "org.Hs.eg.db")
+#               pack.db = "Homo.sapiens")
 
 
 ## Slots included in returned R object.

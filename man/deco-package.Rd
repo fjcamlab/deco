@@ -63,12 +63,12 @@ bpparam <- MulticoreParam()
 # RUNNING SUBSAMPLING OF DATA: BINARY design (two classes of samples) #
 #######################################################################
 # if annotation and rm.xy == TRUE, then
-# library(org.Hs.eg.db)
+# library(Homo.sapiens)
 
 # Not run as example
 # sub.ma.3r.1K <- decoRDA(data = assay(ALCL), classes = classes.ALCL, q.val = 0.01,
 #                rm.xy = TRUE, r = NULL, control = "pos", annot = FALSE, bpparam = bpparam,
-#                id.type = "ENSEMBL", iterations = 10000, pack.db = "org.Hs.eg.db")
+#                id.type = "ENSEMBL", iterations = 10000, pack.db = "Homo.sapiens")
 
 
 #########################################################################################

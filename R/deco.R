@@ -11,9 +11,10 @@
 ################################### decoRDA ### Iterative function to discover differentially expressed
 ################################### features using LIMMA R package (eBayes method) along the data.
 
-decoRDA <- function(data, classes = NA, control = NA, r = NULL, q.val = 0.01, 
-    iterations = 10000, bpparam = SerialParam(), annot = FALSE, id.type = NA, 
-    attributes = NA, rm.xy = FALSE, pack.db = "org.Hs.eg.db") {
+decoRDA <- function(data, classes = NA, control = NA,
+    r = NULL, q.val = 0.01, iterations = 10000, bpparam = SerialParam(), 
+    annot = FALSE, id.type = NA, attributes = NA, 
+    rm.xy = FALSE, pack.db = "Homo.sapiens") {
     call <- match.call()
     
     # Assessing 'data' input.
@@ -55,8 +56,8 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
         }
         if (id.type %in% columns(x = get(pack.db))) {
             infogenes <- AnnotateDECO(ids = rownames(data), id.type = id.type, 
-                attributes = c("CHR", "CHR"), pack.db = pack.db, verbose = FALSE)
-            chrTest <- infogenes[, "CHR"] %in% c("X", "Y")
+                attributes = c("TXCHROM", "TXCHROM"), pack.db = pack.db, verbose = FALSE)
+            chrTest <- infogenes[, "TXCHROM"] %in% c("X", "Y", "chrX", "chrY")
             if (length(which(chrTest)) > 1) {
                 data <- data[rownames(infogenes)[!chrTest], ]
                 msg <- paste(.timestamp(), "-- Features located in X or Y chromosome have been filtered:\n", 
@@ -79,6 +80,10 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
     unsup <- all(is.na(classes))
     multi <- FALSE
     if (!unsup) {
+        classes <- factor(classes)
+        if(length(levels(classes)) == 2 & is.na(control))
+          control <- levels(classes)[1]
+        
         combin <- .combCalcM(data, classes, control, 
                              iterations, multi, r, 
                              results)
@@ -157,7 +162,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
     res$pos.iter <- length(limmaRes$limma1)/2
     
     if (!unsup & !multi) {
-        res$incidenceMatrix <- interleave(intermediate$UP, intermediate$DOWN, 
+        res$incidenceMatrix <- gdata::interleave(intermediate$UP, intermediate$DOWN, 
             append.source = TRUE, sep = "deco", drop = FALSE)
     } else {
         res$incidenceMatrix <- intermediate$MULTI
@@ -185,6 +190,7 @@ decoRDA <- function(data, classes = NA, control = NA, r = NULL, q.val = 0.01,
     ncomb <- dim(results)[1]
     
     # ## Summarizing statistics...
+    message(.timestamp(), " -- Calculating statistics...")
     suppressWarnings(limma2 <- bplapply(seq_len(dim(res$subStatFeature)[1]), 
         FUN = .statCalc, BPPARAM = bpparam, tab = res$subStatFeature, top_eje, 
         ncomb, j))
