@@ -1,4 +1,4 @@
-Changes in version 0.99.46 (21-02-2019)
+Changes in version 0.99.47 (21-02-2019)
 + Bug fixes.
 + Annotation adapted to new "OrganismDbi" related packages. 
 + Three new diagnostic (plot) functions.

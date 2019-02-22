@@ -51,7 +51,7 @@ ALCL
 
 ### Phenotype information
 info.sample <- as.data.frame(colData(ALCL))[,8:9]
-names(info.sample) <- rownames(colData(ALCL))
+rownames(info.sample) <- rownames(colData(ALCL))
 
 #### Heatmap with h-statistic matrix and biclustering of features-samples.
 plotHeatmapH(deco = deco.results.ma, info.sample = info.sample, 
