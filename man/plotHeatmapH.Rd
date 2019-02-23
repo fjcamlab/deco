@@ -54,7 +54,8 @@ info.sample <- as.data.frame(colData(ALCL))[,8:9]
 rownames(info.sample) <- rownames(colData(ALCL))
 
 #### Heatmap with h-statistic matrix and biclustering of features-samples.
-plotHeatmapH(deco = deco.results.ma, info.sample = info.sample, 
-             cex.names = 0.3, print.annot = FALSE)
+## Not run as example
+# plotHeatmapH(deco = deco.results.ma, info.sample = info.sample, 
+#              cex.names = 0.3, print.annot = FALSE)
 }
 
