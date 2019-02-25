@@ -104,7 +104,7 @@ plotAssociationH <- function(deco, info.sample) {
         geom_point(aes(size = Features), show.legend = FALSE, na.rm = TRUE)
 
 
-    gridExtra::grid.arrange(bp, bp2, bp3,
-        layout_matrix = matrix(c(1, 1, 2, 3), byrow = TRUE, nrow = 2)
+    suppressWarnings(gridExtra::grid.arrange(bp, bp2, bp3,
+        layout_matrix = matrix(c(1, 1, 2, 3), byrow = TRUE, nrow = 2))
     )
 }

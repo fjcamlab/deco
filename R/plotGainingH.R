@@ -66,23 +66,23 @@ plotGainingH <- function(deco, data, ids, print.annot = FALSE,
         d <- data.frame(x, y)
         colnames(d) <- c("omic.data", "h.statistic")
 
-        plot1 <- suppressWarnings(ggplot(
+        plot1 <- ggplot(
             data.frame(d, classes = classes[rownames(d)]),
             aes(y = omic.data, x = h.statistic, color = classes)
         ) + geom_point() +
             ggtitle(paste(name[id], "raw statistics")) +
             xlab("h-statistic") + ylab("omic data") +
             geom_smooth(method = "loess", span = 1, se = FALSE) + theme_minimal() +
-            scale_color_manual(values = adjustcolor(names(color$ty), 0.7)))
+            scale_color_manual(values = adjustcolor(names(color$ty), 0.7))
 
         d2 <- data.frame(apply(d, 2, function(x)
             rank(x, ties.method = "random")), classes = classes[rownames(d)])
 
-        plot2 <- suppressWarnings(ggplot(d2, aes(y = omic.data, x = h.statistic, color = classes)) +
+        plot2 <- ggplot(d2, aes(y = omic.data, x = h.statistic, color = classes)) +
             geom_point() + ggtitle(paste(name[id], "rankings")) +
             xlab("ranking h-statistic") + ylab("ranking omic data") +
             geom_smooth(method = "loess", span = 1, se = FALSE) + theme_minimal() +
-            scale_color_manual(values = adjustcolor(names(color$ty), 0.7)))
+            scale_color_manual(values = adjustcolor(names(color$ty), 0.7))
 
         abc <- by(d2[, seq_len(2)], classes[rownames(d2)], data.frame)
         df <- lapply(names(abc), function(x) cbind(name = x, abc[[x]]))
@@ -93,8 +93,8 @@ plotGainingH <- function(deco, data, ids, print.annot = FALSE,
             geom_boxplot(outlier.alpha = 0.6, col = rep(names(color$ty), each = 2), lwd = 0.5) +
             facet_grid(~classes) + theme_minimal()
 
-        gridExtra::grid.arrange(plot1, plot2, plot3,
-            layout_matrix = matrix(c(1, 2, 3, 3), byrow = TRUE, nrow = 2)
+        suppressWarnings(gridExtra::grid.arrange(plot1, plot2, plot3,
+            layout_matrix = matrix(c(1, 2, 3, 3), byrow = TRUE, nrow = 2))
         )
     }
 }

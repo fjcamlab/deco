@@ -1,8 +1,8 @@
 Package: deco
 Type: Package
 Title: Decomposing Heterogeneous Cohorts using Omic Data Profiling
-Version: 0.99.48
-Date: 2019-02-22
+Version: 0.99.49
+Date: 2019-02-25
 Author: Francisco Jose Campos-Laborie, Jose Manuel Sanchez-Santos and Javier De
     Las Rivas. Bioinformatics and Functional Genomics Group. Cancer Research Center
     (CiC-IBMCC, CSIC/USAL). Salamanca. Spain.
@@ -28,4 +28,4 @@ LazyLoad: true
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
 NeedsCompilation: no
-Packaged: 2019-02-22 17:35:00 UTC;
+Packaged: 2019-02-25 09:21:10 UTC;
