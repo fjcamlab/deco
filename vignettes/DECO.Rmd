@@ -46,12 +46,6 @@ The statistical procedure followed in both parts of the method are detailed in t
 
 Thus, **DECO** can reveal exclusive associations between features and samples based in specific differential signal and provide a better way for the stratifycation of populations using multidimensional large-scale data. The method could be applied to data derived from different **omic technologies** since LIMMA has been demonstrated to be applicable to non-transcriptomic data. Along the vignette, we used genome-wide expression data obtained with microarrays or with RNA-seq (either for genes, miRNAs, ncRNAs, etc).
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=6in]{figures/flow.pdf}
-\caption{Workflow of DECO algorithm.}
-\end{figure}
-
 ![Fig. 1 - Workflow of DECO algorithm.](figures/flow.jpg)
 
 # Installation
