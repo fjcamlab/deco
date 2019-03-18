@@ -105,9 +105,9 @@ decoReport(deco.results.ma, sub.ma.3r.1K,
 ---------------------------------------------------
 **REFERENCES**
 
-1: Campos-Laborie FJ, Risueño A, Roson-Burgo B, Droste C, Fontanillo C, Ortiz-Estevez M, Trotter MW, Sánchez-Santos JM and De Las Rivas J (2019). **DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling.** *Bioinformatics*. btz148, [doi.org/10.1093/bioinformatics/btz148](https:\\doi.org/10.1093/bioinformatics/btz148).
+1: Campos-Laborie FJ, Risueño A, Roson-Burgo B, Droste C, Fontanillo C, Ortiz-Estevez M, Trotter MW, Sánchez-Santos JM and De Las Rivas J (2019). **DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling.** *Bioinformatics*. btz148, [doi.org/10.1093/bioinformatics/btz148](https://doi.org/10.1093/bioinformatics/btz148).
 
-2: Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W and Smyth GK (2015). **limma powers differential expression analyses for RNA-sequencing and microarray studies.** *Nucleic Acids Res.*, 43:e47. [doi:10.1093/nar/gkv007](https:\\doi:10.1093/nar/gkv007).
+2: Ritchie ME, Phipson B, Wu D, Hu Y, Law CW, Shi W and Smyth GK (2015). **limma powers differential expression analyses for RNA-sequencing and microarray studies.** *Nucleic Acids Res.*, 43:e47. [doi:10.1093/nar/gkv007](https://doi:10.1093/nar/gkv007).
 
 
 
