@@ -406,6 +406,13 @@ jColor <- function(info) {
     
     classes <- sort(as.factor(classes))
     
+    # Calculating maximal resampling size per class
+    if (is.null(r) || r <= 0) {
+      r <- round(sqrt(min(table(classes))), digits = 0)
+    }
+    if(r < 3)
+      r <- 3
+    
     # If multiclass vector has been proposed:
     if (length(levels(classes)) > 2) {
         control <- NA
@@ -414,12 +421,6 @@ jColor <- function(info) {
         # Removing auto-combination
         combMulti <- combMulti[combMulti[, 1] != combMulti[, 2], ]
         
-        # Calculating maximal resampling size per class
-        if (is.null(r) || r <= 0) {
-            r <- round(sqrt(min(table(classes))), digits = 0)
-        }
-        if(r < 3)
-          r <- 3
         maxSub <- subsamplingProb(x = r, n1 = min(table(classes)), iter = 0)$n.all
         if (iterations == 0) {
             iterations <- maxSub
@@ -501,7 +502,7 @@ jColor <- function(info) {
     }
     
     return(list(categories.control = categories.control, data = data, categories.case = categories.case, 
-        results = results, multi = multi, classes = classes, cl1 = cl1, cl2 = cl2, 
+        results = results, multi = multi, classes = classes, cl1 = cl1, cl2 = cl2, iterations = iterations,
         n1 = n1, n2 = n2))
 }
 
@@ -736,6 +737,7 @@ jColor <- function(info) {
         
         UP <- UP + mx
         DOWN <- DOWN + mx2
+
         top_eje <- rbind(top_eje, top_eje1)
         rownames(top_eje1) <- NULL
         setTxtProgressBar(pb, i)

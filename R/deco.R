@@ -36,6 +36,8 @@ decoRDA <- function(data, classes = NA, control = NA,
     }
     data <- as.matrix(data)
     
+    if(any(duplicated(rownames(data))))
+      stop("ERROR: Duplicated rownames are not allowed.")
     
     if (!is.na(msg)) {
         stop(msg)
@@ -57,11 +59,11 @@ decoRDA <- function(data, classes = NA, control = NA,
         if (id.type %in% columns(x = get(pack.db))) {
             infogenes <- AnnotateDECO(ids = rownames(data), id.type = id.type, 
                 attributes = c("TXCHROM", "TXCHROM"), pack.db = pack.db, verbose = FALSE)
-            chrTest <- infogenes[, "TXCHROM"] %in% c("X", "Y", "chrX", "chrY")
-            if (length(which(chrTest)) > 1) {
-                data <- data[rownames(infogenes)[!chrTest], ]
+            chrTest <- infogenes[infogenes[, "TXCHROM"] %in% c("X", "Y", "chrX", "chrY"), id.type]
+            if (length(chrTest) > 1) {
+                data <- data[rownames(infogenes)[!rownames(infogenes) %in% chrTest], ]
                 msg <- paste(.timestamp(), "-- Features located in X or Y chromosome have been filtered:\n", 
-                  length(which(chrTest)), "features have been discarded.")
+                  length(chrTest), "features have been discarded.")
             } else {
                 msg <- paste(.timestamp(), " All features are placed on X or Y chromosome,
                        filter will not be applied.")
@@ -72,7 +74,7 @@ decoRDA <- function(data, classes = NA, control = NA,
         }
         message(msg)
     }
-    
+
     ## Initial matrix for resampling design...
     results <- matrix(0, nrow = 1, ncol = 6)
     
@@ -97,6 +99,7 @@ decoRDA <- function(data, classes = NA, control = NA,
         n2 <- combin$n2
         results <- combin$results
         data <- combin$data
+        iterations <- combin$iterations
     } else {
         n1 <- dim(data)[2]
         n2 <- dim(data)[2]
