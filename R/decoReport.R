@@ -71,10 +71,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf", info.sam
             1,
             c("Repeats")
         ] / deco@featureTable[1, c("FR.Repeats")], digits = 0),
-        deco@pos.iter, round(deco@pos.iter / deco@featureTable[1, c("Repeats")] / deco@featureTable[
-            1,
-            c("FR.Repeats")
-        ] * 100, 2), dim(deco@featureTable)[1], min(deco@featureTable$Repeats) -
+        deco@pos.iter, dim(deco@featureTable)[1], min(deco@featureTable$Repeats) -
             1, deco@q.val, sub$resampleSize
     )
 
@@ -100,7 +97,7 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf", info.sam
     colnames(j) <- ""
     rownames(j) <- c(
         "Contrast design:", "Number of samples:", "Total iterations:",
-        "Positive DE iterations:", "% positive DE iterations:", "DE features:",
+        "Positive DE iterations:", "DE features:",
         "Minimum repeats:", "LIMMA q.value threshold:", "RDA resampling size:"
     )
     textplot(j, col.rownames = "darkblue", cex = 2, valign = "bottom")
@@ -1378,10 +1375,9 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf", info.sam
         ylim = limy, xlim = c(1, length(s)), xlab = "Reference number from samples",
         ylab = "Repeats per sample", axes = FALSE, type = "n"
     )
-    axis(1, at = seq_len(length(s)), labels = rownames(samplesSubclass)[match(samplesSubclass[
-        ,
-        1
-    ], names(s))], tick = FALSE, las = 2)
+    axis(1, at = seq_len(length(s)), labels = rownames(samplesSubclass)[match(
+      names(s), samplesSubclass[,1])], 
+      tick = FALSE, las = 2)
     axis(2, at = seq(0, limy[2], signif(m * 0.1, 0)), las = 2)
     abline(
         h = seq(0, limy[2], signif(m * 0.1, 0)), lty = 2, xpd = FALSE,

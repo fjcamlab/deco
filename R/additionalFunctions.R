@@ -843,10 +843,10 @@ overlapC <- function(sub, cl1, bpparam) {
         x)), FUN.VALUE = numeric(1))
     
     profile <- prof
-    profile[prof %in% c(3, 4)] <- "Minority"
+    profile[sub$subStatFeature[names(profile), c("UpDw")] == "MIXED" | prof == 4] <- "Mixed"
+    profile[prof == 3] <- "Minority"
     profile[prof == 2] <- "Majority"
     profile[prof == 1] <- "Complete"
-    profile[sub$subStatFeature[names(profile), c("UpDw")] == "MIXED"] <- "Mixed"
     names(profile) <- names(overlap)
     profile <- profile[order(names(profile))]
     
@@ -1086,7 +1086,9 @@ NSCACluster <- function(mx, data = NULL, id.names = NULL, k = NULL, label = NA,
     info <- cbind(info, ca_res$di[rownames(info)])
     
     if (k > 1) 
-        info <- as.data.frame(cbind(info, matrix(nrow = dim(info)[1], ncol = 3))) else info <- as.data.frame(t(rbind(info, matrix(nrow = dim(info)[1], ncol = 3))))
+        info <- as.data.frame(cbind(info, matrix(nrow = dim(info)[1], ncol = 3))) 
+    else 
+      info <- as.data.frame(t(rbind(info, matrix(nrow = dim(info)[1], ncol = 3))))
     
     colnames(info) <- c(paste("Scl", seq_len(k), sep = ""), "Tau.feature", 
         "Closer.subclass", "h.Best", "ID")
@@ -1114,11 +1116,11 @@ NSCACluster <- function(mx, data = NULL, id.names = NULL, k = NULL, label = NA,
     }
     if (all(!is.na(label))) {
         infoSubclass <- data.frame(Samples = kk, FeaturesUP = gg1, FeaturesDOWN = gg2, 
-            SpeValue = ss, row.names = paste(label, "Subclass", seq(from = 1, 
+            average.hStat.perc95 = ss, row.names = paste(label, "Subclass", seq(from = 1, 
                 to = k), sep = " "))
     } else {
         infoSubclass <- data.frame(Samples = kk, FeaturesUP = gg1, FeaturesDOWN = gg2, 
-            SpeValue = ss, row.names = paste("Subclass", seq(from = 1, to = k), 
+            average.hStat.perc95 = ss, row.names = paste("Subclass", seq(from = 1, to = k), 
                 sep = " "))
     }
     if (k > 1) {

@@ -2,15 +2,9 @@
 ##################################################################################################################################
 
 plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
-                            info.sample = NA, print.annot = TRUE, 
+                            info.sample = NA, print.annot = FALSE, 
                             cex.legend = 1.1, cex.names = 1,
                             cex.samples = 1) {
-  # Open pdf file connection.
-  if (is.na(pdf.file)) {
-    stop("ERROR: No pdf name has been provided.")
-  }
-  pdf(file = pdf.file, width = 18, height = 12, family = "Helvetica-Narrow")
-  
   # Type of deco analysis
   if (all(!id %in% as.character(deco@featureTable[, c("ID")]))) {
     stop("ERROR: Input IDs do not match with any DE feature.")
@@ -23,11 +17,24 @@ plotDECOProfile <- function(deco, id, data, pdf.file = NA, plot.h = FALSE,
     analysis <- "Binary"
   }
   
+  # Open pdf file connection.
+  if (is.na(pdf.file)) {
+    stop("ERROR: No pdf name has been provided.")
+  }
+  pdf(file = pdf.file, width = 18, height = 12, family = "Helvetica-Narrow")
+  
   # Formatting objects...
   if (print.annot) {
-    symbol <- deco@featureTable[, "SYMBOL"]
-    names(symbol) <- deco@featureTable[, "ID"]
+    if(!"SYMBOL" %in% colnames(deco@featureTable))
+    {
+      message("Annotation of features was omitted or original IDs were already official SYMBOL IDs.")
+      print.annot <- FALSE
+    } else {
+      symbol <- deco@featureTable[, "SYMBOL"]
+      names(symbol) <- deco@featureTable[, "ID"]
+    }
   }
+  
   layout(mat = matrix(c(
     1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 4, 4, 5, 5,
     6, 6, 6, 0
