@@ -9,7 +9,7 @@ Plot feature profile(s) in a separate PDF from decoReport R function.
 }
 \usage{
 plotDECOProfile(deco, id, data, pdf.file = NA, plot.h = FALSE,
-                      info.sample = NA, print.annot = TRUE,
+                      info.sample = NA, print.annot = FALSE,
                       cex.legend = 1.1, cex.names = 1, cex.samples = 1)
 }
 \arguments{
