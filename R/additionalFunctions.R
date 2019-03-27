@@ -1096,7 +1096,7 @@ NSCACluster <- function(mx, data = NULL, id.names = NULL, k = NULL, label = NA,
     
     if (k > 1) {
         info[, c("Closer.subclass")] <- apply(info[, seq_len(k)], 1, function(x) which(abs(x) == 
-            max(abs(x))))
+            max(abs(x)))[1])
     } else {
         info[, c("Closer.subclass")] <- rep(1, dim(info)[1])
     }

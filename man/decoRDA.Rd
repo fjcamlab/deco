@@ -131,7 +131,7 @@ names(classes.ALCL) <- colnames(ALCL)
 # sub.ma.3r.1K.uns <- decoRDA(data = assay(ALCL), q.val = 0.01,
 #                      rm.xy = TRUE, r = 3, annot = TRUE, 
 #                      id.type = "ENSEMBL", iterations = 1000,
-#                      pack.db = "org.Hs.eg.db")
+#                      pack.db = "Homo.sapiens")
 
 
 
@@ -150,5 +150,5 @@ head(multiclasses.ALCL)
 # sub.ma.3r.1K.multi <- decoRDA(data = assay(ALCL), classes = multiclasses.ALCL,
 #                       q.val = 0.01, rm.xy = TRUE, r = 3, annot = TRUE, 
 #                       id.type = "ENSEMBL", iterations = 1000,
-#                       pack.db = "org.Hs.eg.db")
+#                       pack.db = "Homo.sapiens")
 }
