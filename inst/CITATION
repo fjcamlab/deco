@@ -15,5 +15,5 @@ citEntry(entry="Article",
   number = "",
   pages = "",
   year ="2019",
-  doi = "doi.org/10.1093/bioinformatics/btz148",
+  doi = "https://doi.org/10.1093/bioinformatics/btz148",
   textVersion = "Campos-Laborie FJ, Risueno A, Roson-Burgo B, Droste C, Fontanillo C, Ortiz-Estevez M, Trotter MW, Sanchez-Santos JM and De Las Rivas J (2019). DECO: decompose heterogeneous population cohorts for patient stratification and discovery of sample biomarkers using omic data profiling. Bioinformatics. Accepted")
