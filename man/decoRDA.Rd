@@ -22,7 +22,7 @@ factor or character vector of 's' size with two ('Supervised' or 'Binary' analys
 character label defining 'control' or '0' class for LIMMA contrast design.
 }
   \item{r}{
-number of samples of each class to take for subsampling. Same number of samples will be taken for both classes in 'Supervised' analysis.
+number of samples of each class to take for subsampling. Same number of samples will be taken from each class.
 }
   \item{q.val}{
 p.value threshold for each iteration of subsampling process. It corresponds to \emph{adj.P.value} of LIMMA and is set as default as 0.01.
@@ -50,7 +50,8 @@ character naming annotation package to be used. \emph{Homo.sapiens} annotation p
 \details{
 The \bold{RDA step} is primarly conditioned by contrast design. Our capacity to highlight \emph{majority} or \emph{minority} features will vary depending on how much we want focusing the analyisis on classes or individual samples, or what is the same, the \bold{granularity of RDA}.
 
-In this way, it is necessary to highlight that two \bold{RDA strategies} could be: (a) a \bold{majority} one trying to improve our generic differential expression with higher subsampling size; and (b) a \bold{minority} strategy to find out all possible hidden subclasses. By default, \code{decoRDA()} defines an optimal subsample size \emph{r}. Let \emph{n} be the number of samples included in the analysis (if two classes are compared, it will be splitted), so based on previous analysis done by Babu et al.: \deqn{r = \sqrt{min(n)}}
+In this way, it is necessary to highlight that two \bold{RDA strategies} could be: (a) a \bold{majority} one trying to improve our generic differential expression with higher subsampling size; and (b) a \bold{minority} strategy to find out all possible hidden subclasses. By default, \code{decoRDA()} defines an optimal subsample size \emph{r}. Let \emph{n} be the number of samples included in the analysis or \deqn{n_1,n_2,...,n_k} in case of two or more \emph{k} classes, then based on previous analysis done by Babu et al.: \deqn{r = \sqrt{n}}
+or in case of 'Supervised' or 'Multiclass' design: \deqn{r = \sqrt{min(n_1,n_2,...,n_k)}}
 
 The analysis can be set to find differences among two populations or classes and to find differences within the whole cohort of samples. Besides, \code{decoRDA()} can work under both scenarios: \bold{binary} analysis with two classes or \bold{unsupervised} analysis contrasting all samples. The \emph{classes} input is used to define it. If the user introduces any vector with labels of two classes for each sample, a \bold{binary} analysis will be run. Otherwise, without any \emph{classes} vector all samples will be compared with each other.
 }
