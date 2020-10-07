@@ -105,7 +105,7 @@ multiclasses.ALCL <- factor(apply(
 
 Here, we show a RNAseq dataset analysed using DECO, downloaded from [The Cancer Genome Atlas (TCGA)](http://cancergenome.nih.gov/). It is composed by 1212 clinical samples from patients with different [subtypes of Breast Cancer](#references) [6], which includes standard histological subtypes (given by markers ESR1, PGR and HER2) and two classes associated to the cell-type, called: **Invasive Ductal Carcinoma** (IDC) and **Invasive Lobular Carcinoma** (ILC). The genes of the dataset are mapped to HGNC symbol IDs and the dataset can be loaded directly in R or downlad from the [TCGA data portal](https://portal.gdc.cancer.gov/):
 
-```{r, message = FALSE}
+```{r, message = FALSE, eval = FALSE}
 # Loading library
 library(curatedTCGAData)
 library(MultiAssayExperiment)
@@ -141,7 +141,7 @@ Then, user can run *voom* normalization method provided in LIMMA R package to ca
 
 Together with RNA-seq or microarray platforms, DECO algorithm can be applied to datasets obtained with other **omic platforms** (as far as a correct normalization of the data per sample can be achieved). In order to provide an example of other platform, we show an example of a **miRNAs dataset** from same TCGA library used above:
 
-```{r, message = FALSE}
+```{r, message = FALSE, eval = FALSE}
 # Download counts from RNAseq data of miRNAs
 BRCA_dataset_counts_mirna <- curatedTCGAData(
     diseaseCode = "BRCA",
