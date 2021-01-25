@@ -487,6 +487,12 @@ jColor <- function(info) {
         maxSub <- prod(factorial(c(n1, n2))/(factorial(r) * factorial(c(n1, 
             n2) - r)))
         
+        if(is.nan(maxSub)) {
+            maxSub <- 1e9
+            message(.timestamp(), " -- Maximum number of iterations is defined as ", 
+                    maxSub, ".")
+        }
+
         if (iterations > maxSub) {
             iterations <- maxSub
             message(.timestamp(), " -- 'iterations' is higher than
