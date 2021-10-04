@@ -2024,7 +2024,7 @@ plotRepThr <- function(sub, deco, id = NA, print.annot = FALSE) {
                         classvec = NULL, classvecCol = NULL, classvec2 = NULL, distfun = NULL,
                         labRowCol = NULL, returnSampleTree = FALSE, method = "ave", dualScale = TRUE,
                         col.breaks = 256, scaleKey = TRUE, rm.out = FALSE, ...) {
-    data <- made4::array2ade4(dataset)
+    data <- made4::asDataFrame(dataset)
     data <- as.matrix(data)
     if (dualScale) {
         data <- scale(data)
