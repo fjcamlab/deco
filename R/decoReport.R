@@ -329,7 +329,8 @@ decoReport <- function(deco, sub, id = NA, pdf.file = "decoReport.pdf", info.sam
             "\nWARNING: Heatmap from 'h' statistic corresponding to",
             c("CASES", "CONTROL")[p.val > 0.05], "samples shows NSCA p-value > 0.05."
         )
-    }
+    } else
+        msg <- ""
     message(msg)
     
     while (i %in% seq_len(2)) {
