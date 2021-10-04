@@ -7,6 +7,7 @@ plotHeatmapH <- function(deco,
                          cex.legend = 1, cex.names = 1) { 
     
     pos <- FALSE
+    
     ## Errors
     if (all(!is.na(info.sample))) {
           if (!is(info.sample, "data.frame") & !is(info.sample, "matrix")) {
@@ -37,7 +38,7 @@ plotHeatmapH <- function(deco,
       }
 
     ## Type of analysis run
-    analysis <- .analysisType(deco)
+    analysis <- deco:::.analysisType(deco)
 
     if (analysis == "Binary") {
           msg2 <- "Binary analysis, two h-statistic matrices include control or case samples."
@@ -60,12 +61,12 @@ plotHeatmapH <- function(deco,
         samplesSubclass <- NSCAcluster(deco)[user]$samplesSubclass[colnames(hMatrix), ]
         col <- list(c("navyblue", "lightblue"), c("orange", "darkred"))[[user + 1]]
         ##
-        y1 <- max(deco@NSCAcluster[user + 1]$hclustSamp$cluster)[1]
-        y2 <- max(deco@NSCAcluster[user + 1]$hclustSamp$cluster)[2]
+        y1 <- max(deco@NSCAcluster[[user + 1]]$hclustSamp$cluster)[1]
+        y2 <- max(deco@NSCAcluster[[user + 1]]$hclustSamp$cluster)[2]
         main <- paste(c("CONTROL (0)", "CASE (1)")[user + 1], "samples")
-        info.dend <- deco@NSCAcluster[user + 1]$hclustSamp
-        info.dendF <- deco@NSCAcluster[user + 1]$hclustFeat
-        p.val <- deco@NSCAcluster[user + 1]$NSCA$P.Value
+        info.dend <- deco@NSCAcluster[[user + 1]]$hclustSamp
+        info.dendF <- deco@NSCAcluster[[user + 1]]$hclustFeat
+        p.val <- deco@NSCAcluster[[user + 1]]$NSCA$P.Value
         ##
         feature.label <- as.vector(deco@featureTable[rownames(hMatrix), c("UpDw")])
         feature.label[feature.label == c("UP", "DOWN")[user + 1]] <- "chartreuse4"
@@ -160,7 +161,7 @@ plotHeatmapH <- function(deco,
     names(infoFpat) <- rownames(hMatrix)
 
     # h-statistic heatmap including sample and feature information.
-    .heatplot.2(
+    deco:::.heatplot.2(
         dataset = as.matrix(hMatrix), Colv = as.dendrogram(info.dend$dend),
         Rowv = as.dendrogram(info.dendF$dend), margins = c(10, 8), cexRow = cex.names,
         cexCol = cex.names + m, lmat = rbind(c(6, 0, 5, 0), c(
