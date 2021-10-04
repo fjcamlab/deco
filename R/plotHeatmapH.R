@@ -5,6 +5,8 @@ plotHeatmapH <- function(deco,
                          info.sample = NA, info.feature = NA,
                          print.annot = FALSE,
                          cex.legend = 1, cex.names = 1) { 
+    
+    pos <- FALSE
     ## Errors
     if (all(!is.na(info.sample))) {
           if (!is(info.sample, "data.frame") & !is(info.sample, "matrix")) {
