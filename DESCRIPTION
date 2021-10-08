@@ -1,7 +1,7 @@
 Package: deco
 Type: Package
 Title: Decomposing Heterogeneous Cohorts using Omic Data Profiling
-Version: 1.9.0
+Version: 1.9.1
 Date: 2019-03-27
 Author: Francisco Jose Campos-Laborie, Jose Manuel Sanchez-Santos and Javier De
     Las Rivas. Bioinformatics and Functional Genomics Group. Cancer Research Center
@@ -20,7 +20,7 @@ Imports: stats, methods, ggplot2, foreign, graphics, BiocStyle,
         Biobase, cluster, gplots, RColorBrewer, locfit, made4,
         ade4, sfsmisc, scatterplot3d, gdata, grDevices, utils, 
         reshape2, gridExtra
-Suggests: knitr, curatedTCGAData, MultiAssayExperiment, Homo.sapiens
+Suggests: knitr, curatedTCGAData, MultiAssayExperiment, Homo.sapiens, rmarkdown
 License: GPL (>=3)
 URL: https://github.com/fjcamlab/deco
 ZipData: true
