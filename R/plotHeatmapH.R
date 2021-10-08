@@ -7,6 +7,8 @@ plotHeatmapH <- function(deco,
                          cex.legend = 1, cex.names = 1) { 
     
     pos <- FALSE
+    m <- 0.05
+    n <- -0.03
     
     ## Errors
     if (all(!is.na(info.sample))) {
