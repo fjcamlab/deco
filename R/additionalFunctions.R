@@ -235,8 +235,8 @@ subsamplingProb <- function(x, iter, n1, n2 = 0) {
         
         m <- p1o * p2o
         
-        r1 <- factorial(n1)/(factorial(x) * factorial(n1 - x))
-        r2 <- factorial(n2)/(factorial(x) * factorial(n2 - x))
+        r1 <- choose(n1, x)
+        r2 <- choose(n2, x)
         
         m1 <- m * p2o * iter
         m2 <- m * p1o * iter
@@ -246,7 +246,7 @@ subsamplingProb <- function(x, iter, n1, n2 = 0) {
         all <- r1 * r2
     } else {
         p1o <- x/n1
-        r1 <- factorial(n1)/(factorial(x) * factorial(n1 - x))
+        r1 <- choose(n1, x)
         m <- 0
         all <- r1
     }
