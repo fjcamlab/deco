@@ -757,7 +757,7 @@ jColor <- function(info) {
     
     # Making up incidence matrix with separated UP, DOWN and MIXED events.
     if (!unsup & !multi) {
-        both.feat <- names(which(rowSums(UP[, seq_len(n1)]) > 0 && rowSums(UP[, 
+        both.feat <- names(which(rowSums(UP[, seq_len(n1)]) > 0 & rowSums(UP[, 
             (n1 + 1):(n1 + n2)]) > 0))
         if (length(both.feat) > 0) {
             both.feat.mx <- UP[rowSums(UP) > 0, ][rownames(UP) %in% both.feat, 
